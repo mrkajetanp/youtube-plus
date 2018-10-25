@@ -1,2 +1,2 @@
 # youtube-plus
-Custom app for playing YouTube videos
+Custom Android app for playing YouTube videos
