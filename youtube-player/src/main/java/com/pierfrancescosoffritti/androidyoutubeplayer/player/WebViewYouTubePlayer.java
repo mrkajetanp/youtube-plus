@@ -29,6 +29,8 @@ import java.util.Set;
  */
 class WebViewYouTubePlayer extends WebView implements YouTubePlayer, YouTubePlayerBridge.YouTubePlayerBridgeCallbacks {
 
+    private static final String TAG = WebViewYouTubePlayer.class.getSimpleName();
+
     @NonNull private final Set<YouTubePlayerListener> youTubePlayerListeners;
     @NonNull private final Handler mainThreadHandler;
 
@@ -50,6 +52,7 @@ class WebViewYouTubePlayer extends WebView implements YouTubePlayer, YouTubePlay
     }
 
     protected void initialize(@NonNull YouTubePlayerInitListener initListener) {
+        Log.d("TESTINGTAGG", "Initialised");
         youTubePlayerInitListener = initListener;
 
         initWebView();
@@ -62,6 +65,8 @@ class WebViewYouTubePlayer extends WebView implements YouTubePlayer, YouTubePlay
 
     @Override
     public void loadVideo(@NonNull final String videoId, final float startSeconds) {
+        Log.d("TESTINGTAGG", "Loading video");
+
         mainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -82,6 +87,8 @@ class WebViewYouTubePlayer extends WebView implements YouTubePlayer, YouTubePlay
 
     @Override
     public void play() {
+        Log.d("TESTINGTAGG", "Playing");
+
         mainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -92,6 +99,8 @@ class WebViewYouTubePlayer extends WebView implements YouTubePlayer, YouTubePlay
 
     @Override
     public void pause() {
+        Log.d("TESTINGTAGG", "Pausing");
+
         mainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -125,6 +134,7 @@ class WebViewYouTubePlayer extends WebView implements YouTubePlayer, YouTubePlay
 
     @Override
     public void destroy() {
+        Log.d("TESTINGTAGG", "Destroying");
         youTubePlayerListeners.clear();
         mainThreadHandler.removeCallbacksAndMessages(null);
         super.destroy();
@@ -152,6 +162,7 @@ class WebViewYouTubePlayer extends WebView implements YouTubePlayer, YouTubePlay
 
     @SuppressLint("SetJavaScriptEnabled")
     private void initWebView() {
+        Log.d("TESTINGTAGG", "initWebView start");
 
         WebSettings settings = this.getSettings();
         settings.setJavaScriptEnabled(true);
@@ -173,6 +184,8 @@ class WebViewYouTubePlayer extends WebView implements YouTubePlayer, YouTubePlay
                     return result;
             }
         });
+
+        Log.d("TESTINGTAGG", "initWebView end");
     }
 
     private String readYouTubePlayerHTMLFromFile() {
@@ -193,5 +206,11 @@ class WebViewYouTubePlayer extends WebView implements YouTubePlayer, YouTubePlay
         } catch (Exception e) {
             throw new RuntimeException("Can't parse HTML file containing the player.");
         }
+    }
+
+    @Override
+    public void onPause() {
+        Log.d("TESTINGTAGG", "Paused");
+        super.onPause();
     }
 }

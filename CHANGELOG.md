@@ -4,6 +4,7 @@
 
 #### 26.10.2018
 
+* [General] android-youtube-player lifecycle experiments 
 * [General] android-youtube-player as a module
 
 #### 25.10.2018

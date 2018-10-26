@@ -48,9 +48,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         Log.d(LOG_TAG, "onDestroy");
         mainPlayerView.release();
+        super.onDestroy();
     }
 
     @Override

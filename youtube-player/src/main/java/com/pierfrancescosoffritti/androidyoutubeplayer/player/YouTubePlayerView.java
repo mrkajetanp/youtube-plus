@@ -10,6 +10,7 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -76,6 +77,7 @@ public class YouTubePlayerView extends FrameLayout implements NetworkReceiver.Ne
      * @param handleNetworkEvents if <b>true</b> a broadcast receiver will be registered.<br/>If <b>false</b> you should handle network events with your own broadcast receiver. See {@link YouTubePlayerView#onNetworkAvailable()} and {@link YouTubePlayerView#onNetworkUnavailable()}
      */
     public void initialize(@NonNull final YouTubePlayerInitListener youTubePlayerInitListener, boolean handleNetworkEvents) {
+        Log.d("TESTINGTAGG", "View initialisation");
         if(handleNetworkEvents)
             getContext().registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
@@ -86,6 +88,7 @@ public class YouTubePlayerView extends FrameLayout implements NetworkReceiver.Ne
                     @Override
                     public void onInitSuccess(@NonNull YouTubePlayer youTubePlayer) {
                         youTubePlayerInitListener.onInitSuccess(youTubePlayer);
+                        Log.d("TESTINGTAGG", "Initialised");
                     }
                 });
             }
@@ -101,6 +104,7 @@ public class YouTubePlayerView extends FrameLayout implements NetworkReceiver.Ne
      */
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     public void release() {
+        Log.d("TESTINGTAGG", "View release");
         removeView(youTubePlayer);
         youTubePlayer.removeAllViews();
         youTubePlayer.destroy();
@@ -112,7 +116,14 @@ public class YouTubePlayerView extends FrameLayout implements NetworkReceiver.Ne
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     void onStop() {
+        Log.d("TESTINGTAGG", "View on stop");
+        removeView(youTubePlayer);
         youTubePlayer.pause();
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    void onPause() {
+        Log.d("TESTINGTAGG", "View paused");
     }
 
     @Override
@@ -125,6 +136,7 @@ public class YouTubePlayerView extends FrameLayout implements NetworkReceiver.Ne
 
     @Override
     public void onNetworkUnavailable() {
+        Log.d("TESTINGTAGG", "No network");
     }
 
     @NonNull
@@ -186,7 +198,7 @@ public class YouTubePlayerView extends FrameLayout implements NetworkReceiver.Ne
             @Override
             public void onReady() {
                 asyncInitialization = null;
-                //youTubePlayer.removeListener(this);
+//                youTubePlayer.removeListener(this);
             }
         });
     }
