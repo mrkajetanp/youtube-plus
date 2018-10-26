@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/youtube-player/youtube-player.iml" filepath="$PROJECT_DIR$/youtube-player/youtube-player.iml" />
+      <module fileurl="file://$PROJECT_DIR$/youtube-plus.iml" filepath="$PROJECT_DIR$/youtube-plus.iml" />
       <module fileurl="file://$PROJECT_DIR$/youtube-plus.iml" filepath="$PROJECT_DIR$/youtube-plus.iml" />
     </modules>
   </component>
