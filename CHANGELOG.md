@@ -2,6 +2,10 @@
 
 ---
 
+#### 28.10.2018
+
+* [Player] Implemented background video playback in the library
+
 #### 26.10.2018
 
 * [General] android-youtube-player lifecycle experiments 

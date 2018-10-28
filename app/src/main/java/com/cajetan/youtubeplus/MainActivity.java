@@ -15,6 +15,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
+    // TODO: maybe background video playback should be a setting
+
     private YouTubePlayerView mainPlayerView;
 
     @Override

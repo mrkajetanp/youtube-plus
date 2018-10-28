@@ -8,6 +8,7 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -35,6 +36,8 @@ class WebViewYouTubePlayer extends WebView implements YouTubePlayer, YouTubePlay
     @NonNull private final Handler mainThreadHandler;
 
     private YouTubePlayerInitListener youTubePlayerInitListener;
+
+    // TODO: get rid of all those useless logging statements
 
     protected WebViewYouTubePlayer(Context context) {
         this(context, null);
@@ -184,8 +187,6 @@ class WebViewYouTubePlayer extends WebView implements YouTubePlayer, YouTubePlay
                     return result;
             }
         });
-
-        Log.d("TESTINGTAGG", "initWebView end");
     }
 
     private String readYouTubePlayerHTMLFromFile() {
@@ -209,8 +210,9 @@ class WebViewYouTubePlayer extends WebView implements YouTubePlayer, YouTubePlay
     }
 
     @Override
-    public void onPause() {
-        Log.d("TESTINGTAGG", "Paused");
-        super.onPause();
+    protected void onWindowVisibilityChanged(int visibility) {
+        // TODO: make sure it does it only if videos should be playing in the background
+        if (visibility != View.GONE)
+            super.onWindowVisibilityChanged(View.VISIBLE);
     }
 }
