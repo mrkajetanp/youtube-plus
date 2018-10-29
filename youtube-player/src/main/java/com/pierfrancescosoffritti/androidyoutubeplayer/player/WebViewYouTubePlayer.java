@@ -30,10 +30,10 @@ import java.util.Set;
  */
 class WebViewYouTubePlayer extends WebView implements YouTubePlayer, YouTubePlayerBridge.YouTubePlayerBridgeCallbacks {
 
-    private static final String TAG = WebViewYouTubePlayer.class.getSimpleName();
-
     @NonNull private final Set<YouTubePlayerListener> youTubePlayerListeners;
     @NonNull private final Handler mainThreadHandler;
+
+    private boolean backgroundPlaybackEnabled = false;
 
     private YouTubePlayerInitListener youTubePlayerInitListener;
 
@@ -209,9 +209,17 @@ class WebViewYouTubePlayer extends WebView implements YouTubePlayer, YouTubePlay
         }
     }
 
+    public void enableBackgroundPlayback(boolean state) {
+        backgroundPlaybackEnabled = state;
+    }
+
     @Override
     protected void onWindowVisibilityChanged(int visibility) {
-        // TODO: make sure it does it only if videos should be playing in the background
+        if (!backgroundPlaybackEnabled) {
+            super.onWindowVisibilityChanged(visibility);
+            return;
+        }
+
         if (visibility != View.GONE)
             super.onWindowVisibilityChanged(View.VISIBLE);
     }

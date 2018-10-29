@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         else
             videoId = TEST_VIDEO_ID;
 
+        mainPlayerView.enableBackgroundPlayback(true);
         mainPlayerView.initialize(new YouTubePlayerInitListener() {
             @Override
             public void onInitSuccess(@NonNull final YouTubePlayer initialisedYouTubePlayer) {
