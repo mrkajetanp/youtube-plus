@@ -1,5 +1,6 @@
 package com.cajetan.youtubeplus;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +16,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
+    private static final String TEST_VIDEO_ID = "Bcqb7kzekoc";
+
     // TODO: maybe background video playback should be a setting
 
     private YouTubePlayerView mainPlayerView;
@@ -25,7 +28,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mainPlayerView = findViewById(R.id.main_player_view);
-        final String videoId = "Bcqb7kzekoc";
+
+        // If the activity was started by an intent, get the video link
+        // Extract the id and set the shared video to play
+        // Otherwise for the time being just play the testing video
+        String videoUrl = null;
+        if (getIntent() != null && getIntent().getExtras() != null)
+            videoUrl = getIntent().getExtras().getString(Intent.EXTRA_TEXT);
+
+        final String videoId;
+        if (videoUrl != null && !videoUrl.equals(""))
+            videoId = videoUrl.substring(videoUrl.length()-11, videoUrl.length());
+        else
+            videoId = TEST_VIDEO_ID;
 
         mainPlayerView.initialize(new YouTubePlayerInitListener() {
             @Override

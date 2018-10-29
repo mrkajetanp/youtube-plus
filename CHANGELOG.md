@@ -2,6 +2,10 @@
 
 ---
 
+#### 29.10.2018
+
+* [Player] Accepting & handling YouTube share intents
+
 #### 28.10.2018
 
 * [Player] Implemented background video playback in the library
