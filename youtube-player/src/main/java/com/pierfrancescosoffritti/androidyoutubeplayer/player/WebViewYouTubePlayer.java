@@ -34,10 +34,9 @@ class WebViewYouTubePlayer extends WebView implements YouTubePlayer, YouTubePlay
     @NonNull private final Handler mainThreadHandler;
 
     private boolean backgroundPlaybackEnabled = false;
+    private boolean isPlaying = false;
 
     private YouTubePlayerInitListener youTubePlayerInitListener;
-
-    // TODO: get rid of all those useless logging statements
 
     protected WebViewYouTubePlayer(Context context) {
         this(context, null);
@@ -55,7 +54,6 @@ class WebViewYouTubePlayer extends WebView implements YouTubePlayer, YouTubePlay
     }
 
     protected void initialize(@NonNull YouTubePlayerInitListener initListener) {
-        Log.d("TESTINGTAGG", "Initialised");
         youTubePlayerInitListener = initListener;
 
         initWebView();
@@ -68,7 +66,7 @@ class WebViewYouTubePlayer extends WebView implements YouTubePlayer, YouTubePlay
 
     @Override
     public void loadVideo(@NonNull final String videoId, final float startSeconds) {
-        Log.d("TESTINGTAGG", "Loading video");
+        isPlaying = true;
 
         mainThreadHandler.post(new Runnable() {
             @Override
@@ -80,6 +78,8 @@ class WebViewYouTubePlayer extends WebView implements YouTubePlayer, YouTubePlay
 
     @Override
     public void cueVideo(@NonNull final String videoId, final float startSeconds) {
+        isPlaying = true;
+
         mainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -90,7 +90,7 @@ class WebViewYouTubePlayer extends WebView implements YouTubePlayer, YouTubePlay
 
     @Override
     public void play() {
-        Log.d("TESTINGTAGG", "Playing");
+        isPlaying = true;
 
         mainThreadHandler.post(new Runnable() {
             @Override
@@ -102,7 +102,7 @@ class WebViewYouTubePlayer extends WebView implements YouTubePlayer, YouTubePlay
 
     @Override
     public void pause() {
-        Log.d("TESTINGTAGG", "Pausing");
+        isPlaying = false;
 
         mainThreadHandler.post(new Runnable() {
             @Override
@@ -137,7 +137,6 @@ class WebViewYouTubePlayer extends WebView implements YouTubePlayer, YouTubePlay
 
     @Override
     public void destroy() {
-        Log.d("TESTINGTAGG", "Destroying");
         youTubePlayerListeners.clear();
         mainThreadHandler.removeCallbacksAndMessages(null);
         super.destroy();
@@ -165,8 +164,6 @@ class WebViewYouTubePlayer extends WebView implements YouTubePlayer, YouTubePlay
 
     @SuppressLint("SetJavaScriptEnabled")
     private void initWebView() {
-        Log.d("TESTINGTAGG", "initWebView start");
-
         WebSettings settings = this.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
@@ -215,7 +212,7 @@ class WebViewYouTubePlayer extends WebView implements YouTubePlayer, YouTubePlay
 
     @Override
     protected void onWindowVisibilityChanged(int visibility) {
-        if (!backgroundPlaybackEnabled) {
+        if (!backgroundPlaybackEnabled || !isPlaying) {
             super.onWindowVisibilityChanged(visibility);
             return;
         }
