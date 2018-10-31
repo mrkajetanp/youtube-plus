@@ -18,8 +18,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TEST_VIDEO_ID = "Bcqb7kzekoc";
 
-    // TODO: maybe background video playback should be a setting
-
     private YouTubePlayerView mainPlayerView;
 
     @Override
@@ -62,6 +60,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }, true);
 
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
     }
 
     @Override

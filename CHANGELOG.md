@@ -2,6 +2,10 @@
 
 ---
 
+#### 31.10.2018
+
+* [General] Some cleanup
+
 #### 30.10.2018
 
 * [Library] Override background visibility only if playing
