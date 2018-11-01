@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
                         super.onReady();
                     }
 
-
                     @Override
                     public void onStateChange(@NonNull PlayerConstants.PlayerState state) {
                         Log.d(LOG_TAG, "State changed: " + state);
@@ -59,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         }, true);
-
     }
 
     @Override
@@ -69,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        Log.d(LOG_TAG, "onDestroy");
         mainPlayerView.release();
         super.onDestroy();
     }
@@ -77,12 +74,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d(LOG_TAG, "onPause");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d(LOG_TAG, "onStop");
     }
 }

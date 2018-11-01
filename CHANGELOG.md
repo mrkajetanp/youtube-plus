@@ -2,6 +2,10 @@
 
 ---
 
+#### 1.11.2018
+
+* [Player] Handling screen rotation
+
 #### 31.10.2018
 
 * [General] Some cleanup
