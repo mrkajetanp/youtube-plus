@@ -4,6 +4,7 @@
 
 #### 1.11.2018
 
+* [General] Added the app icon 
 * [Player] Handling screen rotation
 
 #### 31.10.2018
