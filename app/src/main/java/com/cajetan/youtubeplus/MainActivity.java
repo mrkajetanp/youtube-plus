@@ -1,15 +1,18 @@
 package com.cajetan.youtubeplus;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Menu;
 
-import com.pierfrancescosoffritti.androidyoutubeplayer.player.PlayerConstants;
+import com.cajetan.youtubeplus.utils.FullScreenHelper;
 import com.pierfrancescosoffritti.androidyoutubeplayer.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.player.YouTubePlayerView;
 import com.pierfrancescosoffritti.androidyoutubeplayer.player.listeners.AbstractYouTubePlayerListener;
+import com.pierfrancescosoffritti.androidyoutubeplayer.player.listeners.YouTubePlayerFullScreenListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.player.listeners.YouTubePlayerInitListener;
 
 public class MainActivity extends AppCompatActivity {
@@ -19,6 +22,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String TEST_VIDEO_ID = "Bcqb7kzekoc";
 
     private YouTubePlayerView mainPlayerView;
+    private FullScreenHelper fullScreenHelper = new FullScreenHelper(this);
+
+    // TODO: implement auto fullscreen on rotation
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mainPlayerView = findViewById(R.id.main_player_view);
+
+        // TODO: extract player setup into a separate method
 
         // If the activity was started by an intent, get the video link
         // Extract the id and set the shared video to play
@@ -41,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
             videoId = TEST_VIDEO_ID;
 
         mainPlayerView.enableBackgroundPlayback(true);
+
         mainPlayerView.initialize(new YouTubePlayerInitListener() {
             @Override
             public void onInitSuccess(@NonNull final YouTubePlayer initialisedYouTubePlayer) {
@@ -48,16 +57,24 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onReady() {
                         initialisedYouTubePlayer.loadVideo(videoId, 0);
-                        super.onReady();
-                    }
-
-                    @Override
-                    public void onStateChange(@NonNull PlayerConstants.PlayerState state) {
-                        Log.d(LOG_TAG, "State changed: " + state);
                     }
                 });
             }
         }, true);
+
+        mainPlayerView.addFullScreenListener(new YouTubePlayerFullScreenListener() {
+            @Override
+            public void onYouTubePlayerEnterFullScreen() {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                fullScreenHelper.enterFullScreen();
+            }
+
+            @Override
+            public void onYouTubePlayerExitFullScreen() {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                fullScreenHelper.exitFullScreen();
+            }
+        });
     }
 
     @Override
@@ -69,15 +86,5 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         mainPlayerView.release();
         super.onDestroy();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
     }
 }
