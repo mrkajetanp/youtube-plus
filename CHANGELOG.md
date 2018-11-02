@@ -2,6 +2,10 @@
 
 ---
 
+#### 2.11.2018
+
+* [Player] Proper fullscreen mode, removed the ActionBar
+
 #### 1.11.2018
 
 * [General] Added the app icon 
