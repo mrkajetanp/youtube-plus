@@ -32,8 +32,10 @@ public class MainActivity extends AppCompatActivity {
 
         mainPlayerView = findViewById(R.id.main_player_view);
 
-        // TODO: extract player setup into a separate method
+        setupPlayer();
+    }
 
+    private void setupPlayer() {
         // If the activity was started by an intent, get the video link
         // Extract the id and set the shared video to play
         // Otherwise for the time being just play the testing video
@@ -48,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
             videoId = TEST_VIDEO_ID;
 
         mainPlayerView.enableBackgroundPlayback(true);
-
         mainPlayerView.initialize(new YouTubePlayerInitListener() {
             @Override
             public void onInitSuccess(@NonNull final YouTubePlayer initialisedYouTubePlayer) {

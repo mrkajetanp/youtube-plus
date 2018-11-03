@@ -2,6 +2,10 @@
 
 ---
 
+#### 3.11.2018
+
+* [General] Player setup in a separate method
+
 #### 2.11.2018
 
 * [Player] Proper fullscreen mode, removed the ActionBar
