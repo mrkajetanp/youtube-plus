@@ -2,6 +2,10 @@
 
 ---
 
+#### 4.11.2018
+
+* [General] Improved launcher icon quality
+
 #### 3.11.2018
 
 * [General] Player setup in a separate method
