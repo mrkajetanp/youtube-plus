@@ -4,8 +4,12 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.support.annotation.NonNull;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 
 import com.cajetan.youtubeplus.utils.FullScreenHelper;
 import com.pierfrancescosoffritti.androidyoutubeplayer.player.YouTubePlayer;
@@ -16,14 +20,19 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.player.listeners.YouTubeP
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final String TEST_VIDEO_ID = "Bcqb7kzekoc";
 
     private YouTubePlayerView mainPlayerView;
     private FullScreenHelper fullScreenHelper = new FullScreenHelper(this);
 
+    private static MediaSessionCompat mMediaSession;
+    private PlaybackStateCompat.Builder mStateBuilder;
+
     // TODO: implement auto fullscreen on rotation
+
+    // TODO: player to a separate activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         mainPlayerView = findViewById(R.id.main_player_view);
 
         setupPlayer();
+        setupMediaSession();
     }
 
     private void setupPlayer() {
@@ -77,9 +87,52 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void setupMediaSession() {
+        mMediaSession = new MediaSessionCompat(this, TAG);
+
+        mMediaSession.setFlags(
+                MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
+                        MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
+
+        // For now, TODO: investigate
+        mMediaSession.setMediaButtonReceiver(null);
+
+        mStateBuilder = new PlaybackStateCompat.Builder()
+                .setActions(
+                        PlaybackStateCompat.ACTION_PLAY |
+                                PlaybackStateCompat.ACTION_PAUSE |
+//                                PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
+                                PlaybackStateCompat.ACTION_PLAY_PAUSE);
+
+        mMediaSession.setPlaybackState(mStateBuilder.build());
+        mMediaSession.setCallback(new PlayerSessionCallback());
+        mMediaSession.setActive(true);
+    }
+
+    private class PlayerSessionCallback extends MediaSessionCompat.Callback {
+        @Override
+        public void onPlay() {
+            mainPlayerView.togglePlayPause();
+        }
+
+        @Override
+        public void onPause() {
+            mainPlayerView.pausePlayback();
+        }
+
+//        @Override
+//        public void onSkipToPrevious() {
+//            super.onSkipToPrevious();
+//        }
+    }
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+    }
+
+    public void onTestButtonClicked(View v) {
+        mainPlayerView.togglePlayPause();
     }
 
     @Override

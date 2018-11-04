@@ -37,6 +37,8 @@ public class YouTubePlayerView extends FrameLayout implements NetworkReceiver.Ne
     @NonNull private final FullScreenHelper fullScreenHelper;
     @Nullable private Callable asyncInitialization;
 
+    // TODO: somehow pass controller's isPlaying to the WebView
+
     public YouTubePlayerView(Context context) {
         this(context, null);
     }
@@ -96,6 +98,22 @@ public class YouTubePlayerView extends FrameLayout implements NetworkReceiver.Ne
 
         if(Utils.isOnline(getContext()))
             asyncInitialization.call();
+    }
+
+    // TODO: unnecessary, remove at some point
+    public void togglePlayPause() {
+        if (defaultPlayerUIController.getIsPlaying())
+            youTubePlayer.pause();
+        else
+            youTubePlayer.play();
+    }
+
+    public void pausePlayback() {
+        youTubePlayer.play();
+    }
+
+    public void resumePlayback() {
+        youTubePlayer.pause();
     }
 
     /**

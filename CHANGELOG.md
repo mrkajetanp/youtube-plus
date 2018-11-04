@@ -4,6 +4,7 @@
 
 #### 4.11.2018
 
+* [Player] Media Session to support media buttons 
 * [General] Improved launcher icon quality
 
 #### 3.11.2018
