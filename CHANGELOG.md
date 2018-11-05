@@ -2,6 +2,10 @@
 
 ---
 
+#### 5.11.2018
+
+* [Player] Setting state builder to match the player
+
 #### 4.11.2018
 
 * [Player] Media Session to support media buttons 

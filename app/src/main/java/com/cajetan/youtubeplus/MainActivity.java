@@ -12,11 +12,13 @@ import android.util.Log;
 import android.view.View;
 
 import com.cajetan.youtubeplus.utils.FullScreenHelper;
+import com.pierfrancescosoffritti.androidyoutubeplayer.player.PlayerConstants;
 import com.pierfrancescosoffritti.androidyoutubeplayer.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.player.YouTubePlayerView;
 import com.pierfrancescosoffritti.androidyoutubeplayer.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.player.listeners.YouTubePlayerFullScreenListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.player.listeners.YouTubePlayerInitListener;
+import com.pierfrancescosoffritti.androidyoutubeplayer.utils.YouTubePlayerTracker;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -63,10 +65,30 @@ public class MainActivity extends AppCompatActivity {
         mainPlayerView.initialize(new YouTubePlayerInitListener() {
             @Override
             public void onInitSuccess(@NonNull final YouTubePlayer initialisedYouTubePlayer) {
+
+                // Tracker to get the state of the player
+                final YouTubePlayerTracker tracker = new YouTubePlayerTracker();
+                initialisedYouTubePlayer.addListener(tracker);
+
                 initialisedYouTubePlayer.addListener(new AbstractYouTubePlayerListener() {
                     @Override
                     public void onReady() {
                         initialisedYouTubePlayer.loadVideo(videoId, 0);
+                    }
+
+                    @Override
+                    public void onStateChange(@NonNull PlayerConstants.PlayerState state) {
+                        // TODO: not sure if it's a good idea to cast tbh
+
+                        if (state == PlayerConstants.PlayerState.PLAYING) {
+                            mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
+                                    (long) tracker.getCurrentSecond(), 1f);
+                        } else if (state == PlayerConstants.PlayerState.PAUSED) {
+                             mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
+                                    (long) tracker.getCurrentSecond(), 1f);
+                        }
+
+                        super.onStateChange(state);
                     }
                 });
             }
@@ -107,6 +129,10 @@ public class MainActivity extends AppCompatActivity {
         mMediaSession.setPlaybackState(mStateBuilder.build());
         mMediaSession.setCallback(new PlayerSessionCallback());
         mMediaSession.setActive(true);
+    }
+
+    private void showMediaNotification(PlaybackStateCompat state) {
+
     }
 
     private class PlayerSessionCallback extends MediaSessionCompat.Callback {
