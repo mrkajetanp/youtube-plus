@@ -1,9 +1,12 @@
 package com.cajetan.youtubeplus;
 
+import android.app.Notification;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -88,6 +91,8 @@ public class MainActivity extends AppCompatActivity {
                                     (long) tracker.getCurrentSecond(), 1f);
                         }
 
+                        mMediaSession.setPlaybackState(mStateBuilder.build());
+                        showMediaNotification(mStateBuilder.build());
                         super.onStateChange(state);
                     }
                 });
@@ -132,6 +137,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showMediaNotification(PlaybackStateCompat state) {
+//        if (Build.VERSION.SDK_INT < 21)
+//            return;
+
+        // TODO: notification channel
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "id");
+
 
     }
 

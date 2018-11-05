@@ -4,6 +4,7 @@
 
 #### 5.11.2018
 
+* [Player] Started implementing the media notification 
 * [Player] Setting state builder to match the player
 
 #### 4.11.2018
