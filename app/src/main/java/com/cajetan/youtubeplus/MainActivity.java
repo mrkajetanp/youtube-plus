@@ -1,6 +1,8 @@
 package com.cajetan.youtubeplus;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         mainPlayerView = findViewById(R.id.main_player_view);
 
         setupPlayer();
+        createNotificationChannel();
         setupMediaSession();
     }
 
@@ -141,9 +144,23 @@ public class MainActivity extends AppCompatActivity {
 //            return;
 
         // TODO: notification channel
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "id");
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,"main-channel-id");
+    }
 
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
+            return;
 
+        // TODO: extract
+        CharSequence name = "YouTube Plus Notification Channel";
+        String description = "Main channel for the notification";
+        int importance = NotificationManager.IMPORTANCE_LOW;
+
+        NotificationChannel channel = new NotificationChannel("main-channel-id", name, importance);
+        channel.setDescription(description);
+
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
     }
 
     private class PlayerSessionCallback extends MediaSessionCompat.Callback {

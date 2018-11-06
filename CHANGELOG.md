@@ -2,6 +2,10 @@
 
 ---
 
+#### 6.11.2018
+
+* [Player] Created a Media Channel
+
 #### 5.11.2018
 
 * [Player] Started implementing the media notification 
