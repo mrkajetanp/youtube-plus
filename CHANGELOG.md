@@ -4,6 +4,7 @@
 
 #### 6.11.2018
 
+* [Player] Functional Media Notification with Play/Pause 
 * [Player] Created a Media Channel
 
 #### 5.11.2018

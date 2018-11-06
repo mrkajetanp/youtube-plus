@@ -13,6 +13,7 @@
         <activity
             android:name=".MainActivity"
             android:theme="@style/PlayerActivityTheme"
+            android:launchMode="singleTop"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout">
 
             <intent-filter>
@@ -26,6 +27,12 @@
                 <data android:host="www.youtube.com" android:mimeType="text/*" />
             </intent-filter>
         </activity>
+
+        <receiver android:name=".MainActivity$MediaReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
 
     </application>
 

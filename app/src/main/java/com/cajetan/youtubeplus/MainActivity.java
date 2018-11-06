@@ -3,12 +3,16 @@ package com.cajetan.youtubeplus;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -36,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
+
+    private NotificationManager mNotificationManager;
 
     // TODO: implement auto fullscreen on rotation
 
@@ -140,11 +146,46 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showMediaNotification(PlaybackStateCompat state) {
-//        if (Build.VERSION.SDK_INT < 21)
-//            return;
 
-        // TODO: notification channel
+        // TODO: fix stuff
+        boolean isPlaying = state.getState() == PlaybackStateCompat.STATE_PLAYING;
+
+        int icon;
+        String playPause;
+        if (isPlaying) {
+            icon = R.drawable.ic_pause_36dp;
+            playPause = "Pause";
+        } else {
+            icon = R.drawable.ic_play_36dp;
+            playPause = "Play";
+        }
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this,"main-channel-id");
+
+        NotificationCompat.Action playPauseAction = new NotificationCompat.Action(
+                icon, playPause,
+                MediaButtonReceiver.buildMediaButtonPendingIntent(this,
+                        PlaybackStateCompat.ACTION_PLAY_PAUSE));
+
+        PendingIntent contentPendingIntent = PendingIntent.getActivity(
+                this, 0, new Intent(this, MainActivity.class), 0);
+
+        // TODO: get title from YouTube API
+
+        builder.setContentTitle("Video Title")
+                .setContentText("Author")
+                .setContentIntent(contentPendingIntent)
+                .setSmallIcon(R.drawable.ic_youtube_24dp)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .addAction(playPauseAction)
+                .setOngoing(isPlaying)
+                .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
+                        .setShowActionsInCompactView(0)
+                        .setMediaSession(mMediaSession.getSessionToken()));
+
+
+        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        mNotificationManager.notify(0, builder.build());
     }
 
     private void createNotificationChannel() {
@@ -171,7 +212,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onPause() {
-            mainPlayerView.pausePlayback();
+            mainPlayerView.togglePlayPause();
+//            mainPlayerView.pausePlayback();
         }
 
 //        @Override
@@ -182,11 +224,23 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
+        // TODO: implement now with single top
         super.onNewIntent(intent);
     }
 
     public void onTestButtonClicked(View v) {
         mainPlayerView.togglePlayPause();
+    }
+
+     public static class MediaReceiver extends BroadcastReceiver {
+
+        public MediaReceiver() {
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            MediaButtonReceiver.handleIntent(mMediaSession, intent);
+        }
     }
 
     @Override
