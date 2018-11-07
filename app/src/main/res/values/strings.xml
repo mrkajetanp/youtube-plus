@@ -1,3 +1,18 @@
 <resources>
+    <!--TODO: translatable yes/no-->
+
+    <!--General-->
     <string name="app_name">YouTube Plus</string>
+
+    <!--Player Activity-->
+    <string name="video_id_key">video_id</string>
+
+    <!--Notification Channel-->
+    <string name="notification_channel_id">main-channel-id</string>
+    <string name="notification_channel_name">YouTube Plus Notification Channel</string>
+    <string name="notification_channel_description">Main channel for the Media Notification</string>
+
+    <!--Player Controls-->
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
 </resources>

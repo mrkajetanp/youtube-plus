@@ -44,7 +44,7 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     private void setupPlayer() {
-        // TODO: maybe refactor
+        // TODO: maybe refactor a bit
         String videoUrl = null;
         if (getIntent() != null && getIntent().getExtras() != null)
             videoUrl = getIntent().getExtras().getString(Intent.EXTRA_TEXT);
@@ -54,8 +54,8 @@ public class PlayerActivity extends AppCompatActivity {
         if (videoUrl != null && !videoUrl.equals(""))
             videoId = videoUrl.substring(videoUrl.length()-11, videoUrl.length());
         // Activity started by a regular Intent with a video id
-        else if (getIntent().getExtras().containsKey("video_id"))
-            videoId = getIntent().getExtras().getString("video_id");
+        else if (getIntent().getExtras().containsKey(getString(R.string.video_id_key)))
+            videoId = getIntent().getExtras().getString(getString(R.string.video_id_key));
         // No video to play, throw an exception
         else {
             // TODO: throw something more informative here
@@ -142,13 +142,14 @@ public class PlayerActivity extends AppCompatActivity {
         String playPause;
         if (isPlaying) {
             icon = R.drawable.ic_pause_36dp;
-            playPause = "Pause";
+            playPause = getString(R.string.pause);
         } else {
             icon = R.drawable.ic_play_36dp;
-            playPause = "Play";
+            playPause = getString(R.string.play);
         }
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,"main-channel-id");
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,
+                getString(R.string.notification_channel_id));
 
         NotificationCompat.Action playPauseAction = new NotificationCompat.Action(
                 icon, playPause,

@@ -8,8 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
-
     private static final String TAG = MainActivity.class.getSimpleName();
+
     private static final String TEST_VIDEO_ID = "Bcqb7kzekoc";
 
     // TODO: implement auto fullscreen on rotation
@@ -27,18 +27,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createNotificationChannel() {
+        // No need for Notification Channels prior to Oreo
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
             return;
 
-        // TODO: extract
-        CharSequence name = "YouTube Plus Notification Channel";
-        String description = "Main channel for the notification";
-        int importance = NotificationManager.IMPORTANCE_LOW;
+        NotificationChannel channel = new NotificationChannel("main-channel-id",
+                getString(R.string.notification_channel_name), NotificationManager.IMPORTANCE_LOW);
+        channel.setDescription(getString(R.string.notification_channel_description));
 
-        NotificationChannel channel = new NotificationChannel("main-channel-id", name, importance);
-        channel.setDescription(description);
-
-        NotificationManager notificationManager = getSystemService(NotificationManager.class);
-        notificationManager.createNotificationChannel(channel);
+        getSystemService(NotificationManager.class).createNotificationChannel(channel);
     }
 }

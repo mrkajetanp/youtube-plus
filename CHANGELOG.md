@@ -4,6 +4,7 @@
 
 #### 7.11.2018
 
+* [General] Refactoring, extracting Strings, comments 
 * [General] Moved the Player to a separate Activity
 
 #### 6.11.2018
