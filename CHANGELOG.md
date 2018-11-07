@@ -2,6 +2,10 @@
 
 ---
 
+#### 7.11.2018
+
+* [General] Moved the Player to a separate Activity
+
 #### 6.11.2018
 
 * [Player] Functional Media Notification with Play/Pause 

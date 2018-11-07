@@ -10,30 +10,34 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity
-            android:name=".MainActivity"
-            android:theme="@style/PlayerActivityTheme"
-            android:launchMode="singleTop"
-            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout">
+        <activity android:name=".MainActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:host="www.youtube.com" android:mimeType="text/*" />
-            </intent-filter>
         </activity>
 
-        <receiver android:name=".MainActivity$MediaReceiver">
+        <receiver android:name=".PlayerActivity$MediaReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
 
+        <activity
+            android:name=".PlayerActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:launchMode="singleTop"
+            android:theme="@style/PlayerActivityTheme">
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="www.youtube.com"
+                    android:mimeType="text/*" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -7,21 +7,4 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.pierfrancescosoffritti.androidyoutubeplayer.player.YouTubePlayerView
-        android:id="@+id/main_player_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/test_button"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/test_button"
-        android:text="Play/Pause Test"
-        android:onClick="onTestButtonClicked"
-        app:layout_constraintTop_toBottomOf="@+id/main_player_view"/>
-
 </android.support.constraint.ConstraintLayout>
