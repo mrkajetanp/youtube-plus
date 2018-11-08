@@ -4,6 +4,7 @@
 
 #### 8.11.2018
 
+* [General] Gradle versioning system 
 * [General] Fixed a minor PlayerActivity Intent bug
 
 #### 7.11.2018

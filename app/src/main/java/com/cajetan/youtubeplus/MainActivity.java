@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         createNotificationChannel();
 
         Intent testVideoPlayerIntent = new Intent(this, PlayerActivity.class);
-        testVideoPlayerIntent.putExtra("video_id", TEST_VIDEO_ID);
+        testVideoPlayerIntent.putExtra(getString(R.string.video_id_key), TEST_VIDEO_ID);
         startActivity(testVideoPlayerIntent);
     }
 
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
             return;
 
-        NotificationChannel channel = new NotificationChannel("main-channel-id",
+        NotificationChannel channel = new NotificationChannel(getString(R.string.notification_channel_id),
                 getString(R.string.notification_channel_name), NotificationManager.IMPORTANCE_LOW);
         channel.setDescription(getString(R.string.notification_channel_description));
 
