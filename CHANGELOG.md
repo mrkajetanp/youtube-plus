@@ -2,6 +2,10 @@
 
 ---
 
+#### 8.11.2018
+
+* [General] Fixed a minor PlayerActivity Intent bug
+
 #### 7.11.2018
 
 * [General] Refactoring, extracting Strings, comments 

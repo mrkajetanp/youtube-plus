@@ -50,12 +50,13 @@ public class PlayerActivity extends AppCompatActivity {
             videoUrl = getIntent().getExtras().getString(Intent.EXTRA_TEXT);
 
         final String videoId;
-        // Activity started by a share Intent with a video url
-        if (videoUrl != null && !videoUrl.equals(""))
-            videoId = videoUrl.substring(videoUrl.length()-11, videoUrl.length());
+
         // Activity started by a regular Intent with a video id
-        else if (getIntent().getExtras().containsKey(getString(R.string.video_id_key)))
+        if (getIntent().getExtras().containsKey(getString(R.string.video_id_key)))
             videoId = getIntent().getExtras().getString(getString(R.string.video_id_key));
+         // Activity started by a share Intent with a video url
+        else if (videoUrl != null && !videoUrl.equals(""))
+            videoId = videoUrl.substring(videoUrl.length()-11, videoUrl.length());
         // No video to play, throw an exception
         else {
             // TODO: throw something more informative here
