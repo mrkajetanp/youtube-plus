@@ -13,8 +13,11 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.cajetan.youtubeplus.utils.FullScreenHelper;
+import com.cajetan.youtubeplus.utils.YouTubeData;
+import com.google.api.services.youtube.model.Video;
 import com.pierfrancescosoffritti.androidyoutubeplayer.player.PlayerConstants;
 import com.pierfrancescosoffritti.androidyoutubeplayer.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.player.YouTubePlayerView;
@@ -32,15 +35,42 @@ public class PlayerActivity extends AppCompatActivity {
     private static MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
 
+    private YouTubeData youTubeData;
+    private Video videoData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
 
+        // TODO: wtf
+        String videoUrl = null;
+        if (getIntent() != null && getIntent().getExtras() != null)
+            videoUrl = getIntent().getExtras().getString(Intent.EXTRA_TEXT);
+
+        String videoId;
+
+        // Activity started by a regular Intent with a video id
+        if (getIntent().getExtras().containsKey(getString(R.string.video_id_key)))
+            videoId = getIntent().getExtras().getString(getString(R.string.video_id_key));
+         // Activity started by a share Intent with a video url
+        else if (videoUrl != null && !videoUrl.equals(""))
+            videoId = videoUrl.substring(videoUrl.length()-11, videoUrl.length());
+        // No video to play, throw an exception
+        else {
+            // TODO: throw something more informative here
+            throw new IllegalArgumentException("...");
+        }
+
+        youTubeData = new YouTubeData(this);
+        videoData = youTubeData.getVideoDataById(videoId);
+
         mainPlayerView = findViewById(R.id.main_player_view);
 
         setupPlayer();
         setupMediaSession();
+
+        Toast.makeText(this, videoData.getSnippet().getTitle(), Toast.LENGTH_LONG).show();
     }
 
     private void setupPlayer() {

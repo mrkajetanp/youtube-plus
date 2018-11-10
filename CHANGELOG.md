@@ -2,6 +2,10 @@
 
 ---
 
+#### 10.11.2018
+
+* [General - Dev] Started implementing YouTubeData API call
+
 #### 8.11.2018
 
 * [General] Gradle versioning system 
