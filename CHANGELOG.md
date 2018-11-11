@@ -2,6 +2,10 @@
 
 ---
 
+#### 11.11.2018
+
+* [General - Dev] Managed to get data from the API
+
 #### 10.11.2018
 
 * [General - Dev] Started implementing YouTubeData API call

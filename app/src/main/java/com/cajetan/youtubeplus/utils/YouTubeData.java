@@ -17,6 +17,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.cajetan.youtubeplus.MainActivity;
+import com.cajetan.youtubeplus.PlayerActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -70,22 +71,27 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
         mActivity = parentActivity;
     }
 
-    public Video getVideoDataById(String videoId) {
+    // TODO: it doesn't make much sense, to be improved..
+    public void getVideoDataById(String videoId) {
+        Log.d("YouTubeData", "getVideoDataById called..");
+
         mVideoId = videoId;
         getResultsFromApi();
-
-        return mResultVideo;
     }
 
     // TODO: tons all refactoring all over this class
     private void getResultsFromApi() {
         if (!isGooglePlayServicesAvailable()) {
+            Log.d("YouTubeData", "Acquiring GooglePlayServices");
             acquireGooglePlayServices();
         } else if (mCredential.getSelectedAccountName() == null) {
+            Log.d("YouTubeData", "Choosing the account..");
             chooseAccount();
         } else if (!isDeviceOnline()) {
+            Log.d("YouTubeData", "Device is not online");
             mResultVideo = null;
         } else {
+            Log.d("YouTubeData", "Calling the data task..");
             new VideoDataTask(mCredential).execute(mVideoId);
         }
     }
@@ -130,6 +136,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
          * @throws IOException
          */
         private Video getDataFromApi(String videoId) throws IOException {
+            Log.d("YouTubeData", "Getting data from the API..");
 
             HashMap<String, String> parameters = new HashMap<>();
             parameters.put("part", "snippet,contentDetails,statistics");
@@ -140,6 +147,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
                 videosListByIdRequest.setId(parameters.get("id"));
 
             VideoListResponse response = videosListByIdRequest.execute();
+
             return response.getItems().get(0);
         }
 
@@ -150,7 +158,9 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
 
         @Override
         protected void onPostExecute(Video output) {
+            Log.d("YouTubeData", "Title: "  + output.getSnippet().getTitle());
             mResultVideo = output;
+
         }
 
         @Override
@@ -223,6 +233,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
                 getResultsFromApi();
             } else {
                 // Start a dialog from which the user can choose an account
+                Log.d("YouTubeData", "Starting account picker activity");
                 mActivity.startActivityForResult(
                         mCredential.newChooseAccountIntent(),
                         REQUEST_ACCOUNT_PICKER);

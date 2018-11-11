@@ -13,6 +13,7 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.cajetan.youtubeplus.utils.FullScreenHelper;
@@ -36,7 +37,7 @@ public class PlayerActivity extends AppCompatActivity {
     private PlaybackStateCompat.Builder mStateBuilder;
 
     private YouTubeData youTubeData;
-    private Video videoData;
+    private Video mVideoData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,14 +64,23 @@ public class PlayerActivity extends AppCompatActivity {
         }
 
         youTubeData = new YouTubeData(this);
-        videoData = youTubeData.getVideoDataById(videoId);
+        youTubeData.getVideoDataById(videoId);
 
         mainPlayerView = findViewById(R.id.main_player_view);
 
         setupPlayer();
         setupMediaSession();
 
-        Toast.makeText(this, videoData.getSnippet().getTitle(), Toast.LENGTH_LONG).show();
+        if (mVideoData != null) {
+            Toast.makeText(this, mVideoData.getSnippet().getTitle(), Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "Failed to load video data", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void onVideoDataAcquired(Video videoData) {
+        mVideoData = videoData;
+        showMediaNotification(mStateBuilder.build());
     }
 
     private void setupPlayer() {
@@ -122,6 +132,7 @@ public class PlayerActivity extends AppCompatActivity {
 
                         mMediaSession.setPlaybackState(mStateBuilder.build());
                         showMediaNotification(mStateBuilder.build());
+
                         super.onStateChange(state);
                     }
                 });
@@ -248,4 +259,10 @@ public class PlayerActivity extends AppCompatActivity {
 //    protected void onNewIntent(Intent intent) {
 //        super.onNewIntent(intent);
 //    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        youTubeData.onParentActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }
