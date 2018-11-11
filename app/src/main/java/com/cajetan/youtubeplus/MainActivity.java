@@ -7,10 +7,13 @@ import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.cajetan.youtubeplus.utils.YouTubeData;
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final String TEST_VIDEO_ID = "Bcqb7kzekoc";
+
 
     // TODO: implement auto fullscreen on rotation
 
@@ -37,4 +40,6 @@ public class MainActivity extends AppCompatActivity {
 
         getSystemService(NotificationManager.class).createNotificationChannel(channel);
     }
+
+
 }
