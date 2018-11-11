@@ -27,7 +27,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.player.listeners.YouTubeP
 import com.pierfrancescosoffritti.androidyoutubeplayer.player.listeners.YouTubePlayerInitListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.utils.YouTubePlayerTracker;
 
-public class PlayerActivity extends AppCompatActivity {
+public class PlayerActivity extends AppCompatActivity implements YouTubeData.VideoDataListener {
     private static final String TAG = PlayerActivity.class.getSimpleName();
 
     private YouTubePlayerView mainPlayerView;
@@ -70,18 +70,9 @@ public class PlayerActivity extends AppCompatActivity {
 
         setupPlayer();
         setupMediaSession();
-
-        if (mVideoData != null) {
-            Toast.makeText(this, mVideoData.getSnippet().getTitle(), Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(this, "Failed to load video data", Toast.LENGTH_LONG).show();
-        }
     }
 
-    public void onVideoDataAcquired(Video videoData) {
-        mVideoData = videoData;
-        showMediaNotification(mStateBuilder.build());
-    }
+
 
     private void setupPlayer() {
         // TODO: maybe refactor a bit
@@ -248,9 +239,10 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        mainPlayerView.release();
-        super.onDestroy();
+    public void onVideoDataReceived(Video videoData) {
+        mVideoData = videoData;
+        Toast.makeText(this, mVideoData.getSnippet().getTitle(), Toast.LENGTH_LONG).show();
+        showMediaNotification(mStateBuilder.build());
     }
 
     // TODO: test with and without singletop
@@ -264,5 +256,11 @@ public class PlayerActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         youTubeData.onParentActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onDestroy() {
+        mainPlayerView.release();
+        super.onDestroy();
     }
 }

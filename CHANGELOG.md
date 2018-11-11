@@ -4,6 +4,7 @@
 
 #### 11.11.2018
 
+* [General] Added a Toast with the video title 
 * [General - Dev] Managed to get data from the API
 
 #### 10.11.2018

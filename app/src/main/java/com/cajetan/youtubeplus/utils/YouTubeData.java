@@ -16,8 +16,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.cajetan.youtubeplus.MainActivity;
-import com.cajetan.youtubeplus.PlayerActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -61,7 +59,6 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
 
     // TODO ..
     private Activity mActivity;
-    private Video mResultVideo;
 
     public YouTubeData(Activity parentActivity) {
         mCredential = GoogleAccountCredential.usingOAuth2(
@@ -89,7 +86,6 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
             chooseAccount();
         } else if (!isDeviceOnline()) {
             Log.d("YouTubeData", "Device is not online");
-            mResultVideo = null;
         } else {
             Log.d("YouTubeData", "Calling the data task..");
             new VideoDataTask(mCredential).execute(mVideoId);
@@ -140,7 +136,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
 
             HashMap<String, String> parameters = new HashMap<>();
             parameters.put("part", "snippet,contentDetails,statistics");
-            parameters.put("id", "Bcqb7kzekoc");
+            parameters.put("id", videoId);
 
             YouTube.Videos.List videosListByIdRequest = mService.videos().list(parameters.get("part"));
             if (parameters.containsKey("id") && !parameters.get("id").equals(""))
@@ -153,14 +149,17 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
 
         @Override
         protected void onPreExecute() {
-            mResultVideo = null;
+            // ...
         }
 
         @Override
         protected void onPostExecute(Video output) {
             Log.d("YouTubeData", "Title: "  + output.getSnippet().getTitle());
-            mResultVideo = output;
 
+            if (mActivity instanceof VideoDataListener)
+                ((VideoDataListener) mActivity).onVideoDataReceived(output);
+            else
+                throw new UnsupportedOperationException("Activity must implement VideoDataListener!");
         }
 
         @Override
@@ -177,10 +176,8 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
                             YouTubeData.REQUEST_AUTHORIZATION);
                 } else {
                     Log.e("YouTubeData", "Error ocurred: " + mLastError.getMessage());
-                    mResultVideo = null;
                 }
             } else {
-                mResultVideo = null;
                 Log.e("YouTubeData", "Request cancelled");
             }
         }
@@ -289,7 +286,6 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
         }
     }
 
-
 //    /**
 //     * Display an error dialog showing that Google Play Services is missing
 //     * or out of date.
@@ -321,5 +317,9 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         EasyPermissions.onRequestPermissionsResult(
                 requestCode, permissions, grantResults, this);
+    }
+
+    public interface VideoDataListener {
+        void onVideoDataReceived(Video videoData);
     }
 }
