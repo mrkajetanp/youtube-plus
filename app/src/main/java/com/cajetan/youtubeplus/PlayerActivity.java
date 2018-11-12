@@ -6,6 +6,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.media.session.MediaButtonReceiver;
@@ -14,7 +17,6 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.cajetan.youtubeplus.utils.FullScreenHelper;
 import com.cajetan.youtubeplus.utils.YouTubeData;
@@ -27,6 +29,9 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.player.listeners.YouTubeP
 import com.pierfrancescosoffritti.androidyoutubeplayer.player.listeners.YouTubePlayerInitListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.utils.YouTubePlayerTracker;
 
+import java.io.IOException;
+import java.net.URL;
+
 public class PlayerActivity extends AppCompatActivity implements YouTubeData.VideoDataListener {
     private static final String TAG = PlayerActivity.class.getSimpleName();
 
@@ -38,6 +43,8 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
 
     private YouTubeData youTubeData;
     private Video mVideoData;
+
+    private Bitmap mVideoThumbnail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +61,10 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
         // Activity started by a regular Intent with a video id
         if (getIntent().getExtras().containsKey(getString(R.string.video_id_key)))
             videoId = getIntent().getExtras().getString(getString(R.string.video_id_key));
-         // Activity started by a share Intent with a video url
+            // Activity started by a share Intent with a video url
         else if (videoUrl != null && !videoUrl.equals(""))
-            videoId = videoUrl.substring(videoUrl.length()-11, videoUrl.length());
-        // No video to play, throw an exception
+            videoId = videoUrl.substring(videoUrl.length() - 11, videoUrl.length());
+            // No video to play, throw an exception
         else {
             // TODO: throw something more informative here
             throw new IllegalArgumentException("...");
@@ -73,7 +80,6 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
     }
 
 
-
     private void setupPlayer() {
         // TODO: maybe refactor a bit
         String videoUrl = null;
@@ -85,10 +91,10 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
         // Activity started by a regular Intent with a video id
         if (getIntent().getExtras().containsKey(getString(R.string.video_id_key)))
             videoId = getIntent().getExtras().getString(getString(R.string.video_id_key));
-         // Activity started by a share Intent with a video url
+            // Activity started by a share Intent with a video url
         else if (videoUrl != null && !videoUrl.equals(""))
-            videoId = videoUrl.substring(videoUrl.length()-11, videoUrl.length());
-        // No video to play, throw an exception
+            videoId = videoUrl.substring(videoUrl.length() - 11, videoUrl.length());
+            // No video to play, throw an exception
         else {
             // TODO: throw something more informative here
             throw new IllegalArgumentException("...");
@@ -117,7 +123,7 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
                             mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
                                     (long) tracker.getCurrentSecond(), 1f);
                         } else if (state == PlayerConstants.PlayerState.PAUSED) {
-                             mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
+                            mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
                                     (long) tracker.getCurrentSecond(), 1f);
                         }
 
@@ -205,9 +211,40 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
                         .setShowActionsInCompactView(0)
                         .setMediaSession(mMediaSession.getSessionToken()));
 
+        // TODO: this will also have to be improved
+        if (mVideoData != null) {
+            builder.setContentTitle(mVideoData.getSnippet().getTitle())
+                    .setContentText(mVideoData.getSnippet().getChannelTitle());
+
+            if (mVideoThumbnail != null)
+                builder.setLargeIcon(mVideoThumbnail);
+        }
+
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(0, builder.build());
+    }
+
+    private class SetAlbumArtTask extends AsyncTask<String, Void, Bitmap> {
+        @Override
+        protected Bitmap doInBackground(String... strings) {
+            Bitmap result = null;
+
+            try {
+                URL url = new URL(strings[0]);
+                result = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            } catch (IOException e) {
+                Log.e(TAG, e.toString());
+            }
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            mVideoThumbnail = bitmap;
+            showMediaNotification(mStateBuilder.build());
+        }
     }
 
     private class PlayerSessionCallback extends MediaSessionCompat.Callback {
@@ -230,7 +267,8 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
 
     public static class MediaReceiver extends BroadcastReceiver {
 
-        public MediaReceiver() {}
+        public MediaReceiver() {
+        }
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -241,7 +279,7 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
     @Override
     public void onVideoDataReceived(Video videoData) {
         mVideoData = videoData;
-        Toast.makeText(this, mVideoData.getSnippet().getTitle(), Toast.LENGTH_LONG).show();
+        new SetAlbumArtTask().execute(mVideoData.getSnippet().getThumbnails().getStandard().getUrl());
         showMediaNotification(mStateBuilder.build());
     }
 

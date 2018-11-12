@@ -2,6 +2,10 @@
 
 ---
 
+#### 12.11.2018
+
+* [General] Implemented setting media notification data
+
 #### 11.11.2018
 
 * [General] Added a Toast with the video title 
