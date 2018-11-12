@@ -159,7 +159,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
             if (mActivity instanceof VideoDataListener)
                 ((VideoDataListener) mActivity).onVideoDataReceived(output);
             else
-                throw new UnsupportedOperationException("Activity must implement VideoDataListener!");
+                throw new UnsupportedOperationException("Activity must implement VideoDataListener.");
         }
 
         @Override
