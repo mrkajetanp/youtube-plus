@@ -4,6 +4,7 @@
 
 #### 13.11.2018
 
+* [YouTubeData] Further Refactoring and small adjustments
 * [YouTubeData] Refactoring and TODOs
 
 #### 12.11.2018

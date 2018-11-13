@@ -71,7 +71,7 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
         }
 
         youTubeData = new YouTubeData(this);
-        youTubeData.getVideoDataById(videoId);
+        youTubeData.receiveVideoData(videoId);
 
         mainPlayerView = findViewById(R.id.main_player_view);
 
