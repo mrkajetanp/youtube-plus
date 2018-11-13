@@ -2,6 +2,10 @@
 
 ---
 
+#### 13.11.2018
+
+* [YouTubeData] Refactoring and TODOs
+
 #### 12.11.2018
 
 * [General] Implemented setting media notification data

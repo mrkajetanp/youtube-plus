@@ -16,6 +16,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.cajetan.youtubeplus.PlayerActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -76,81 +77,53 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
         getResultsFromApi();
     }
 
-    // TODO: tons all refactoring all over this class
     private void getResultsFromApi() {
-        if (!isGooglePlayServicesAvailable()) {
-            Log.d("YouTubeData", "Acquiring GooglePlayServices");
+        if (!isGooglePlayServicesAvailable())
             acquireGooglePlayServices();
-        } else if (mCredential.getSelectedAccountName() == null) {
-            Log.d("YouTubeData", "Choosing the account..");
+        else if (mCredential.getSelectedAccountName() == null)
             chooseAccount();
-        } else if (!isDeviceOnline()) {
+        else if (!isDeviceOnline())
             Log.d("YouTubeData", "Device is not online");
-        } else {
-            Log.d("YouTubeData", "Calling the data task..");
+        else
             new VideoDataTask(mCredential).execute(mVideoId);
-        }
     }
 
     /**
      * An asynchronous task that handles the YouTube Data API call.
      */
     private class VideoDataTask extends AsyncTask<String, Void, Video> {
-        private com.google.api.services.youtube.YouTube mService = null;
+        private com.google.api.services.youtube.YouTube mService;
         private Exception mLastError = null;
 
         VideoDataTask(GoogleAccountCredential credential) {
             HttpTransport transport = AndroidHttp.newCompatibleTransport();
             JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
             mService = new com.google.api.services.youtube.YouTube.Builder(
                     transport, jsonFactory, credential)
                     .setApplicationName("YouTube Plus")
                     .build();
         }
 
-        /**
-         * Background task to call YouTube Data API.
-         *
-         * @param params no parameters needed for this task.
-         */
         @Override
-        protected Video doInBackground(String... params) {
+        protected Video doInBackground(String... videoIds) {
             try {
-                return getDataFromApi(params[0]);
+                return mService.videos()
+                        .list("snippet,contentDetails,statistics")
+                        .setId(videoIds[0])
+                        .execute()
+                        .getItems()
+                        .get(0);
             } catch (Exception e) {
-                Log.e("MainActivityException", "Exception: " + e.toString());
+                Log.e("YouTubeData", "Exception: " + e.toString());
                 mLastError = e;
                 cancel(true);
                 return null;
             }
         }
 
-        /**
-         * Fetch information about the requested video.
-         *
-         * @return List of Strings containing information about the channel.
-         * @throws IOException
-         */
-        private Video getDataFromApi(String videoId) throws IOException {
-            Log.d("YouTubeData", "Getting data from the API..");
-
-            HashMap<String, String> parameters = new HashMap<>();
-            parameters.put("part", "snippet,contentDetails,statistics");
-            parameters.put("id", videoId);
-
-            YouTube.Videos.List videosListByIdRequest = mService.videos().list(parameters.get("part"));
-            if (parameters.containsKey("id") && !parameters.get("id").equals(""))
-                videosListByIdRequest.setId(parameters.get("id"));
-
-            VideoListResponse response = videosListByIdRequest.execute();
-
-            return response.getItems().get(0);
-        }
-
         @Override
-        protected void onPreExecute() {
-            // ...
-        }
+        protected void onPreExecute() { }
 
         @Override
         protected void onPostExecute(Video output) {
@@ -166,16 +139,13 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
         protected void onCancelled() {
             if (mLastError != null) {
                 if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
-                    // TODO: fix too
-//                    showGooglePlayServicesAvailabilityErrorDialog(
-//                            ((GooglePlayServicesAvailabilityIOException) mLastError)
-//                                    .getConnectionStatusCode());
+                    Toast.makeText(mActivity, "GooglePlayServices not available.", Toast.LENGTH_LONG).show();
                 } else if (mLastError instanceof UserRecoverableAuthIOException) {
                     mActivity.startActivityForResult(
                             ((UserRecoverableAuthIOException) mLastError).getIntent(),
                             YouTubeData.REQUEST_AUTHORIZATION);
                 } else {
-                    Log.e("YouTubeData", "Error ocurred: " + mLastError.getMessage());
+                    Log.e("YouTubeData", "Error occurred: " + mLastError.getMessage());
                 }
             } else {
                 Log.e("YouTubeData", "Request cancelled");
@@ -212,9 +182,9 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
                 }
                 break;
             case REQUEST_AUTHORIZATION:
-                if (resultCode == RESULT_OK) {
+                if (resultCode == RESULT_OK)
                     getResultsFromApi();
-                }
+
                 break;
         }
     }
@@ -280,41 +250,20 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
                 GoogleApiAvailability.getInstance();
         final int connectionStatusCode =
                 apiAvailability.isGooglePlayServicesAvailable(mActivity);
-        if (apiAvailability.isUserResolvableError(connectionStatusCode)) {
-            // TODO: fix it
-//            showGooglePlayServicesAvailabilityErrorDialog(connectionStatusCode);
-        }
-    }
 
-//    /**
-//     * Display an error dialog showing that Google Play Services is missing
-//     * or out of date.
-//     *
-//     * @param connectionStatusCode code describing the presence (or lack of)
-//     *                             Google Play Services on this device.
-//     */
-//    void showGooglePlayServicesAvailabilityErrorDialog(
-//            final int connectionStatusCode) {
-//        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-//        Dialog dialog = apiAvailability.getErrorDialog(
-//                MainActivity.this,
-//                connectionStatusCode,
-//                REQUEST_GOOGLE_PLAY_SERVICES);
-//        dialog.show();
-//    }
-
-    @Override
-    public void onPermissionsGranted(int requestCode, List<String> perms) {
-
+        if (apiAvailability.isUserResolvableError(connectionStatusCode))
+            Toast.makeText(mActivity, "GooglePlayServices not available.", Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void onPermissionsDenied(int requestCode, List<String> perms) {
-
-    }
+    public void onPermissionsGranted(int requestCode, List<String> perms) { }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onPermissionsDenied(int requestCode, List<String> perms) { }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         EasyPermissions.onRequestPermissionsResult(
                 requestCode, permissions, grantResults, this);
     }
