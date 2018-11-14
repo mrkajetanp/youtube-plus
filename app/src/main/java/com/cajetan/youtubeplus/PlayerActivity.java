@@ -45,8 +45,8 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
     private PlaybackStateCompat.Builder mStateBuilder;
 
     private YouTubeData youTubeData;
+    private String mVideoId;
     private Video mVideoData;
-
     private Bitmap mVideoThumbnail;
 
     @Override
@@ -54,56 +54,21 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
 
-        // TODO: wtf
-        String videoUrl = null;
-        if (getIntent() != null && getIntent().getExtras() != null)
-            videoUrl = getIntent().getExtras().getString(Intent.EXTRA_TEXT);
-
-        String videoId;
-
-        // Activity started by a regular Intent with a video id
-        if (getIntent().getExtras().containsKey(getString(R.string.video_id_key)))
-            videoId = getIntent().getExtras().getString(getString(R.string.video_id_key));
-            // Activity started by a share Intent with a video url
-        else if (videoUrl != null && !videoUrl.equals(""))
-            videoId = videoUrl.substring(videoUrl.length() - 11, videoUrl.length());
-            // No video to play, throw an exception
-        else {
-            // TODO: throw something more informative here
-            throw new IllegalArgumentException("...");
-        }
+        mVideoId = getIntentVideoId();
 
         youTubeData = new YouTubeData(this);
-        youTubeData.receiveVideoData(videoId);
+        youTubeData.receiveVideoData(mVideoId);
 
         mainPlayerView = findViewById(R.id.main_player_view);
 
+        startService(new Intent(this, PlayerLifecycleService.class));
+
         setupPlayer();
         setupMediaSession();
-
-        startService(new Intent(this, PlayerLifecycleService.class));
     }
 
-
     private void setupPlayer() {
-        // TODO: maybe refactor a bit
-        String videoUrl = null;
-        if (getIntent() != null && getIntent().getExtras() != null)
-            videoUrl = getIntent().getExtras().getString(Intent.EXTRA_TEXT);
-
-        final String videoId;
-
-        // Activity started by a regular Intent with a video id
-        if (getIntent().getExtras().containsKey(getString(R.string.video_id_key)))
-            videoId = getIntent().getExtras().getString(getString(R.string.video_id_key));
-            // Activity started by a share Intent with a video url
-        else if (videoUrl != null && !videoUrl.equals(""))
-            videoId = videoUrl.substring(videoUrl.length() - 11, videoUrl.length());
-            // No video to play, throw an exception
-        else {
-            // TODO: throw something more informative here
-            throw new IllegalArgumentException("...");
-        }
+        final String videoId = mVideoId;
 
         mainPlayerView.enableBackgroundPlayback(true);
         mainPlayerView.initialize(new YouTubePlayerInitListener() {
@@ -230,6 +195,28 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
         notificationManager.notify(0, builder.build());
     }
 
+    private String getIntentVideoId() {
+        String videoUrl = null;
+        if (getIntent() != null && getIntent().getExtras() != null)
+            videoUrl = getIntent().getExtras().getString(Intent.EXTRA_TEXT);
+
+        String videoId;
+
+        // Activity started by a regular Intent with a video id
+        if (getIntent().getExtras().containsKey(getString(R.string.video_id_key)))
+            videoId = getIntent().getExtras().getString(getString(R.string.video_id_key));
+            // Activity started by a share Intent with a video url
+        else if (videoUrl != null && !videoUrl.equals(""))
+            videoId = videoUrl.substring(videoUrl.length() - 11, videoUrl.length());
+            // No video to play, throw an exception
+        else {
+            // TODO: throw something more informative here
+            throw new IllegalArgumentException("...");
+        }
+
+        return videoId;
+    }
+
     private class SetAlbumArtTask extends AsyncTask<String, Void, Bitmap> {
         @Override
         protected Bitmap doInBackground(String... strings) {
@@ -318,7 +305,7 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
         public void onTaskRemoved(Intent rootIntent) {
             super.onTaskRemoved(rootIntent);
 
-            ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancelAll();
+            ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(0);
 
             stopSelf();
         }

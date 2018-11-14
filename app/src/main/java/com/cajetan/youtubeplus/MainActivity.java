@@ -37,6 +37,4 @@ public class MainActivity extends AppCompatActivity {
 
         getSystemService(NotificationManager.class).createNotificationChannel(channel);
     }
-
-
 }

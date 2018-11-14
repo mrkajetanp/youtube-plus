@@ -4,6 +4,7 @@
 
 #### 14.11.2018
 
+* [PlayerActivity] Extracted getting the videoId to a method 
 * [PlayerActivity] Dismissing the notification after closing the app
 
 #### 13.11.2018
