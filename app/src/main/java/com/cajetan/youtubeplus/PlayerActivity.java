@@ -2,6 +2,7 @@ package com.cajetan.youtubeplus;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,7 +10,9 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -77,6 +80,8 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
 
         setupPlayer();
         setupMediaSession();
+
+        startService(new Intent(this, PlayerLifecycleService.class));
     }
 
 
@@ -294,6 +299,29 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         youTubeData.onParentActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    // A service that calls necessary cleanup methods after the player is closed
+    public static class PlayerLifecycleService extends Service {
+
+        public PlayerLifecycleService() {
+            super();
+        }
+
+        @Nullable
+        @Override
+        public IBinder onBind(Intent intent) {
+            return null;
+        }
+
+        @Override
+        public void onTaskRemoved(Intent rootIntent) {
+            super.onTaskRemoved(rootIntent);
+
+            ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancelAll();
+
+            stopSelf();
+        }
     }
 
     @Override

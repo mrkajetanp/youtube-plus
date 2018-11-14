@@ -2,6 +2,10 @@
 
 ---
 
+#### 14.11.2018
+
+* [PlayerActivity] Dismissing the notification after closing the app
+
 #### 13.11.2018
 
 * [YouTubeData] Further Refactoring and small adjustments

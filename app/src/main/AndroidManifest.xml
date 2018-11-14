@@ -42,6 +42,8 @@
                     android:mimeType="text/*" />
             </intent-filter>
         </activity>
+
+        <service android:name=".PlayerActivity$PlayerLifecycleService" android:exported="false"/>
     </application>
 
 </manifest>
