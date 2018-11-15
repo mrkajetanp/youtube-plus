@@ -168,11 +168,7 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
         PendingIntent contentPendingIntent = PendingIntent.getActivity(
                 this, 0, new Intent(this, PlayerActivity.class), 0);
 
-        // TODO: get title from YouTube API
-
-        builder.setContentTitle("Video Title")
-                .setContentText("Author")
-                .setContentIntent(contentPendingIntent)
+        builder.setContentIntent(contentPendingIntent)
                 .setSmallIcon(R.drawable.ic_youtube_24dp)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .addAction(playPauseAction)
@@ -190,6 +186,9 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
                 builder.setLargeIcon(mVideoThumbnail);
         }
 
+
+        if (builder.mContentTitle == null)
+            return;
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(0, builder.build());
@@ -286,6 +285,12 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         youTubeData.onParentActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        youTubeData.receiveVideoData(mVideoId);
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     // A service that calls necessary cleanup methods after the player is closed

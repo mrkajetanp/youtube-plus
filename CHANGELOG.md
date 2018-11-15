@@ -2,6 +2,10 @@
 
 ---
 
+#### 15.11.2018
+
+* [General] Fixed a bug with selecting a Google account
+
 #### 14.11.2018
 
 * [PlayerActivity] Extracted getting the videoId to a method 
