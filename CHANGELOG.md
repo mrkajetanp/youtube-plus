@@ -4,6 +4,7 @@
 
 #### 15.11.2018
 
+* [General] Refactored showMediaNotification 
 * [General] Fixed a bug with selecting a Google account
 
 #### 14.11.2018

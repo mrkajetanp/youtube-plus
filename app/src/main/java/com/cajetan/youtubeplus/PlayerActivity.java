@@ -144,18 +144,10 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
     }
 
     private void showMediaNotification(PlaybackStateCompat state) {
-        // TODO: fix stuff
         boolean isPlaying = state.getState() == PlaybackStateCompat.STATE_PLAYING;
 
-        int icon;
-        String playPause;
-        if (isPlaying) {
-            icon = R.drawable.ic_pause_36dp;
-            playPause = getString(R.string.pause);
-        } else {
-            icon = R.drawable.ic_play_36dp;
-            playPause = getString(R.string.play);
-        }
+        int icon = isPlaying ? R.drawable.ic_pause_36dp : R.drawable.ic_play_36dp;
+        String playPause = isPlaying ? getString(R.string.pause) : getString(R.string.play);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this,
                 getString(R.string.notification_channel_id));
@@ -177,15 +169,11 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
                         .setShowActionsInCompactView(0)
                         .setMediaSession(mMediaSession.getSessionToken()));
 
-        // TODO: this will also have to be improved
-        if (mVideoData != null) {
+        if (mVideoThumbnail != null) {
             builder.setContentTitle(mVideoData.getSnippet().getTitle())
-                    .setContentText(mVideoData.getSnippet().getChannelTitle());
-
-            if (mVideoThumbnail != null)
-                builder.setLargeIcon(mVideoThumbnail);
+                    .setContentText(mVideoData.getSnippet().getChannelTitle())
+                    .setLargeIcon(mVideoThumbnail);
         }
-
 
         if (builder.mContentTitle == null)
             return;
