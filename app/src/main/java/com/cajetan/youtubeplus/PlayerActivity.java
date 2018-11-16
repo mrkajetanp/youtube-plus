@@ -128,7 +128,6 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
                 MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
                         MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
 
-        // For now, TODO: investigate
         mMediaSession.setMediaButtonReceiver(null);
 
         mStateBuilder = new PlaybackStateCompat.Builder()
@@ -175,8 +174,10 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
                     .setLargeIcon(mVideoThumbnail);
         }
 
-        if (builder.mContentTitle == null)
+        if (builder.mContentTitle == null) {
+            Log.d(TAG, "Media notification hidden due to lack of the YouTube API data");
             return;
+        }
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(0, builder.build());
@@ -197,8 +198,7 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
             videoId = videoUrl.substring(videoUrl.length() - 11, videoUrl.length());
             // No video to play, throw an exception
         else {
-            // TODO: throw something more informative here
-            throw new IllegalArgumentException("...");
+            throw new IllegalArgumentException("No video id available, cannot initialise the player");
         }
 
         return videoId;
@@ -235,19 +235,12 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
         @Override
         public void onPause() {
             mainPlayerView.togglePlayPause();
-//            mainPlayerView.pausePlayback();
         }
-
-//      @Override
-//      public void onSkipToPrevious() {
-//          super.onSkipToPrevious();
-//      }
     }
 
     public static class MediaReceiver extends BroadcastReceiver {
 
-        public MediaReceiver() {
-        }
+        public MediaReceiver() { }
 
         @Override
         public void onReceive(Context context, Intent intent) {

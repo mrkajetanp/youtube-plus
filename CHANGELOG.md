@@ -2,6 +2,10 @@
 
 ---
 
+#### 16.11.2018
+
+* [General] Cleanup & logging
+
 #### 15.11.2018
 
 * [General] Refactored showMediaNotification 
