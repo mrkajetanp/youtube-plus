@@ -4,6 +4,7 @@
 
 #### 16.11.2018
 
+* [General] Experiments with launch modes
 * [General] Cleanup & logging
 
 #### 15.11.2018

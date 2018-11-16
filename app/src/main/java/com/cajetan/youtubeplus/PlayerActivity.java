@@ -49,6 +49,8 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
     private Video mVideoData;
     private Bitmap mVideoThumbnail;
 
+    // TODO: fetch youtube data after restoring internet connection
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -190,13 +192,15 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
 
         String videoId;
 
-        // Activity started by a regular Intent with a video id
-        if (getIntent().getExtras().containsKey(getString(R.string.video_id_key)))
-            videoId = getIntent().getExtras().getString(getString(R.string.video_id_key));
-            // Activity started by a share Intent with a video url
-        else if (videoUrl != null && !videoUrl.equals(""))
+        Log.d(TAG, "Video url: " + videoUrl);
+
+        // Activity started by a share Intent with a video url
+        if (videoUrl != null && !videoUrl.equals(""))
             videoId = videoUrl.substring(videoUrl.length() - 11, videoUrl.length());
-            // No video to play, throw an exception
+        // Activity started by a regular Intent with a video id
+        else if (getIntent().getExtras().containsKey(getString(R.string.video_id_key)))
+            videoId = getIntent().getExtras().getString(getString(R.string.video_id_key));
+        // No video to play, throw an exception
         else {
             throw new IllegalArgumentException("No video id available, cannot initialise the player");
         }
@@ -255,12 +259,12 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
         showMediaNotification(mStateBuilder.build());
     }
 
-    // TODO: test with and without singletop
-
-//    @Override
-//    protected void onNewIntent(Intent intent) {
-//        super.onNewIntent(intent);
-//    }
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Log.d(TAG, "Getting a new intent");
+        Log.d(TAG, "New video id: " + getIntentVideoId());
+        super.onNewIntent(intent);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
