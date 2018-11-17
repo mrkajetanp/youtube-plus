@@ -2,6 +2,10 @@
 
 ---
 
+#### 17.11.2018
+
+* [General] Added translatable string markers
+
 #### 16.11.2018
 
 * [General] Experiments with launch modes
