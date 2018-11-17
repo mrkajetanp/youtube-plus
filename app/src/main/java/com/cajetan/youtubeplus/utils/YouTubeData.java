@@ -24,6 +24,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.ExponentialBackOff;
 import com.google.api.services.youtube.YouTubeScopes;
+import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.Video;
 
 import java.util.Arrays;
@@ -71,6 +72,89 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
             Log.d("YouTubeData", "Device is not online");
         else
             new VideoDataTask(mCredential).execute(mVideoId);
+    }
+
+    // TODO: some fixes
+    public void receiveSearchResults(String search) {
+         if (!isGooglePlayServicesAvailable())
+            acquireGooglePlayServices();
+        else if (mCredential.getSelectedAccountName() == null)
+            chooseAccount();
+        else if (!isDeviceOnline())
+            Log.d("YouTubeData", "Device is not online");
+        else
+            new VideoSearchTask(mCredential).execute(search);
+    }
+
+    private class VideoSearchTask extends AsyncTask<String, Void, String> {
+        private com.google.api.services.youtube.YouTube mService;
+        private Exception mLastError = null;
+
+        VideoSearchTask(GoogleAccountCredential credential) {
+            HttpTransport transport = AndroidHttp.newCompatibleTransport();
+            JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+            mService = new com.google.api.services.youtube.YouTube.Builder(
+                    transport, jsonFactory, credential)
+                    .setApplicationName("YouTube Plus")
+                    .build();
+        }
+
+        @Override
+        protected String doInBackground(String... keywords) {
+            try {
+                Toast.makeText(mActivity, "TRYING!!", Toast.LENGTH_LONG).show();
+
+                List<SearchResult> searchResults =  mService.search()
+                        .list("snippet")
+                        .setMaxResults(25L)
+                        .setQ(keywords[0])
+                        .setType("")
+                        .execute()
+                        .getItems();
+
+                StringBuilder result = new StringBuilder();
+
+                for (SearchResult r : searchResults)
+                    result.append(r.getSnippet().getTitle());
+
+                return result.toString();
+            } catch (Exception e) {
+                Log.e("YouTubeData", "Exception: " + e.toString());
+                mLastError = e;
+                cancel(true);
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Toast.makeText(mActivity, "DONE!!", Toast.LENGTH_LONG).show();
+
+            if (mActivity instanceof VideoSearchListener)
+                ((VideoSearchListener) mActivity).onSearchResultsReceived(result);
+            else
+                throw new UnsupportedOperationException("Activity must implement VideoSearchListener.");
+        }
+
+        @Override
+        protected void onCancelled() {
+            Toast.makeText(mActivity, "CANCELLED!!", Toast.LENGTH_LONG).show();
+
+            if (mLastError != null) {
+                if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
+                    Toast.makeText(mActivity, "GooglePlayServices not available.", Toast.LENGTH_LONG).show();
+                } else if (mLastError instanceof UserRecoverableAuthIOException) {
+                    mActivity.startActivityForResult(
+                            ((UserRecoverableAuthIOException) mLastError).getIntent(),
+                            YouTubeData.REQUEST_AUTHORIZATION);
+                } else {
+                    Log.e("YouTubeData", "Error occurred: " + mLastError.getMessage());
+                }
+            } else {
+                Log.e("YouTubeData", "Request cancelled");
+            }
+        }
     }
 
     private class VideoDataTask extends AsyncTask<String, Void, Video> {
@@ -247,5 +331,9 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
 
     public interface VideoDataListener {
         void onVideoDataReceived(Video videoData);
+    }
+
+    public interface VideoSearchListener {
+        void onSearchResultsReceived(String results);
     }
 }

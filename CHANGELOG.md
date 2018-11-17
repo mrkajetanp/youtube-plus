@@ -4,6 +4,7 @@
 
 #### 17.11.2018
 
+* [General] Started implementing search
 * [General] Added translatable string markers
 
 #### 16.11.2018

@@ -6,24 +6,46 @@ import android.content.Intent;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+import com.cajetan.youtubeplus.utils.YouTubeData;
+
+public class MainActivity extends AppCompatActivity implements YouTubeData.VideoSearchListener {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final String TEST_VIDEO_ID = "Bcqb7kzekoc";
 
+    private EditText searchBox;
+    private TextView searchResultView;
+
     // TODO: implement auto fullscreen on rotation
+    private YouTubeData mYouTubeData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        createNotificationChannel();
+        mYouTubeData = new YouTubeData(this);
 
+        searchBox = findViewById(R.id.search_box);
+        // TODO: ..
+        searchResultView = findViewById(R.id.searchResults);
+
+
+        createNotificationChannel();
+    }
+
+    public void playTestVideo(View view) {
         Intent testVideoPlayerIntent = new Intent(this, PlayerActivity.class);
         testVideoPlayerIntent.putExtra(getString(R.string.video_id_key), TEST_VIDEO_ID);
         startActivity(testVideoPlayerIntent);
+    }
+
+    public void videoSearch(View view) {
+        mYouTubeData.receiveSearchResults(searchBox.getText().toString());
     }
 
     private void createNotificationChannel() {
@@ -36,5 +58,10 @@ public class MainActivity extends AppCompatActivity {
         channel.setDescription(getString(R.string.notification_channel_description));
 
         getSystemService(NotificationManager.class).createNotificationChannel(channel);
+    }
+
+    @Override
+    public void onSearchResultsReceived(String results) {
+        searchResultView.setText(results);
     }
 }
