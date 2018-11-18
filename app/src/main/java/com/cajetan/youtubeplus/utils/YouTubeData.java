@@ -30,6 +30,7 @@ import com.google.api.services.youtube.model.Video;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -51,6 +52,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
     private static final String[] SCOPES = {YouTubeScopes.YOUTUBE_READONLY};
 
     private String mVideoId = "";
+    private String searchQuery = "";
 
     private Activity mActivity;
 
@@ -71,7 +73,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
         if (!isGooglePlayServicesAvailable())
             acquireGooglePlayServices();
         else if (mCredential.getSelectedAccountName() == null)
-            chooseAccount();
+            chooseAccount(0);
         else if (!isDeviceOnline())
             Log.d("YouTubeData", "Device is not online");
         else
@@ -80,17 +82,17 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
 
     // TODO: some fixes
     public void receiveSearchResults(String search) {
+        searchQuery = search;
+
          if (!isGooglePlayServicesAvailable())
-            acquireGooglePlayServices();
+             acquireGooglePlayServices();
         else if (mCredential.getSelectedAccountName() == null)
-            chooseAccount();
+             chooseAccount(1);
         else if (!isDeviceOnline())
             // TODO: how about a toast?
              Log.d(TAG, "Device is not online");
-        else {
-            Log.d(TAG, "Running the search task");
+        else
              new VideoSearchTask(mCredential).execute(search);
-         }
     }
 
     private class VideoSearchTask extends AsyncTask<String, Void, String> {
@@ -258,8 +260,9 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
         }
     }
 
+    // TODO: replace with an enum or try passing AsyncTask around
     @AfterPermissionGranted(REQUEST_PERMISSION_GET_ACCOUNTS)
-    private void chooseAccount() {
+    private void chooseAccount(int option) {
         if (EasyPermissions.hasPermissions(
                 mActivity, Manifest.permission.GET_ACCOUNTS)) {
 
@@ -267,7 +270,12 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
                     .getString(PREF_ACCOUNT_NAME, null);
             if (accountName != null) {
                 mCredential.setSelectedAccountName(accountName);
-                getResultsFromApi();
+
+                if (option == 0)
+                    getResultsFromApi();
+                else
+                    receiveSearchResults(searchQuery);
+
             } else {
                 // Start a dialog from which the user can choose an account
                 mActivity.startActivityForResult(

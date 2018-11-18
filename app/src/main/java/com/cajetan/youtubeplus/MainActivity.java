@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.cajetan.youtubeplus.utils.YouTubeData;
@@ -19,6 +21,7 @@ public class MainActivity extends AppCompatActivity implements YouTubeData.Video
 
     private EditText searchBox;
     private TextView searchResultView;
+    private ProgressBar searchProgressBar;
 
     // TODO: implement auto fullscreen on rotation
     private YouTubeData mYouTubeData;
@@ -31,9 +34,8 @@ public class MainActivity extends AppCompatActivity implements YouTubeData.Video
         mYouTubeData = new YouTubeData(this);
 
         searchBox = findViewById(R.id.search_box);
-        // TODO: ..
-        searchResultView = findViewById(R.id.searchResults);
-
+        searchResultView = findViewById(R.id.search_results);
+        searchProgressBar = findViewById(R.id.search_progress_bar);
 
         createNotificationChannel();
     }
@@ -45,6 +47,10 @@ public class MainActivity extends AppCompatActivity implements YouTubeData.Video
     }
 
     public void videoSearch(View view) {
+        searchResultView.setVisibility(View.INVISIBLE);
+        searchProgressBar.setVisibility(View.VISIBLE);
+
+        Log.d("YouTubeData", "Searching for a video: " + searchBox.getText().toString());
         mYouTubeData.receiveSearchResults(searchBox.getText().toString());
     }
 
@@ -63,6 +69,9 @@ public class MainActivity extends AppCompatActivity implements YouTubeData.Video
     @Override
     public void onSearchResultsReceived(String results) {
         searchResultView.setText(results);
+
+        searchProgressBar.setVisibility(View.INVISIBLE);
+        searchResultView.setVisibility(View.VISIBLE);
     }
 
     // TODO: quite easy to omit, look for better solutions

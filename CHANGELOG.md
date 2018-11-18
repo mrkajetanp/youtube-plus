@@ -4,6 +4,7 @@
 
 #### 18.11.2018
 
+* [General] Added a search progress bar 
 * [General] Fixed a bug with search account chooser
 
 #### 17.11.2018
