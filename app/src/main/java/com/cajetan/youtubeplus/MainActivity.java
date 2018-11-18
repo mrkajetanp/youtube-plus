@@ -7,7 +7,9 @@ import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements YouTubeData.Video
     private ProgressBar searchProgressBar;
 
     // TODO: implement auto fullscreen on rotation
+    // TODO: just one youtube data instance should be enough, investigate
     private YouTubeData mYouTubeData;
 
     @Override
@@ -34,6 +37,20 @@ public class MainActivity extends AppCompatActivity implements YouTubeData.Video
         mYouTubeData = new YouTubeData(this);
 
         searchBox = findViewById(R.id.search_box);
+        searchBox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                boolean handled = false;
+
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    videoSearch(textView.getText().toString());
+                    handled = true;
+                }
+
+                return handled;
+            }
+        });
+
         searchResultView = findViewById(R.id.search_results);
         searchProgressBar = findViewById(R.id.search_progress_bar);
 
@@ -46,12 +63,12 @@ public class MainActivity extends AppCompatActivity implements YouTubeData.Video
         startActivity(testVideoPlayerIntent);
     }
 
-    public void videoSearch(View view) {
+    public void videoSearch(String query) {
         searchResultView.setVisibility(View.INVISIBLE);
         searchProgressBar.setVisibility(View.VISIBLE);
 
         Log.d("YouTubeData", "Searching for a video: " + searchBox.getText().toString());
-        mYouTubeData.receiveSearchResults(searchBox.getText().toString());
+        mYouTubeData.receiveSearchResults(query);
     }
 
     private void createNotificationChannel() {

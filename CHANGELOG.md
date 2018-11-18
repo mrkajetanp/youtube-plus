@@ -4,6 +4,7 @@
 
 #### 18.11.2018
 
+* [General] Replaced the search button with keyboard search action
 * [General] Added a search progress bar 
 * [General] Fixed a bug with search account chooser
 

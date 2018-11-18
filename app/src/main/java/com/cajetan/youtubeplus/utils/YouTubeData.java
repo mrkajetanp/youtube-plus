@@ -116,7 +116,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
             try {
                 List<SearchResult> searchResults =  mService.search()
                         .list("snippet")
-                        .setMaxResults(25L)
+                        .setMaxResults(20L)
                         .setQ(keywords[0])
                         .setType("")
                         .execute()
