@@ -2,6 +2,10 @@
 
 ---
 
+#### 18.11.2018
+
+* [General] Fixed a bug with search account chooser
+
 #### 17.11.2018
 
 * [General] Started implementing search

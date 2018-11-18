@@ -64,4 +64,11 @@ public class MainActivity extends AppCompatActivity implements YouTubeData.Video
     public void onSearchResultsReceived(String results) {
         searchResultView.setText(results);
     }
+
+    // TODO: quite easy to omit, look for better solutions
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mYouTubeData.onParentActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

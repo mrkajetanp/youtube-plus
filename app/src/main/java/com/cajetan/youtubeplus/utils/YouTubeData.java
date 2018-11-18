@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.cajetan.youtubeplus.MainActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -36,7 +37,10 @@ import pub.devrel.easypermissions.EasyPermissions;
 import static android.app.Activity.RESULT_OK;
 
 public class YouTubeData implements EasyPermissions.PermissionCallbacks {
+
     private GoogleAccountCredential mCredential;
+
+    private static final String TAG = YouTubeData.class.getSimpleName();
 
     private static final int REQUEST_ACCOUNT_PICKER = 1000;
     private static final int REQUEST_AUTHORIZATION = 1001;
@@ -81,9 +85,12 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
         else if (mCredential.getSelectedAccountName() == null)
             chooseAccount();
         else if (!isDeviceOnline())
-            Log.d("YouTubeData", "Device is not online");
-        else
-            new VideoSearchTask(mCredential).execute(search);
+            // TODO: how about a toast?
+             Log.d(TAG, "Device is not online");
+        else {
+            Log.d(TAG, "Running the search task");
+             new VideoSearchTask(mCredential).execute(search);
+         }
     }
 
     private class VideoSearchTask extends AsyncTask<String, Void, String> {
@@ -102,9 +109,9 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
 
         @Override
         protected String doInBackground(String... keywords) {
-            try {
-                Toast.makeText(mActivity, "TRYING!!", Toast.LENGTH_LONG).show();
+            Log.d(TAG, "Receiving search results..");
 
+            try {
                 List<SearchResult> searchResults =  mService.search()
                         .list("snippet")
                         .setMaxResults(25L)
@@ -115,8 +122,10 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
 
                 StringBuilder result = new StringBuilder();
 
-                for (SearchResult r : searchResults)
+                for (SearchResult r : searchResults) {
                     result.append(r.getSnippet().getTitle());
+                    result.append('\n');
+                }
 
                 return result.toString();
             } catch (Exception e) {
@@ -129,7 +138,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
 
         @Override
         protected void onPostExecute(String result) {
-            Toast.makeText(mActivity, "DONE!!", Toast.LENGTH_LONG).show();
+            Log.d(TAG, "Passing the result..");
 
             if (mActivity instanceof VideoSearchListener)
                 ((VideoSearchListener) mActivity).onSearchResultsReceived(result);
@@ -139,8 +148,6 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
 
         @Override
         protected void onCancelled() {
-            Toast.makeText(mActivity, "CANCELLED!!", Toast.LENGTH_LONG).show();
-
             if (mLastError != null) {
                 if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
                     Toast.makeText(mActivity, "GooglePlayServices not available.", Toast.LENGTH_LONG).show();
@@ -255,6 +262,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
     private void chooseAccount() {
         if (EasyPermissions.hasPermissions(
                 mActivity, Manifest.permission.GET_ACCOUNTS)) {
+
             String accountName = mActivity.getPreferences(Context.MODE_PRIVATE)
                     .getString(PREF_ACCOUNT_NAME, null);
             if (accountName != null) {
@@ -268,6 +276,8 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
             }
         } else {
             // Request the GET_ACCOUNTS permission via a user dialog
+            Log.d(TAG, "Requesting account permission");
+
             EasyPermissions.requestPermissions(
                     mActivity,
                     "This app needs to access your Google account (via Contacts).",
