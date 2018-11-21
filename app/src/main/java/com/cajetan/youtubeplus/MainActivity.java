@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity implements YouTubeData.Video
     private ProgressBar searchProgressBar;
 
     // TODO: implement auto fullscreen on rotation
-    // TODO: just one youtube data instance should be enough, investigate
     private YouTubeData mYouTubeData;
 
     @Override
