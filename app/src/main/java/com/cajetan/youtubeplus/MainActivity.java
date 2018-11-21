@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -13,16 +15,23 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cajetan.youtubeplus.utils.YouTubeData;
+import com.google.api.services.youtube.model.SearchResult;
 
-public class MainActivity extends AppCompatActivity implements YouTubeData.VideoSearchListener {
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity
+        implements YouTubeData.VideoSearchListener, VideoListAdapter.ListItemClickListener {
+
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final String TEST_VIDEO_ID = "Bcqb7kzekoc";
 
     private EditText searchBox;
-    private TextView searchResultView;
+    private VideoListAdapter mAdapter;
+    private RecyclerView mVideoList;
     private ProgressBar searchProgressBar;
 
     // TODO: implement auto fullscreen on rotation
@@ -50,8 +59,13 @@ public class MainActivity extends AppCompatActivity implements YouTubeData.Video
             }
         });
 
-        searchResultView = findViewById(R.id.search_results);
+        mVideoList = findViewById(R.id.search_results);
         searchProgressBar = findViewById(R.id.search_progress_bar);
+
+        mVideoList.setLayoutManager(new LinearLayoutManager(this));
+
+        // TODO investigate
+        mVideoList.setHasFixedSize(true);
 
         createNotificationChannel();
     }
@@ -63,8 +77,8 @@ public class MainActivity extends AppCompatActivity implements YouTubeData.Video
     }
 
     public void videoSearch(String query) {
-        searchResultView.setVisibility(View.INVISIBLE);
         searchProgressBar.setVisibility(View.VISIBLE);
+        mVideoList.setVisibility(View.INVISIBLE);
 
         Log.d("YouTubeData", "Searching for a video: " + searchBox.getText().toString());
         mYouTubeData.receiveSearchResults(query);
@@ -83,11 +97,17 @@ public class MainActivity extends AppCompatActivity implements YouTubeData.Video
     }
 
     @Override
-    public void onSearchResultsReceived(String results) {
-        searchResultView.setText(results);
+    public void onSearchResultsReceived(List<SearchResult> results) {
+        mAdapter = new VideoListAdapter(results, this);
+        mVideoList.setAdapter(mAdapter);
 
         searchProgressBar.setVisibility(View.INVISIBLE);
-        searchResultView.setVisibility(View.VISIBLE);
+        mVideoList.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onListItemClick(String clickedVideoId) {
+        Toast.makeText(this, clickedVideoId, Toast.LENGTH_LONG).show();
     }
 
     // TODO: quite easy to omit, look for better solutions

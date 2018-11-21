@@ -95,7 +95,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
              new VideoSearchTask(mCredential).execute(search);
     }
 
-    private class VideoSearchTask extends AsyncTask<String, Void, String> {
+    private class VideoSearchTask extends AsyncTask<String, Void, List<SearchResult>> {
         private com.google.api.services.youtube.YouTube mService;
         private Exception mLastError = null;
 
@@ -110,11 +110,11 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
         }
 
         @Override
-        protected String doInBackground(String... keywords) {
+        protected List<SearchResult> doInBackground(String... keywords) {
             Log.d(TAG, "Receiving search results..");
 
             try {
-                List<SearchResult> searchResults =  mService.search()
+                return mService.search()
                         .list("snippet")
                         .setMaxResults(20L)
                         .setQ(keywords[0])
@@ -122,14 +122,6 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
                         .execute()
                         .getItems();
 
-                StringBuilder result = new StringBuilder();
-
-                for (SearchResult r : searchResults) {
-                    result.append(r.getSnippet().getTitle());
-                    result.append('\n');
-                }
-
-                return result.toString();
             } catch (Exception e) {
                 Log.e("YouTubeData", "Exception: " + e.toString());
                 mLastError = e;
@@ -139,11 +131,11 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            Log.d(TAG, "Passing the result..");
+        protected void onPostExecute(List<SearchResult> results) {
+            Log.d(TAG, "Passing the results..");
 
             if (mActivity instanceof VideoSearchListener)
-                ((VideoSearchListener) mActivity).onSearchResultsReceived(result);
+                ((VideoSearchListener) mActivity).onSearchResultsReceived(results);
             else
                 throw new UnsupportedOperationException("Activity must implement VideoSearchListener.");
         }
@@ -352,6 +344,6 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
     }
 
     public interface VideoSearchListener {
-        void onSearchResultsReceived(String results);
+        void onSearchResultsReceived(List<SearchResult> results);
     }
 }

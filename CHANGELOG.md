@@ -4,6 +4,7 @@
 
 #### 21.11.2018
 
+* [VideoSearch] Working RecyclerView with search results 
 * [VideoSearch] Started building a RecyclerView adapter
 
 #### 18.11.2018
