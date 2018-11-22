@@ -51,6 +51,7 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
 
     // TODO: fetch youtube data after restoring internet connection
 
+    // TODO: dismiss the notification on back button pressed
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -178,6 +179,7 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
 
         if (builder.mContentTitle == null) {
             Log.d(TAG, "Media notification hidden due to lack of the YouTube API data");
+            ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(0);
             return;
         }
 
@@ -204,6 +206,8 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
         else {
             throw new IllegalArgumentException("No video id available, cannot initialise the player");
         }
+
+        Log.d(TAG, "Video id: " + videoId);
 
         return videoId;
     }
@@ -255,7 +259,10 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
     @Override
     public void onVideoDataReceived(Video videoData) {
         mVideoData = videoData;
-        new SetAlbumArtTask().execute(mVideoData.getSnippet().getThumbnails().getStandard().getUrl());
+
+        if (mVideoData.getSnippet().getThumbnails().getStandard() != null)
+            new SetAlbumArtTask().execute(mVideoData.getSnippet().getThumbnails().getStandard().getUrl());
+
         showMediaNotification(mStateBuilder.build());
     }
 
@@ -303,6 +310,7 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
 
     @Override
     protected void onDestroy() {
+        ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(0);
         mainPlayerView.release();
         super.onDestroy();
     }

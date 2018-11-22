@@ -2,6 +2,10 @@
 
 ---
 
+#### 22.11.2018
+
+* [VideoSearch] Playing video on result click
+
 #### 21.11.2018
 
 * [VideoSearch] Working RecyclerView with search results 

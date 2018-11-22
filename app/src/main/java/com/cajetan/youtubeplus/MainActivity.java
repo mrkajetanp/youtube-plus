@@ -84,18 +84,6 @@ public class MainActivity extends AppCompatActivity
         mYouTubeData.receiveSearchResults(query);
     }
 
-    private void createNotificationChannel() {
-        // No need for Notification Channels prior to Oreo
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
-            return;
-
-        NotificationChannel channel = new NotificationChannel(getString(R.string.notification_channel_id),
-                getString(R.string.notification_channel_name), NotificationManager.IMPORTANCE_LOW);
-        channel.setDescription(getString(R.string.notification_channel_description));
-
-        getSystemService(NotificationManager.class).createNotificationChannel(channel);
-    }
-
     @Override
     public void onSearchResultsReceived(List<SearchResult> results) {
         mAdapter = new VideoListAdapter(results, this);
@@ -107,7 +95,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onListItemClick(String clickedVideoId) {
-        Toast.makeText(this, clickedVideoId, Toast.LENGTH_LONG).show();
+        Intent videoPlayerIntent = new Intent(this, PlayerActivity.class);
+        videoPlayerIntent.putExtra(getString(R.string.video_id_key), clickedVideoId);
+        startActivity(videoPlayerIntent);
     }
 
     // TODO: quite easy to omit, look for better solutions
@@ -115,5 +105,17 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         mYouTubeData.onParentActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void createNotificationChannel() {
+        // No need for Notification Channels prior to Oreo
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
+            return;
+
+        NotificationChannel channel = new NotificationChannel(getString(R.string.notification_channel_id),
+                getString(R.string.notification_channel_name), NotificationManager.IMPORTANCE_LOW);
+        channel.setDescription(getString(R.string.notification_channel_description));
+
+        getSystemService(NotificationManager.class).createNotificationChannel(channel);
     }
 }
