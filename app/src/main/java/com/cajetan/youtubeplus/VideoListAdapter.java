@@ -1,13 +1,20 @@
 package com.cajetan.youtubeplus;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.api.services.youtube.model.SearchResult;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.VideoViewHolder> {
@@ -48,22 +55,54 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
     class VideoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView videoTitleView;
+        TextView videoChannelView;
+        ImageView videoThumbnailView;
 
         public VideoViewHolder(View itemView) {
             super(itemView);
 
             videoTitleView = itemView.findViewById(R.id.video_title);
+            videoChannelView = itemView.findViewById(R.id.video_author);
+            videoThumbnailView = itemView.findViewById(R.id.video_thumbnail);
 
             itemView.setOnClickListener(this);
         }
 
         void bind(SearchResult video) {
             videoTitleView.setText(video.getSnippet().getTitle());
+            videoChannelView.setText(video.getSnippet().getChannelTitle());
+
+            // TODO: ensure best possible quality
+            if (video.getSnippet().getThumbnails().getDefault() != null)
+                new SetThumbnailTask().execute(video.getSnippet().getThumbnails().getDefault().getUrl());
         }
 
         @Override
         public void onClick(View v) {
             mOnClickListener.onListItemClick(mVideos.get(getAdapterPosition()).getId().getVideoId());
+        }
+
+        private class SetThumbnailTask extends AsyncTask<String, Void, Bitmap> {
+            @Override
+            protected Bitmap doInBackground(String... strings) {
+                Bitmap result = null;
+
+                try {
+                    URL url = new URL(strings[0]);
+                    result = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                } catch (IOException e) {
+                    Log.e(TAG, e.toString());
+                }
+
+                return result;
+            }
+
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                videoThumbnailView.setImageBitmap(bitmap);
+                videoThumbnailView.setScaleType(ImageView.ScaleType.FIT_XY);
+                videoThumbnailView.invalidate();
+            }
         }
     }
 }

@@ -4,6 +4,7 @@
 
 #### 22.11.2018
 
+* [VideoSearch] Channel title & thumbnail in search results 
 * [VideoSearch] Playing video on result click
 
 #### 21.11.2018
