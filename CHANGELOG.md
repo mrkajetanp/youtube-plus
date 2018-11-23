@@ -4,6 +4,7 @@
 
 #### 23.11.2018
 
+* [VideoSearch] Removed the test button
 * [VideoSearch] Adjusted thumbnail size to match original YouTube app
 
 #### 22.11.2018

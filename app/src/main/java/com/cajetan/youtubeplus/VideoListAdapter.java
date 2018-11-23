@@ -52,6 +52,8 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
         return mVideos.size();
     }
 
+    // TODO: try caching thumbnail Bitmaps
+
     class VideoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView videoTitleView;
@@ -71,8 +73,6 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
         void bind(SearchResult video) {
             videoTitleView.setText(video.getSnippet().getTitle());
             videoChannelView.setText(video.getSnippet().getChannelTitle());
-
-            // TODO: ensure best possible quality
 
             String thumbnailUrl = null;
 

@@ -15,7 +15,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cajetan.youtubeplus.utils.YouTubeData;
 import com.google.api.services.youtube.model.SearchResult;
@@ -24,10 +23,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements YouTubeData.VideoSearchListener, VideoListAdapter.ListItemClickListener {
-
     private static final String TAG = MainActivity.class.getSimpleName();
-
-    private static final String TEST_VIDEO_ID = "Bcqb7kzekoc";
 
     private EditText searchBox;
     private VideoListAdapter mAdapter;
@@ -68,12 +64,6 @@ public class MainActivity extends AppCompatActivity
         mVideoList.setHasFixedSize(true);
 
         createNotificationChannel();
-    }
-
-    public void playTestVideo(View view) {
-        Intent testVideoPlayerIntent = new Intent(this, PlayerActivity.class);
-        testVideoPlayerIntent.putExtra(getString(R.string.video_id_key), TEST_VIDEO_ID);
-        startActivity(testVideoPlayerIntent);
     }
 
     public void videoSearch(String query) {
