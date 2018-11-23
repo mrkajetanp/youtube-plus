@@ -2,6 +2,10 @@
 
 ---
 
+#### 23.11.2018
+
+* [VideoSearch] Adjusted thumbnail size to match original YouTube app
+
 #### 22.11.2018
 
 * [VideoSearch] Channel title & thumbnail in search results 

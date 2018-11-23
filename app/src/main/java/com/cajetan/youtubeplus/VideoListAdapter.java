@@ -73,8 +73,22 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
             videoChannelView.setText(video.getSnippet().getChannelTitle());
 
             // TODO: ensure best possible quality
-            if (video.getSnippet().getThumbnails().getDefault() != null)
-                new SetThumbnailTask().execute(video.getSnippet().getThumbnails().getDefault().getUrl());
+
+            String thumbnailUrl = null;
+
+            if (video.getSnippet().getThumbnails().getMaxres() != null)
+                thumbnailUrl = video.getSnippet().getThumbnails().getMaxres().getUrl();
+            else if (video.getSnippet().getThumbnails().getHigh() != null)
+                thumbnailUrl = video.getSnippet().getThumbnails().getHigh().getUrl();
+            else if (video.getSnippet().getThumbnails().getMedium() != null)
+                thumbnailUrl = video.getSnippet().getThumbnails().getMedium().getUrl();
+            else if (video.getSnippet().getThumbnails().getStandard() != null)
+                thumbnailUrl = video.getSnippet().getThumbnails().getStandard().getUrl();
+            else if (video.getSnippet().getThumbnails().getDefault() != null)
+                thumbnailUrl = video.getSnippet().getThumbnails().getDefault().getUrl();
+
+            if (thumbnailUrl != null)
+                new SetThumbnailTask().execute(thumbnailUrl);
         }
 
         @Override
@@ -99,8 +113,8 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
 
             @Override
             protected void onPostExecute(Bitmap bitmap) {
-                videoThumbnailView.setImageBitmap(bitmap);
                 videoThumbnailView.setScaleType(ImageView.ScaleType.FIT_XY);
+                videoThumbnailView.setImageBitmap(bitmap);
                 videoThumbnailView.invalidate();
             }
         }
