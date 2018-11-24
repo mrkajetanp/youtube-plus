@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity
     // TODO: implement auto fullscreen on rotation
     private YouTubeData mYouTubeData;
 
+    private String mNextPageToken = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,16 +73,18 @@ public class MainActivity extends AppCompatActivity
         mVideoList.setVisibility(View.INVISIBLE);
 
         Log.d("YouTubeData", "Searching for a video: " + searchBox.getText().toString());
-        mYouTubeData.receiveSearchResults(query);
+        mYouTubeData.receiveSearchResults(query, null);
     }
 
     @Override
-    public void onSearchResultsReceived(List<SearchResult> results) {
+    public void onSearchResultsReceived(List<SearchResult> results, String nextPageToken) {
         mAdapter = new VideoListAdapter(results, this);
         mVideoList.setAdapter(mAdapter);
 
         searchProgressBar.setVisibility(View.INVISIBLE);
         mVideoList.setVisibility(View.VISIBLE);
+
+        Log.d(TAG, "Got the next page token: " + nextPageToken);
     }
 
     @Override

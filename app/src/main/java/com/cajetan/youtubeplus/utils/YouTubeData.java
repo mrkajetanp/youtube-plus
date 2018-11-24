@@ -24,7 +24,9 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.ExponentialBackOff;
+import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.YouTubeScopes;
+import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.Video;
 
@@ -53,6 +55,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
 
     private String mVideoId = "";
     private String searchQuery = "";
+    private String searchPageToken = null;
 
     private Activity mActivity;
 
@@ -81,8 +84,9 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
     }
 
     // TODO: some fixes
-    public void receiveSearchResults(String search) {
+    public void receiveSearchResults(String search, String pageToken) {
         searchQuery = search;
+        searchPageToken = pageToken;
 
          if (!isGooglePlayServicesAvailable())
              acquireGooglePlayServices();
@@ -92,12 +96,13 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
             // TODO: how about a toast?
              Log.d(TAG, "Device is not online");
         else
-             new VideoSearchTask(mCredential).execute(search);
+             new VideoSearchTask(mCredential).execute(search, pageToken);
     }
 
     private class VideoSearchTask extends AsyncTask<String, Void, List<SearchResult>> {
         private com.google.api.services.youtube.YouTube mService;
         private Exception mLastError = null;
+        private String nextPageToken = null;
 
         VideoSearchTask(GoogleAccountCredential credential) {
             HttpTransport transport = AndroidHttp.newCompatibleTransport();
@@ -114,14 +119,22 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
             Log.d(TAG, "Receiving search results..");
 
             try {
-                return mService.search()
+                YouTube.Search.List searchList = mService.search()
                         .list("snippet")
                         .setMaxResults(20L)
                         .setQ(keywords[0])
-                        .setType("")
-                        .execute()
-                        .getItems();
+                        .setType("");
 
+                // TODO: args
+                if (keywords[1] != null) {
+                    Log.d(TAG, "Next page token: " + keywords[1]);
+                    searchList.setPageToken(keywords[1]);
+                }
+
+                SearchListResponse response = searchList.execute();
+                nextPageToken = response.getNextPageToken();
+
+                return response.getItems();
             } catch (Exception e) {
                 Log.e("YouTubeData", "Exception: " + e.toString());
                 mLastError = e;
@@ -135,7 +148,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
             Log.d(TAG, "Passing the results..");
 
             if (mActivity instanceof VideoSearchListener)
-                ((VideoSearchListener) mActivity).onSearchResultsReceived(results);
+                ((VideoSearchListener) mActivity).onSearchResultsReceived(results, nextPageToken);
             else
                 throw new UnsupportedOperationException("Activity must implement VideoSearchListener.");
         }
@@ -266,7 +279,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
                 if (option == 0)
                     getResultsFromApi();
                 else
-                    receiveSearchResults(searchQuery);
+                    receiveSearchResults(searchQuery, searchPageToken);
 
             } else {
                 // Start a dialog from which the user can choose an account
@@ -344,6 +357,6 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
     }
 
     public interface VideoSearchListener {
-        void onSearchResultsReceived(List<SearchResult> results);
+        void onSearchResultsReceived(List<SearchResult> results, String nextPageToken);
     }
 }

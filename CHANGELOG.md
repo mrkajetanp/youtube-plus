@@ -2,6 +2,10 @@
 
 ---
 
+#### 24.11.2018
+
+* [VideoSearch] Getting the next page token
+
 #### 23.11.2018
 
 * [VideoSearch] Removed the test button
