@@ -4,6 +4,7 @@
 
 #### 24.11.2018
 
+* [VideoSearch] Working next page button 
 * [VideoSearch] Getting the next page token
 
 #### 23.11.2018

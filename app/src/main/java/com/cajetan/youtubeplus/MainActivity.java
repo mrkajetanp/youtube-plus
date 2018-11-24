@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity
     // TODO: implement auto fullscreen on rotation
     private YouTubeData mYouTubeData;
 
+    private String mSearchQuery = null;
     private String mNextPageToken = null;
 
     @Override
@@ -49,7 +50,9 @@ public class MainActivity extends AppCompatActivity
                 boolean handled = false;
 
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    videoSearch(textView.getText().toString());
+                    mSearchQuery = textView.getText().toString();
+
+                    videoSearch(mSearchQuery, null);
                     handled = true;
                 }
 
@@ -68,12 +71,17 @@ public class MainActivity extends AppCompatActivity
         createNotificationChannel();
     }
 
-    public void videoSearch(String query) {
+    // TODO: maybe lose the argument
+    public void videoSearch(String query, String nextPageToken) {
         searchProgressBar.setVisibility(View.VISIBLE);
         mVideoList.setVisibility(View.INVISIBLE);
 
         Log.d("YouTubeData", "Searching for a video: " + searchBox.getText().toString());
-        mYouTubeData.receiveSearchResults(query, null);
+        mYouTubeData.receiveSearchResults(query, nextPageToken);
+    }
+
+    public void onNextPageButton(View view) {
+        videoSearch(mSearchQuery, mNextPageToken);
     }
 
     @Override
@@ -84,7 +92,7 @@ public class MainActivity extends AppCompatActivity
         searchProgressBar.setVisibility(View.INVISIBLE);
         mVideoList.setVisibility(View.VISIBLE);
 
-        Log.d(TAG, "Got the next page token: " + nextPageToken);
+        mNextPageToken = nextPageToken;
     }
 
     @Override
