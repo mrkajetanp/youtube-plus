@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity
 
     private String mSearchQuery = null;
     private String mNextPageToken = null;
+    private String mPreviousPageToken = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +85,14 @@ public class MainActivity extends AppCompatActivity
         videoSearch(mSearchQuery, mNextPageToken);
     }
 
+    public void onPrevPageButton(View view) {
+        videoSearch(mSearchQuery, mPreviousPageToken);
+    }
+
     @Override
-    public void onSearchResultsReceived(List<SearchResult> results, String nextPageToken) {
+    public void onSearchResultsReceived(List<SearchResult> results,
+                                        String nextPageToken, String previousPageToken) {
+
         mAdapter = new VideoListAdapter(results, this);
         mVideoList.setAdapter(mAdapter);
 
@@ -93,6 +100,7 @@ public class MainActivity extends AppCompatActivity
         mVideoList.setVisibility(View.VISIBLE);
 
         mNextPageToken = nextPageToken;
+        mPreviousPageToken = previousPageToken;
     }
 
     @Override

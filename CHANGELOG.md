@@ -2,6 +2,10 @@
 
 ---
 
+#### 25.11.2018
+
+* [VideoSearch] Working previous page button
+
 #### 24.11.2018
 
 * [VideoSearch] Working next page button 

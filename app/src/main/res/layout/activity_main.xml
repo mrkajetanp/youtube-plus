@@ -51,6 +51,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         android:text="Previous page"
+        android:onClick="onPrevPageButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/next_page_button"
         app:layout_constraintHorizontal_bias="0.5"

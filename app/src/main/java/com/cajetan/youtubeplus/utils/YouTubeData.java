@@ -103,6 +103,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
         private com.google.api.services.youtube.YouTube mService;
         private Exception mLastError = null;
         private String nextPageToken = null;
+        private String previousPageToken = null;
 
         VideoSearchTask(GoogleAccountCredential credential) {
             HttpTransport transport = AndroidHttp.newCompatibleTransport();
@@ -133,6 +134,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
 
                 SearchListResponse response = searchList.execute();
                 nextPageToken = response.getNextPageToken();
+                previousPageToken = response.getPrevPageToken();
 
                 return response.getItems();
             } catch (Exception e) {
@@ -148,7 +150,8 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
             Log.d(TAG, "Passing the results..");
 
             if (mActivity instanceof VideoSearchListener)
-                ((VideoSearchListener) mActivity).onSearchResultsReceived(results, nextPageToken);
+                ((VideoSearchListener) mActivity).onSearchResultsReceived(results,
+                        nextPageToken, previousPageToken);
             else
                 throw new UnsupportedOperationException("Activity must implement VideoSearchListener.");
         }
@@ -357,6 +360,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
     }
 
     public interface VideoSearchListener {
-        void onSearchResultsReceived(List<SearchResult> results, String nextPageToken);
+        void onSearchResultsReceived(List<SearchResult> results,
+                                     String nextPageToken, String previousPageToken);
     }
 }
