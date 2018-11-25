@@ -46,6 +46,7 @@
 
     <Button
         android:id="@+id/prev_page_button"
+        android:visibility="gone"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginBottom="8dp"
@@ -59,6 +60,7 @@
 
     <Button
         android:id="@+id/next_page_button"
+        android:visibility="gone"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"

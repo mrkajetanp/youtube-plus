@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -30,12 +31,16 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView mVideoList;
     private ProgressBar searchProgressBar;
 
-    // TODO: implement auto fullscreen on rotation
+    private Button mNextPageButton;
+    private Button mPreviousPageButton;
+
     private YouTubeData mYouTubeData;
 
     private String mSearchQuery = null;
     private String mNextPageToken = null;
     private String mPreviousPageToken = null;
+
+    // TODO: implement auto fullscreen on rotation
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +56,12 @@ public class MainActivity extends AppCompatActivity
                 boolean handled = false;
 
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    mSearchQuery = textView.getText().toString();
+                    String textViewContent = textView.getText().toString();
+
+                    if (textViewContent.equals("") || textViewContent.equals(mSearchQuery))
+                        return true;
+
+                    mSearchQuery = textViewContent;
 
                     videoSearch(mSearchQuery, null);
                     handled = true;
@@ -60,6 +70,9 @@ public class MainActivity extends AppCompatActivity
                 return handled;
             }
         });
+
+        mNextPageButton = findViewById(R.id.next_page_button);
+        mPreviousPageButton = findViewById(R.id.prev_page_button);
 
         mVideoList = findViewById(R.id.search_results);
         searchProgressBar = findViewById(R.id.search_progress_bar);
@@ -86,6 +99,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onPrevPageButton(View view) {
+        if (mPreviousPageToken == null)
+            return;
+
         videoSearch(mSearchQuery, mPreviousPageToken);
     }
 
@@ -98,6 +114,9 @@ public class MainActivity extends AppCompatActivity
 
         searchProgressBar.setVisibility(View.INVISIBLE);
         mVideoList.setVisibility(View.VISIBLE);
+
+        mPreviousPageButton.setVisibility(View.VISIBLE);
+        mNextPageButton.setVisibility(View.VISIBLE);
 
         mNextPageToken = nextPageToken;
         mPreviousPageToken = previousPageToken;

@@ -4,6 +4,7 @@
 
 #### 25.11.2018
 
+* [VideoSearch] Search & page button behaviour fixes
 * [VideoSearch] Working previous page button
 
 #### 24.11.2018
