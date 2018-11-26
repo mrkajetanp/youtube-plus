@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cajetan.youtubeplus.utils.YouTubeData;
 import com.google.api.services.youtube.model.SearchResult;
@@ -107,9 +108,18 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onSearchResultsReceived(List<SearchResult> results,
-                                        String nextPageToken, String previousPageToken) {
+                                        final String nextPageToken, String previousPageToken) {
 
         mAdapter = new VideoListAdapter(results, this);
+
+        mAdapter.setOnBottomReachedListener(new VideoListAdapter.OnBottomReachedListener() {
+            @Override
+            public void onBottomReached(int position) {
+                Log.d(TAG, "Reached the bottom");
+                videoSearch(mSearchQuery, nextPageToken);
+            }
+        });
+
         mVideoList.setAdapter(mAdapter);
 
         searchProgressBar.setVisibility(View.INVISIBLE);

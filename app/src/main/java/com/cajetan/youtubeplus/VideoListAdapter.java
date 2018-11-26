@@ -20,6 +20,8 @@ import java.util.List;
 public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.VideoViewHolder> {
     private static final String TAG = VideoListAdapter.class.getSimpleName();
 
+    private OnBottomReachedListener onBottomReachedListener;
+
     private final ListItemClickListener mOnClickListener;
     private List<SearchResult> mVideos;
 
@@ -30,6 +32,10 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
     public VideoListAdapter(List<SearchResult> videos, ListItemClickListener listener) {
         mOnClickListener = listener;
         mVideos = videos;
+    }
+
+    public void setOnBottomReachedListener(OnBottomReachedListener onBottomReachedListener) {
+        this.onBottomReachedListener = onBottomReachedListener;
     }
 
     @Override
@@ -45,6 +51,9 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
     @Override
     public void onBindViewHolder(VideoViewHolder holder, int position) {
         holder.bind(mVideos.get(position));
+
+        if (onBottomReachedListener != null && position == mVideos.size() - 1)
+            onBottomReachedListener.onBottomReached(position);
     }
 
     @Override
@@ -118,5 +127,9 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
                 videoThumbnailView.invalidate();
             }
         }
+    }
+
+    public interface OnBottomReachedListener {
+        void onBottomReached(int position);
     }
 }

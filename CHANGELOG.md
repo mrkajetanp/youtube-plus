@@ -2,6 +2,10 @@
 
 ---
 
+#### 26.11.2018
+
+* [VideoSearch] Next search page on reaching bottom
+
 #### 25.11.2018
 
 * [VideoSearch] Search & page button behaviour fixes
