@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cajetan.youtubeplus.utils.YouTubeData;
 import com.google.api.services.youtube.model.SearchResult;
@@ -32,14 +31,9 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView mVideoList;
     private ProgressBar searchProgressBar;
 
-    private Button mNextPageButton;
-    private Button mPreviousPageButton;
-
     private YouTubeData mYouTubeData;
 
     private String mSearchQuery = null;
-    private String mNextPageToken = null;
-    private String mPreviousPageToken = null;
 
     // TODO: implement auto fullscreen on rotation
 
@@ -72,9 +66,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        mNextPageButton = findViewById(R.id.next_page_button);
-        mPreviousPageButton = findViewById(R.id.prev_page_button);
-
         mVideoList = findViewById(R.id.search_results);
         searchProgressBar = findViewById(R.id.search_progress_bar);
 
@@ -95,22 +86,22 @@ public class MainActivity extends AppCompatActivity
         mYouTubeData.receiveSearchResults(query, nextPageToken);
     }
 
-    public void onNextPageButton(View view) {
-        videoSearch(mSearchQuery, mNextPageToken);
-    }
-
-    public void onPrevPageButton(View view) {
-        if (mPreviousPageToken == null)
-            return;
-
-        videoSearch(mSearchQuery, mPreviousPageToken);
-    }
-
     @Override
     public void onSearchResultsReceived(List<SearchResult> results,
                                         final String nextPageToken, String previousPageToken) {
 
-        mAdapter = new VideoListAdapter(results, this);
+        List<SearchResult> finalResults = null;
+        if (mAdapter != null)
+            finalResults = mAdapter.getSearchResults();
+
+        // Reset adapter if no previous results or a new search
+        if (finalResults == null || previousPageToken == null)
+            finalResults = results;
+        // Append the results if just going to the next page
+        else
+            finalResults.addAll(results);
+
+        mAdapter = new VideoListAdapter(finalResults, this);
 
         mAdapter.setOnBottomReachedListener(new VideoListAdapter.OnBottomReachedListener() {
             @Override
@@ -122,14 +113,14 @@ public class MainActivity extends AppCompatActivity
 
         mVideoList.setAdapter(mAdapter);
 
+        // TODO: adjust scrolling and blinking adapter
+
+        // TODO: there should be a constant with 20?
+        if (mAdapter.getItemCount() > 20L)
+            mVideoList.scrollToPosition(mAdapter.getItemCount() - 20);
+
         searchProgressBar.setVisibility(View.INVISIBLE);
         mVideoList.setVisibility(View.VISIBLE);
-
-        mPreviousPageButton.setVisibility(View.VISIBLE);
-        mNextPageButton.setVisibility(View.VISIBLE);
-
-        mNextPageToken = nextPageToken;
-        mPreviousPageToken = previousPageToken;
     }
 
     @Override

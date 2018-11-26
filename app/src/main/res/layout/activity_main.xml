@@ -28,7 +28,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/prev_page_button"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_box" />
@@ -43,33 +43,5 @@
         app:layout_constraintEnd_toEndOf="@+id/search_results"
         app:layout_constraintStart_toStartOf="@+id/search_results"
         app:layout_constraintTop_toTopOf="@+id/search_results" />
-
-    <Button
-        android:id="@+id/prev_page_button"
-        android:visibility="gone"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
-        android:text="Previous page"
-        android:onClick="onPrevPageButton"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/next_page_button"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/next_page_button"
-        android:visibility="gone"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="Next page"
-        android:onClick="onNextPageButton"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/prev_page_button" />
 
 </android.support.constraint.ConstraintLayout>

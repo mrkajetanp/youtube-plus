@@ -61,6 +61,10 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
         return mVideos.size();
     }
 
+    public List<SearchResult> getSearchResults() {
+        return mVideos;
+    }
+
     // TODO: try caching thumbnail Bitmaps
 
     class VideoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

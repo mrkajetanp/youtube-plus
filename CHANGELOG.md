@@ -4,6 +4,7 @@
 
 #### 26.11.2018
 
+* [VideoSearch] Merging adapter data and unlimited scrolling
 * [VideoSearch] Next search page on reaching bottom
 
 #### 25.11.2018
