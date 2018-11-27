@@ -25,6 +25,8 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
     private final ListItemClickListener mOnClickListener;
     private List<SearchResult> mVideos;
 
+    private int currentPosition = 0;
+
     public interface ListItemClickListener {
         void onListItemClick(String clickedVideoId);
     }
@@ -50,6 +52,8 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
 
     @Override
     public void onBindViewHolder(VideoViewHolder holder, int position) {
+        this.currentPosition = position;
+
         holder.bind(mVideos.get(position));
 
         if (onBottomReachedListener != null && position == mVideos.size() - 1)
@@ -63,6 +67,10 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
 
     public List<SearchResult> getSearchResults() {
         return mVideos;
+    }
+
+    public int getCurrentPosition() {
+        return this.currentPosition;
     }
 
     // TODO: try caching thumbnail Bitmaps

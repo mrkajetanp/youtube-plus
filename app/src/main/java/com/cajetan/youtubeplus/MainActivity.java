@@ -102,12 +102,16 @@ public class MainActivity extends AppCompatActivity
         if (mAdapter != null)
             finalResults = mAdapter.getSearchResults();
 
+        int position = 0;
+
         // Reset adapter if no previous results or a new search
-        if (finalResults == null || previousPageToken == null)
+        if (finalResults == null || previousPageToken == null) {
             finalResults = results;
-        // Append the results if just going to the next page
-        else
+        } else {
+            // Append the results if just going to the next page
             finalResults.addAll(results);
+            position = mAdapter.getCurrentPosition();
+        }
 
         mAdapter = new VideoListAdapter(finalResults, this);
 
@@ -131,8 +135,9 @@ public class MainActivity extends AppCompatActivity
         }
 
         // TODO: there should be a constant with 20?
-        if (mAdapter.getItemCount() > 20L)
-            mVideoList.scrollToPosition(mAdapter.getItemCount() - 20);
+        if (position != 0)
+            // TODO: not a very reliable solution, fix it
+            mVideoList.scrollToPosition(position - 7);
     }
 
     @Override
