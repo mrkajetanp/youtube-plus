@@ -2,6 +2,10 @@
 
 ---
 
+#### 27.11.2018
+
+* [VideoSearch] Further scrolling with a bottom progress bar
+
 #### 26.11.2018
 
 * [VideoSearch] Merging adapter data and unlimited scrolling

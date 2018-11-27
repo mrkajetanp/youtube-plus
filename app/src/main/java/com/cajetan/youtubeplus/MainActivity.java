@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -29,7 +28,9 @@ public class MainActivity extends AppCompatActivity
     private EditText searchBox;
     private VideoListAdapter mAdapter;
     private RecyclerView mVideoList;
-    private ProgressBar searchProgressBar;
+
+    private ProgressBar searchProgressBarCentre;
+    private ProgressBar searchProgressBarBottom;
 
     private YouTubeData mYouTubeData;
 
@@ -67,7 +68,8 @@ public class MainActivity extends AppCompatActivity
         });
 
         mVideoList = findViewById(R.id.search_results);
-        searchProgressBar = findViewById(R.id.search_progress_bar);
+        searchProgressBarCentre = findViewById(R.id.search_progress_bar_centre);
+        searchProgressBarBottom = findViewById(R.id.search_progress_bar_bottom);
 
         mVideoList.setLayoutManager(new LinearLayoutManager(this));
 
@@ -79,12 +81,18 @@ public class MainActivity extends AppCompatActivity
 
     // TODO: maybe lose the argument
     public void videoSearch(String query, String nextPageToken) {
-        searchProgressBar.setVisibility(View.VISIBLE);
-        mVideoList.setVisibility(View.INVISIBLE);
+        if (nextPageToken == null) {
+            searchProgressBarCentre.setVisibility(View.VISIBLE);
+            mVideoList.setVisibility(View.INVISIBLE);
+        } else {
+            searchProgressBarBottom.setVisibility(View.VISIBLE);
+        }
 
         Log.d("YouTubeData", "Searching for a video: " + searchBox.getText().toString());
         mYouTubeData.receiveSearchResults(query, nextPageToken);
     }
+
+    // TODO: another callback for new page results
 
     @Override
     public void onSearchResultsReceived(List<SearchResult> results,
@@ -115,12 +123,16 @@ public class MainActivity extends AppCompatActivity
 
         // TODO: adjust scrolling and blinking adapter
 
+        if (previousPageToken == null) {
+            searchProgressBarCentre.setVisibility(View.INVISIBLE);
+            mVideoList.setVisibility(View.VISIBLE);
+        } else {
+            searchProgressBarBottom.setVisibility(View.GONE);
+        }
+
         // TODO: there should be a constant with 20?
         if (mAdapter.getItemCount() > 20L)
             mVideoList.scrollToPosition(mAdapter.getItemCount() - 20);
-
-        searchProgressBar.setVisibility(View.INVISIBLE);
-        mVideoList.setVisibility(View.VISIBLE);
     }
 
     @Override
