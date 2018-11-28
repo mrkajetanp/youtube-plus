@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.cajetan.youtubeplus.utils.YouTubeData;
 import com.google.api.services.youtube.model.SearchResult;
 
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity
     private YouTubeData mYouTubeData;
 
     private String mSearchQuery = null;
+    private String mNextPageToken = "";
 
     // TODO: implement auto fullscreen on rotation
 
@@ -73,8 +75,17 @@ public class MainActivity extends AppCompatActivity
 
         mVideoList.setLayoutManager(new LinearLayoutManager(this));
 
-        // TODO investigate
-        mVideoList.setHasFixedSize(true);
+        mAdapter = new VideoListAdapter(Collections.<SearchResult>emptyList(), this);
+        mAdapter.setOnBottomReachedListener(new VideoListAdapter.OnBottomReachedListener() {
+            @Override
+            public void onBottomReached(int position) {
+                Log.d(TAG, "Reached the bottom");
+                videoSearch(mSearchQuery, mNextPageToken);
+            }
+        });
+
+        mVideoList.setHasFixedSize(false);
+        mVideoList.setAdapter(mAdapter);
 
         createNotificationChannel();
     }
@@ -98,46 +109,20 @@ public class MainActivity extends AppCompatActivity
     public void onSearchResultsReceived(List<SearchResult> results,
                                         final String nextPageToken, String previousPageToken) {
 
-        List<SearchResult> finalResults = null;
-        if (mAdapter != null)
-            finalResults = mAdapter.getSearchResults();
+        //  Reset the adapter if no previous results or a new search
+        if (previousPageToken == null || previousPageToken.equals("")) {
+            mAdapter.clearItems();
+            mVideoList.scrollToPosition(0);
 
-        int position = 0;
-
-        // Reset adapter if no previous results or a new search
-        if (finalResults == null || previousPageToken == null) {
-            finalResults = results;
-        } else {
-            // Append the results if just going to the next page
-            finalResults.addAll(results);
-            position = mAdapter.getCurrentPosition();
-        }
-
-        mAdapter = new VideoListAdapter(finalResults, this);
-
-        mAdapter.setOnBottomReachedListener(new VideoListAdapter.OnBottomReachedListener() {
-            @Override
-            public void onBottomReached(int position) {
-                Log.d(TAG, "Reached the bottom");
-                videoSearch(mSearchQuery, nextPageToken);
-            }
-        });
-
-        mVideoList.setAdapter(mAdapter);
-
-        // TODO: adjust scrolling and blinking adapter
-
-        if (previousPageToken == null) {
             searchProgressBarCentre.setVisibility(View.INVISIBLE);
             mVideoList.setVisibility(View.VISIBLE);
         } else {
             searchProgressBarBottom.setVisibility(View.GONE);
         }
 
-        // TODO: there should be a constant with 20?
-        if (position != 0)
-            // TODO: not a very reliable solution, fix it
-            mVideoList.scrollToPosition(position - 7);
+        mAdapter.addItems(results);
+
+        mNextPageToken = nextPageToken;
     }
 
     @Override

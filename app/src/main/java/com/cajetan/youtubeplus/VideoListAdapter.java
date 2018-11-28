@@ -15,6 +15,7 @@ import com.google.api.services.youtube.model.SearchResult;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.VideoViewHolder> {
@@ -23,7 +24,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
     private OnBottomReachedListener onBottomReachedListener;
 
     private final ListItemClickListener mOnClickListener;
-    private List<SearchResult> mVideos;
+    private ArrayList<SearchResult> mVideos;
 
     private int currentPosition = 0;
 
@@ -33,7 +34,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
 
     public VideoListAdapter(List<SearchResult> videos, ListItemClickListener listener) {
         mOnClickListener = listener;
-        mVideos = videos;
+        mVideos = new ArrayList<>(videos);
     }
 
     public void setOnBottomReachedListener(OnBottomReachedListener onBottomReachedListener) {
@@ -65,12 +66,14 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
         return mVideos.size();
     }
 
-    public List<SearchResult> getSearchResults() {
-        return mVideos;
+    public void addItems(List<SearchResult> items) {
+        this.mVideos.addAll(items);
+        notifyDataSetChanged();
     }
 
-    public int getCurrentPosition() {
-        return this.currentPosition;
+    public void clearItems() {
+        this.mVideos = new ArrayList<>();
+        notifyDataSetChanged();
     }
 
     // TODO: try caching thumbnail Bitmaps

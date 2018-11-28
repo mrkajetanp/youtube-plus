@@ -2,6 +2,10 @@
 
 ---
 
+#### 28.11.2018
+
+* [VideoSearch] Improved adding new results to the adapter
+
 #### 27.11.2018
 
 * [VideoSearch] Better jumping to position after loading more videos
