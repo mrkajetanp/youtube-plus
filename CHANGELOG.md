@@ -4,6 +4,7 @@
 
 #### 28.11.2018
 
+* [VideoSearch] Improved thumbnails by using the Picasso library 
 * [VideoSearch] Improved adding new results to the adapter
 
 #### 27.11.2018

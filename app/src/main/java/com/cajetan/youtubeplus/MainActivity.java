@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity
 
         mVideoList.setLayoutManager(new LinearLayoutManager(this));
 
-        mAdapter = new VideoListAdapter(Collections.<SearchResult>emptyList(), this);
+        mAdapter = new VideoListAdapter(Collections.<SearchResult>emptyList(), this, this);
         mAdapter.setOnBottomReachedListener(new VideoListAdapter.OnBottomReachedListener() {
             @Override
             public void onBottomReached(int position) {

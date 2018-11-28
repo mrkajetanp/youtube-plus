@@ -1,9 +1,12 @@
 package com.cajetan.youtubeplus;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.api.services.youtube.model.SearchResult;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.net.URL;
@@ -25,6 +29,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
 
     private final ListItemClickListener mOnClickListener;
     private ArrayList<SearchResult> mVideos;
+    private Context context;
 
     private int currentPosition = 0;
 
@@ -32,9 +37,10 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
         void onListItemClick(String clickedVideoId);
     }
 
-    public VideoListAdapter(List<SearchResult> videos, ListItemClickListener listener) {
+    public VideoListAdapter(List<SearchResult> videos, ListItemClickListener listener, Context context) {
         mOnClickListener = listener;
         mVideos = new ArrayList<>(videos);
+        this.context = context;
     }
 
     public void setOnBottomReachedListener(OnBottomReachedListener onBottomReachedListener) {
@@ -111,37 +117,23 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
             else if (video.getSnippet().getThumbnails().getDefault() != null)
                 thumbnailUrl = video.getSnippet().getThumbnails().getDefault().getUrl();
 
-            if (thumbnailUrl != null)
-                new SetThumbnailTask().execute(thumbnailUrl);
+            if (thumbnailUrl != null) {
+                Picasso.get().load(thumbnailUrl)
+                        .resize(dpToPixel(160, context), dpToPixel(90, context))
+                        .centerInside().into(videoThumbnailView);
+            }
         }
 
         @Override
         public void onClick(View v) {
             mOnClickListener.onListItemClick(mVideos.get(getAdapterPosition()).getId().getVideoId());
         }
+    }
 
-        private class SetThumbnailTask extends AsyncTask<String, Void, Bitmap> {
-            @Override
-            protected Bitmap doInBackground(String... strings) {
-                Bitmap result = null;
-
-                try {
-                    URL url = new URL(strings[0]);
-                    result = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                } catch (IOException e) {
-                    Log.e(TAG, e.toString());
-                }
-
-                return result;
-            }
-
-            @Override
-            protected void onPostExecute(Bitmap bitmap) {
-                videoThumbnailView.setScaleType(ImageView.ScaleType.FIT_XY);
-                videoThumbnailView.setImageBitmap(bitmap);
-                videoThumbnailView.invalidate();
-            }
-        }
+    public static int dpToPixel(float dp, Context context) {
+        Resources resources = context.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        return Math.round(dp * ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
     public interface OnBottomReachedListener {
