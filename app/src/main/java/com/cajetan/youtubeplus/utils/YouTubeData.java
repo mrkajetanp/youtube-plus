@@ -137,6 +137,9 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
                 previousPageToken = response.getPrevPageToken();
 
                 return response.getItems();
+
+                // TODO: another request for every video, put into a list and return here
+                // think about passing it on play somehow, idk
             } catch (Exception e) {
                 Log.e("YouTubeData", "Exception: " + e.toString());
                 mLastError = e;

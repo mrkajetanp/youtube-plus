@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -88,6 +90,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
 
         TextView videoTitleView;
         TextView videoChannelView;
+//        TextView videoDurationView;
         ImageView videoThumbnailView;
 
         public VideoViewHolder(View itemView) {
@@ -96,6 +99,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
             videoTitleView = itemView.findViewById(R.id.video_title);
             videoChannelView = itemView.findViewById(R.id.video_author);
             videoThumbnailView = itemView.findViewById(R.id.video_thumbnail);
+//            videoDurationView = itemView.findViewById(R.id.video_duration);
 
             itemView.setOnClickListener(this);
         }
@@ -103,6 +107,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
         void bind(SearchResult video) {
             videoTitleView.setText(video.getSnippet().getTitle());
             videoChannelView.setText(video.getSnippet().getChannelTitle());
+            videoThumbnailView.setBackgroundColor(Color.parseColor("#e5e5e5"));
 
             String thumbnailUrl = null;
 

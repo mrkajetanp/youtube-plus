@@ -4,6 +4,7 @@
 
 #### 29.11.2018
 
+* [VideoSearch] YouTube app-like grey background before thumbnail loads 
 * [VideoSearch] Further improved thumbnail dimensions
 
 #### 28.11.2018
