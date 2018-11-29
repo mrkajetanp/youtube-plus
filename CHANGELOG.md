@@ -2,6 +2,10 @@
 
 ---
 
+#### 29.11.2018
+
+* [VideoSearch] Further improved thumbnail dimensions
+
 #### 28.11.2018
 
 * [VideoSearch] Improved thumbnails by using the Picasso library 

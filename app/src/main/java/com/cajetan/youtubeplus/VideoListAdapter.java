@@ -120,7 +120,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
             if (thumbnailUrl != null) {
                 Picasso.get().load(thumbnailUrl)
                         .resize(dpToPixel(160, context), dpToPixel(90, context))
-                        .centerInside().into(videoThumbnailView);
+                        .centerCrop().into(videoThumbnailView);
             }
         }
 
