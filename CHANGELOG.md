@@ -4,6 +4,7 @@
 
 #### 30.11.2018
 
+* [General] Minor changes and improvements 
 * [VideoSearch] Added video duration on thumbnails
 
 #### 29.11.2018

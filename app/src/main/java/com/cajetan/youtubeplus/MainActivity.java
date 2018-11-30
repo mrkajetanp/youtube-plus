@@ -17,7 +17,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.cajetan.youtubeplus.utils.YouTubeData;
-import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.Video;
 
 import java.util.Collections;
@@ -62,7 +61,7 @@ public class MainActivity extends AppCompatActivity
 
                     mSearchQuery = textViewContent;
 
-                    videoSearch(mSearchQuery, null);
+                    videoSearch(null);
                     handled = true;
                 }
 
@@ -81,7 +80,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onBottomReached(int position) {
                 Log.d(TAG, "Reached the bottom");
-                videoSearch(mSearchQuery, mNextPageToken);
+                videoSearch(mNextPageToken);
             }
         });
 
@@ -91,8 +90,7 @@ public class MainActivity extends AppCompatActivity
         createNotificationChannel();
     }
 
-    // TODO: maybe lose the argument
-    public void videoSearch(String query, String nextPageToken) {
+    public void videoSearch(String nextPageToken) {
         if (nextPageToken == null) {
             searchProgressBarCentre.setVisibility(View.VISIBLE);
             mVideoList.setVisibility(View.INVISIBLE);
@@ -101,7 +99,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         Log.d("YouTubeData", "Searching for a video: " + searchBox.getText().toString());
-        mYouTubeData.receiveSearchResults(query, nextPageToken);
+        mYouTubeData.receiveSearchResults(mSearchQuery, nextPageToken);
     }
 
     // TODO: another callback for new page results

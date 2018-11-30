@@ -13,7 +13,6 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.cajetan.youtubeplus.MainActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -32,9 +31,7 @@ import com.google.api.services.youtube.model.Video;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -80,7 +77,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
         else if (mCredential.getSelectedAccountName() == null)
             chooseAccount(0);
         else if (!isDeviceOnline())
-            Log.d("YouTubeData", "Device is not online");
+            Toast.makeText(mActivity, "The device is not online.", Toast.LENGTH_SHORT).show();
         else
             new VideoDataTask(mCredential).execute(mVideoId);
     }
@@ -95,8 +92,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
         else if (mCredential.getSelectedAccountName() == null)
              chooseAccount(1);
         else if (!isDeviceOnline())
-            // TODO: how about a toast?
-             Log.d(TAG, "Device is not online");
+            Toast.makeText(mActivity, "The device is not online.", Toast.LENGTH_SHORT).show();
         else
              new VideoSearchTask(mCredential).execute(search, pageToken);
     }

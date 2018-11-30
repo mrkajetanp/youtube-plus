@@ -51,7 +51,6 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
 
     // TODO: fetch youtube data after restoring internet connection
 
-    // TODO: dismiss the notification on back button pressed
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
