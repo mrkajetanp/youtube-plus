@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.cajetan.youtubeplus.utils.YouTubeData;
 import com.google.api.services.youtube.model.SearchResult;
+import com.google.api.services.youtube.model.Video;
 
 import java.util.Collections;
 import java.util.List;
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity
 
         mVideoList.setLayoutManager(new LinearLayoutManager(this));
 
-        mAdapter = new VideoListAdapter(Collections.<SearchResult>emptyList(), this, this);
+        mAdapter = new VideoListAdapter(Collections.<Video>emptyList(), this, this);
         mAdapter.setOnBottomReachedListener(new VideoListAdapter.OnBottomReachedListener() {
             @Override
             public void onBottomReached(int position) {
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity
     // TODO: another callback for new page results
 
     @Override
-    public void onSearchResultsReceived(List<SearchResult> results,
+    public void onSearchResultsReceived(List<Video> results,
                                         final String nextPageToken, String previousPageToken) {
 
         //  Reset the adapter if no previous results or a new search

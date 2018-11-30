@@ -2,6 +2,10 @@
 
 ---
 
+#### 30.11.2018
+
+* [VideoSearch] Added video duration on thumbnails
+
 #### 29.11.2018
 
 * [VideoSearch] YouTube app-like grey background before thumbnail loads 

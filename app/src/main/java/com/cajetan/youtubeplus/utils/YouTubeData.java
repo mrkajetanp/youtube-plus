@@ -30,7 +30,9 @@ import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.Video;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -99,7 +101,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
              new VideoSearchTask(mCredential).execute(search, pageToken);
     }
 
-    private class VideoSearchTask extends AsyncTask<String, Void, List<SearchResult>> {
+    private class VideoSearchTask extends AsyncTask<String, Void, List<Video>> {
         private com.google.api.services.youtube.YouTube mService;
         private Exception mLastError = null;
         private String nextPageToken = null;
@@ -116,7 +118,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
         }
 
         @Override
-        protected List<SearchResult> doInBackground(String... keywords) {
+        protected List<Video> doInBackground(String... keywords) {
             Log.d(TAG, "Receiving search results..");
 
             try {
@@ -136,10 +138,30 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
                 nextPageToken = response.getNextPageToken();
                 previousPageToken = response.getPrevPageToken();
 
-                return response.getItems();
+                List<SearchResult> searchResults = response.getItems();
 
-                // TODO: another request for every video, put into a list and return here
-                // think about passing it on play somehow, idk
+                List<Video> finalResults = new ArrayList<>();
+
+                for (SearchResult r : searchResults) {
+                    String id = r.getId().getVideoId();
+
+//                     TODO: Some stuff with this, if id turns out to be null
+//                    (new Video()).setSnippet(searchResults.get(0).getSnippet().);
+                    if (id == null)
+                        continue;
+
+                    Video v = mService.videos()
+                            .list("snippet,contentDetails")
+                            .setId(id)
+                            .execute()
+                            .getItems()
+                            .get(0);
+
+                    finalResults.add(v);
+
+                }
+
+                return finalResults;
             } catch (Exception e) {
                 Log.e("YouTubeData", "Exception: " + e.toString());
                 mLastError = e;
@@ -149,7 +171,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
         }
 
         @Override
-        protected void onPostExecute(List<SearchResult> results) {
+        protected void onPostExecute(List<Video> results) {
             Log.d(TAG, "Passing the results..");
 
             if (mActivity instanceof VideoSearchListener)
@@ -363,7 +385,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
     }
 
     public interface VideoSearchListener {
-        void onSearchResultsReceived(List<SearchResult> results,
+        void onSearchResultsReceived(List<Video> results,
                                      String nextPageToken, String previousPageToken);
     }
 }

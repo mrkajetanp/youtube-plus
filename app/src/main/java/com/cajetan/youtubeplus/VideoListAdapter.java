@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.api.services.youtube.model.SearchResult;
+import com.google.api.services.youtube.model.Video;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -30,7 +31,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
     private OnBottomReachedListener onBottomReachedListener;
 
     private final ListItemClickListener mOnClickListener;
-    private ArrayList<SearchResult> mVideos;
+    private ArrayList<Video> mVideos;
     private Context context;
 
     private int currentPosition = 0;
@@ -39,7 +40,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
         void onListItemClick(String clickedVideoId);
     }
 
-    public VideoListAdapter(List<SearchResult> videos, ListItemClickListener listener, Context context) {
+    public VideoListAdapter(List<Video> videos, ListItemClickListener listener, Context context) {
         mOnClickListener = listener;
         mVideos = new ArrayList<>(videos);
         this.context = context;
@@ -74,7 +75,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
         return mVideos.size();
     }
 
-    public void addItems(List<SearchResult> items) {
+    public void addItems(List<Video> items) {
         this.mVideos.addAll(items);
         notifyDataSetChanged();
     }
@@ -90,7 +91,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
 
         TextView videoTitleView;
         TextView videoChannelView;
-//        TextView videoDurationView;
+        TextView videoDurationView;
         ImageView videoThumbnailView;
 
         public VideoViewHolder(View itemView) {
@@ -99,15 +100,20 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
             videoTitleView = itemView.findViewById(R.id.video_title);
             videoChannelView = itemView.findViewById(R.id.video_author);
             videoThumbnailView = itemView.findViewById(R.id.video_thumbnail);
-//            videoDurationView = itemView.findViewById(R.id.video_duration);
+            videoDurationView = itemView.findViewById(R.id.video_duration);
 
             itemView.setOnClickListener(this);
         }
 
-        void bind(SearchResult video) {
+        void bind(Video video) {
             videoTitleView.setText(video.getSnippet().getTitle());
             videoChannelView.setText(video.getSnippet().getChannelTitle());
             videoThumbnailView.setBackgroundColor(Color.parseColor("#e5e5e5"));
+
+            String duration = video.getContentDetails().getDuration();
+            duration = duration.substring(2, duration.length()-1);
+            duration = duration.replace("M", ":");
+            videoDurationView.setText(duration);
 
             String thumbnailUrl = null;
 
@@ -131,7 +137,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
 
         @Override
         public void onClick(View v) {
-            mOnClickListener.onListItemClick(mVideos.get(getAdapterPosition()).getId().getVideoId());
+            mOnClickListener.onListItemClick(mVideos.get(getAdapterPosition()).getId());
         }
     }
 
