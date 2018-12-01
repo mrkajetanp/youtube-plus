@@ -4,6 +4,7 @@
 
 #### 1.12.2018
 
+* [YouTubeData] Minor refactors and improvements 
 * [YouTubeData] Method structure refactoring
 
 #### 30.11.2018

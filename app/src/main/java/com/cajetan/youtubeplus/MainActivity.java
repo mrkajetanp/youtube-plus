@@ -107,7 +107,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSearchResultsReceived(List<Video> results,
                                         final String nextPageToken, String previousPageToken) {
-
         //  Reset the adapter if no previous results or a new search
         if (previousPageToken == null || previousPageToken.equals("")) {
             mAdapter.clearItems();
@@ -120,7 +119,6 @@ public class MainActivity extends AppCompatActivity
         }
 
         mAdapter.addItems(results);
-
         mNextPageToken = nextPageToken;
     }
 

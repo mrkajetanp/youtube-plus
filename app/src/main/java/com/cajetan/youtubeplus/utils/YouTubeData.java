@@ -44,6 +44,8 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
 
     private static final String TAG = YouTubeData.class.getSimpleName();
 
+    private static final long SEARCH_PAGE_SIZE = 20;
+
     private static final int REQUEST_ACCOUNT_PICKER = 1000;
     private static final int REQUEST_AUTHORIZATION = 1001;
     private static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
@@ -101,8 +103,8 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
     private class VideoSearchTask extends AsyncTask<String, Void, List<Video>> {
         private com.google.api.services.youtube.YouTube mService;
         private Exception mLastError = null;
-        private String nextPageToken = null;
-        private String previousPageToken = null;
+        private String mNextPageToken = null;
+        private String mPreviousPageToken = null;
 
         VideoSearchTask(GoogleAccountCredential credential) {
             HttpTransport transport = AndroidHttp.newCompatibleTransport();
@@ -115,25 +117,28 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
         }
 
         @Override
-        protected List<Video> doInBackground(String... keywords) {
+        protected List<Video> doInBackground(String... args) {
             Log.d(TAG, "Receiving search results..");
 
             try {
+                String videoId = args[0];
+                String nextPageToken = args[1];
+
                 YouTube.Search.List searchList = mService.search()
                         .list("snippet")
-                        .setMaxResults(20L)
-                        .setQ(keywords[0])
+                        .setMaxResults(SEARCH_PAGE_SIZE)
+                        .setQ(videoId)
                         .setType("");
 
-                // TODO: args
-                if (keywords[1] != null) {
-                    Log.d(TAG, "Next page token: " + keywords[1]);
-                    searchList.setPageToken(keywords[1]);
+                if (nextPageToken != null) {
+                    Log.d(TAG, "Next page token: " + nextPageToken);
+                    searchList.setPageToken(nextPageToken);
                 }
 
                 SearchListResponse response = searchList.execute();
-                nextPageToken = response.getNextPageToken();
-                previousPageToken = response.getPrevPageToken();
+
+                this.mNextPageToken = response.getNextPageToken();
+                mPreviousPageToken = response.getPrevPageToken();
 
                 List<SearchResult> searchResults = response.getItems();
 
@@ -142,8 +147,8 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
                 for (SearchResult r : searchResults) {
                     String id = r.getId().getVideoId();
 
-//                     TODO: Some stuff with this, if id turns out to be null
-//                    (new Video()).setSnippet(searchResults.get(0).getSnippet().);
+//                  TODO: Some stuff with this, if id turns out to be null
+//                  (new Video()).setSnippet(searchResults.get(0).getSnippet().);
                     if (id == null)
                         continue;
 
@@ -155,7 +160,6 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
                             .get(0);
 
                     finalResults.add(v);
-
                 }
 
                 return finalResults;
@@ -173,7 +177,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
 
             if (mActivity instanceof VideoSearchListener)
                 ((VideoSearchListener) mActivity).onSearchResultsReceived(results,
-                        nextPageToken, previousPageToken);
+                        mNextPageToken, mPreviousPageToken);
             else
                 throw new UnsupportedOperationException("Activity must implement VideoSearchListener.");
         }
