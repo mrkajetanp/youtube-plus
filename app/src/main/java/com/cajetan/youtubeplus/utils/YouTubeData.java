@@ -56,6 +56,8 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
     private String searchQuery = "";
     private String searchPageToken = null;
 
+    private RequestType mRequestType;
+
     private Activity mActivity;
 
     public YouTubeData(Activity parentActivity) {
@@ -68,6 +70,16 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
 
     public void receiveVideoData(String videoId) {
         mVideoId = videoId;
+        mRequestType = RequestType.DATA_REQUEST;
+
+        getResultsFromApi();
+    }
+
+    public void receiveSearchResults(String search, String pageToken) {
+        searchQuery = search;
+        searchPageToken = pageToken;
+        mRequestType = RequestType.SEARCH_REQUEST;
+
         getResultsFromApi();
     }
 
@@ -75,26 +87,15 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
         if (!isGooglePlayServicesAvailable())
             acquireGooglePlayServices();
         else if (mCredential.getSelectedAccountName() == null)
-            chooseAccount(0);
+            chooseAccount();
         else if (!isDeviceOnline())
             Toast.makeText(mActivity, "The device is not online.", Toast.LENGTH_SHORT).show();
-        else
-            new VideoDataTask(mCredential).execute(mVideoId);
-    }
-
-    // TODO: some fixes
-    public void receiveSearchResults(String search, String pageToken) {
-        searchQuery = search;
-        searchPageToken = pageToken;
-
-         if (!isGooglePlayServicesAvailable())
-             acquireGooglePlayServices();
-        else if (mCredential.getSelectedAccountName() == null)
-             chooseAccount(1);
-        else if (!isDeviceOnline())
-            Toast.makeText(mActivity, "The device is not online.", Toast.LENGTH_SHORT).show();
-        else
-             new VideoSearchTask(mCredential).execute(search, pageToken);
+        else {
+            if (mRequestType == RequestType.DATA_REQUEST)
+                new VideoDataTask(mCredential).execute(mVideoId);
+            else if (mRequestType == RequestType.SEARCH_REQUEST)
+                new VideoSearchTask(mCredential).execute(searchQuery, searchPageToken);
+        }
     }
 
     private class VideoSearchTask extends AsyncTask<String, Void, List<Video>> {
@@ -289,9 +290,8 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
         }
     }
 
-    // TODO: replace with an enum or try passing AsyncTask around
     @AfterPermissionGranted(REQUEST_PERMISSION_GET_ACCOUNTS)
-    private void chooseAccount(int option) {
+    private void chooseAccount() {
         if (EasyPermissions.hasPermissions(
                 mActivity, Manifest.permission.GET_ACCOUNTS)) {
 
@@ -299,12 +299,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
                     .getString(PREF_ACCOUNT_NAME, null);
             if (accountName != null) {
                 mCredential.setSelectedAccountName(accountName);
-
-                if (option == 0)
-                    getResultsFromApi();
-                else
-                    receiveSearchResults(searchQuery, searchPageToken);
-
+                getResultsFromApi();
             } else {
                 // Start a dialog from which the user can choose an account
                 mActivity.startActivityForResult(
@@ -374,6 +369,11 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
                                            @NonNull int[] grantResults) {
         EasyPermissions.onRequestPermissionsResult(
                 requestCode, permissions, grantResults, this);
+    }
+
+    private enum RequestType {
+        DATA_REQUEST,
+        SEARCH_REQUEST
     }
 
     public interface VideoDataListener {
