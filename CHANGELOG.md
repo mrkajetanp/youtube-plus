@@ -2,6 +2,10 @@
 
 ---
 
+#### 2.12.2018
+
+* [PlayerActivity] Video menu with seek to 0 option
+
 #### 1.12.2018
 
 * [YouTubeData] Minor refactors and improvements 

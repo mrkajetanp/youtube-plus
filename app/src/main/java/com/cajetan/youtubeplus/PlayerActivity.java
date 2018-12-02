@@ -20,6 +20,8 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import com.cajetan.youtubeplus.utils.FullScreenHelper;
 import com.cajetan.youtubeplus.utils.YouTubeData;
@@ -30,6 +32,8 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.player.YouTubePlayerView;
 import com.pierfrancescosoffritti.androidyoutubeplayer.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.player.listeners.YouTubePlayerFullScreenListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.player.listeners.YouTubePlayerInitListener;
+import com.pierfrancescosoffritti.androidyoutubeplayer.ui.PlayerUIController;
+import com.pierfrancescosoffritti.androidyoutubeplayer.ui.menu.MenuItem;
 import com.pierfrancescosoffritti.androidyoutubeplayer.utils.YouTubePlayerTracker;
 
 import java.io.IOException;
@@ -45,6 +49,8 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
     private PlaybackStateCompat.Builder mStateBuilder;
 
     private YouTubeData youTubeData;
+    private PlayerUIController mUIController;
+
     private String mVideoId;
     private Video mVideoData;
     private Bitmap mVideoThumbnail;
@@ -121,6 +127,17 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
                 fullScreenHelper.exitFullScreen();
             }
         });
+
+        mUIController = mainPlayerView.getPlayerUIController();
+        mUIController.showMenuButton(true);
+
+        // TODO: get rid of the icon / replace it
+        mUIController.getMenu().addItem(new MenuItem("Seek", R.drawable.ic_youtube_24dp, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainPlayerView.getPlayer().seekTo(0);
+            }
+        }));
     }
 
     private void setupMediaSession() {
