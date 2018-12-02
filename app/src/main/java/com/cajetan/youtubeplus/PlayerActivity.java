@@ -1,5 +1,6 @@
 package com.cajetan.youtubeplus;
 
+import android.app.DialogFragment;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -135,7 +136,10 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
         mUIController.getMenu().addItem(new MenuItem("Seek", R.drawable.ic_youtube_24dp, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mainPlayerView.getPlayer().seekTo(0);
+                DialogFragment newFragment = new SeekDialog();
+                newFragment.show(getFragmentManager(), "seeker_dialog");
+
+//                mainPlayerView.getPlayer().seekTo(0);
             }
         }));
     }

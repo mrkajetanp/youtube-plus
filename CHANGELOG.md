@@ -4,6 +4,7 @@
 
 #### 2.12.2018
 
+* [PlayerActivity] Basic dialog for video seek 
 * [PlayerActivity] Video menu with seek to 0 option
 
 #### 1.12.2018
