@@ -40,7 +40,9 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.utils.YouTubePlayerTracke
 import java.io.IOException;
 import java.net.URL;
 
-public class PlayerActivity extends AppCompatActivity implements YouTubeData.VideoDataListener {
+public class PlayerActivity extends AppCompatActivity
+        implements YouTubeData.VideoDataListener, SeekDialog.SeekDialogListener {
+
     private static final String TAG = PlayerActivity.class.getSimpleName();
 
     private YouTubePlayerView mainPlayerView;
@@ -139,7 +141,7 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
                 DialogFragment newFragment = new SeekDialog();
                 newFragment.show(getFragmentManager(), "seeker_dialog");
 
-//                mainPlayerView.getPlayer().seekTo(0);
+                // TODO: dismiss the menu on click
             }
         }));
     }
@@ -326,6 +328,13 @@ public class PlayerActivity extends AppCompatActivity implements YouTubeData.Vid
 
             stopSelf();
         }
+    }
+
+    @Override
+    public void onSeekButtonClicked(int hours, int minutes, int seconds) {
+        int seekTime = seconds + minutes*60 + hours*60*60;
+        mainPlayerView.getPlayer().seekTo(seekTime);
+        mainPlayerView.resumePlayback();
     }
 
     @Override

@@ -112,12 +112,8 @@ public class YouTubePlayerView extends FrameLayout implements NetworkReceiver.Ne
         return this.youTubePlayer;
     }
 
-    public void pausePlayback() {
-        youTubePlayer.play();
-    }
-
     public void resumePlayback() {
-        youTubePlayer.pause();
+        youTubePlayer.play();
     }
 
     /**

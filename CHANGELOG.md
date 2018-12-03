@@ -4,6 +4,7 @@
 
 #### 3.12.2018
 
+* [PlayerActivity] Working seek functionality 
 * [PlayerActivity] Seek dialog layout setup
 
 #### 2.12.2018
