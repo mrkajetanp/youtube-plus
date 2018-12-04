@@ -48,11 +48,10 @@ public class SeekDialog extends DialogFragment {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: maybe convert here
+                float duration = hourPicker.getValue()*60*60 +
+                        minutePicker.getValue()*60 + secondPicker.getValue();
 
-                mListener.onSeekButtonClicked(hourPicker.getValue(), minutePicker.getValue(),
-                        secondPicker.getValue());
-
+                mListener.onSeekButtonClicked(duration);
                 dismiss();
             }
         });
@@ -73,6 +72,6 @@ public class SeekDialog extends DialogFragment {
     }
 
     public interface SeekDialogListener {
-        void onSeekButtonClicked(int hours, int minutes, int seconds);
+        void onSeekButtonClicked(float duration);
     }
 }

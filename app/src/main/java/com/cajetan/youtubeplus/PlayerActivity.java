@@ -331,9 +331,8 @@ public class PlayerActivity extends AppCompatActivity
     }
 
     @Override
-    public void onSeekButtonClicked(int hours, int minutes, int seconds) {
-        int seekTime = seconds + minutes*60 + hours*60*60;
-        mainPlayerView.getPlayer().seekTo(seekTime);
+    public void onSeekButtonClicked(float duration) {
+        mainPlayerView.getPlayer().seekTo(duration);
         mainPlayerView.resumePlayback();
     }
 

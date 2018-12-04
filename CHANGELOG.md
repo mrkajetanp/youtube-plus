@@ -2,6 +2,10 @@
 
 ---
 
+#### 4.12.2018
+
+* [SeekDialog] Converting time to a float inside the class
+
 #### 3.12.2018
 
 * [PlayerActivity] Working seek functionality 
