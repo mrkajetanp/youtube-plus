@@ -4,6 +4,7 @@
 
 #### 4.12.2018
 
+* [SeekDialog] Setting proper max values in sliders and hiding them accordingly 
 * [SeekDialog] Converting time to a float inside the class
 
 #### 3.12.2018

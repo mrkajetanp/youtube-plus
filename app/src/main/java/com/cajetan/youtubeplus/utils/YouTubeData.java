@@ -218,7 +218,8 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
         protected Video doInBackground(String... videoIds) {
             try {
                 return mService.videos()
-                        .list("snippet")
+                        // TODO: some space for performance improvement here
+                        .list("snippet, contentDetails")
                         .setId(videoIds[0])
                         .execute()
                         .getItems()

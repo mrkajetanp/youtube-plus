@@ -5,6 +5,7 @@ import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -31,18 +32,47 @@ public class SeekDialog extends DialogFragment {
 
         builder.setView(layoutView);
 
-        // TODO: get durations according to the video
+        // TODO: get current video position and set it in the dialog
+
+        String[] durationParts = getArguments().getString("duration_string")
+                .substring(2).replace('M', ' ').replace('S', ' ')
+                .replace('H', ' ').split(" ");
+
+        int maxSeconds;
+        int maxMinutes;
+        int maxHours;
+
+        if (durationParts.length == 3) {
+            maxHours = Integer.parseInt(durationParts[0]);
+            maxMinutes = 59;
+            maxSeconds = 59;
+        } else if (durationParts.length == 2) {
+            maxHours = 0;
+            maxMinutes = Integer.parseInt(durationParts[0]);
+            maxSeconds = 59;
+        } else {
+            maxHours = 0;
+            maxMinutes = 0;
+            maxSeconds = Integer.parseInt(durationParts[0]);
+        }
+
         secondPicker = layoutView.findViewById(R.id.second_picker);
         secondPicker.setMinValue(0);
-        secondPicker.setMaxValue(59);
+        secondPicker.setMaxValue(maxSeconds);
 
         minutePicker = layoutView.findViewById(R.id.minute_picker);
         minutePicker.setMinValue(0);
-        minutePicker.setMaxValue(59);
+        minutePicker.setMaxValue(maxMinutes);
+
+        if (maxMinutes == 0)
+            minutePicker.setVisibility(View.GONE);
 
         hourPicker = layoutView.findViewById(R.id.hour_picker);
         hourPicker.setMinValue(0);
-        hourPicker.setMaxValue(100);
+        hourPicker.setMaxValue(maxHours);
+
+        if (maxHours == 0)
+            hourPicker.setVisibility(View.GONE);
 
         confirmButton = layoutView.findViewById(R.id.confirm_button);
         confirmButton.setOnClickListener(new View.OnClickListener() {

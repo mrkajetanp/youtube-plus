@@ -139,6 +139,9 @@ public class PlayerActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 DialogFragment newFragment = new SeekDialog();
+                Bundle b = new Bundle();
+                b.putString("duration_string", mVideoData.getContentDetails().getDuration());
+                newFragment.setArguments(b);
                 newFragment.show(getFragmentManager(), "seeker_dialog");
 
                 // TODO: dismiss the menu on click
