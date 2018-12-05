@@ -32,7 +32,13 @@ public class SeekDialog extends DialogFragment {
 
         builder.setView(layoutView);
 
-        // TODO: get current video position and set it in the dialog
+        int currentSecond = getArguments().getInt("current_second");
+        int currentMinute = (int) Math.floor(currentSecond / 60);
+        int currentHour = (int) Math.floor(currentMinute / 60);
+
+        currentMinute -= currentHour*60;
+        currentSecond -= currentHour*60*60;
+        currentSecond -= currentMinute*60;
 
         String[] durationParts = getArguments().getString("duration_string")
                 .substring(2).replace('M', ' ').replace('S', ' ')
@@ -59,10 +65,12 @@ public class SeekDialog extends DialogFragment {
         secondPicker = layoutView.findViewById(R.id.second_picker);
         secondPicker.setMinValue(0);
         secondPicker.setMaxValue(maxSeconds);
+        secondPicker.setValue(currentSecond);
 
         minutePicker = layoutView.findViewById(R.id.minute_picker);
         minutePicker.setMinValue(0);
         minutePicker.setMaxValue(maxMinutes);
+        minutePicker.setValue(currentMinute);
 
         if (maxMinutes == 0)
             minutePicker.setVisibility(View.GONE);
@@ -70,6 +78,7 @@ public class SeekDialog extends DialogFragment {
         hourPicker = layoutView.findViewById(R.id.hour_picker);
         hourPicker.setMinValue(0);
         hourPicker.setMaxValue(maxHours);
+        hourPicker.setValue(currentHour);
 
         if (maxHours == 0)
             hourPicker.setVisibility(View.GONE);

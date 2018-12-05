@@ -4,6 +4,7 @@
 
 #### 5.12.2018
 
+* [SeekDialog] Setting the time to the current video position 
 * [SeekDialog] Dismissing the menu on click
 
 #### 4.12.2018

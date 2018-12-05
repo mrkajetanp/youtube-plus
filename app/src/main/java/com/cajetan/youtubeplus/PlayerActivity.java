@@ -58,6 +58,8 @@ public class PlayerActivity extends AppCompatActivity
     private Video mVideoData;
     private Bitmap mVideoThumbnail;
 
+    private final YouTubePlayerTracker mTracker = new YouTubePlayerTracker();
+
     // TODO: fetch youtube data after restoring internet connection
 
     @Override
@@ -85,10 +87,7 @@ public class PlayerActivity extends AppCompatActivity
         mainPlayerView.initialize(new YouTubePlayerInitListener() {
             @Override
             public void onInitSuccess(@NonNull final YouTubePlayer initialisedYouTubePlayer) {
-
-                // Tracker to get the state of the player
-                final YouTubePlayerTracker tracker = new YouTubePlayerTracker();
-                initialisedYouTubePlayer.addListener(tracker);
+                initialisedYouTubePlayer.addListener(mTracker);
 
                 initialisedYouTubePlayer.addListener(new AbstractYouTubePlayerListener() {
                     @Override
@@ -102,10 +101,10 @@ public class PlayerActivity extends AppCompatActivity
 
                         if (state == PlayerConstants.PlayerState.PLAYING) {
                             mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
-                                    (long) tracker.getCurrentSecond(), 1f);
+                                    (long) mTracker.getCurrentSecond(), 1f);
                         } else if (state == PlayerConstants.PlayerState.PAUSED) {
                             mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
-                                    (long) tracker.getCurrentSecond(), 1f);
+                                    (long) mTracker.getCurrentSecond(), 1f);
                         }
 
                         mMediaSession.setPlaybackState(mStateBuilder.build());
@@ -144,6 +143,7 @@ public class PlayerActivity extends AppCompatActivity
             public void onClick(View v) {
                 Bundle b = new Bundle();
                 b.putString("duration_string", mVideoData.getContentDetails().getDuration());
+                b.putInt("current_second", Math.round(mTracker.getCurrentSecond()));
 
                 DialogFragment newFragment = new SeekDialog();
                 newFragment.setArguments(b);
