@@ -132,19 +132,24 @@ public class PlayerActivity extends AppCompatActivity
         });
 
         mUIController = mainPlayerView.getPlayerUIController();
+
+        if (mUIController.getMenu() == null)
+            return;
+
         mUIController.showMenuButton(true);
 
         // TODO: get rid of the icon / replace it
         mUIController.getMenu().addItem(new MenuItem("Seek", R.drawable.ic_youtube_24dp, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment newFragment = new SeekDialog();
                 Bundle b = new Bundle();
                 b.putString("duration_string", mVideoData.getContentDetails().getDuration());
+
+                DialogFragment newFragment = new SeekDialog();
                 newFragment.setArguments(b);
                 newFragment.show(getFragmentManager(), "seeker_dialog");
 
-                // TODO: dismiss the menu on click
+                mUIController.getMenu().dismiss();
             }
         }));
     }

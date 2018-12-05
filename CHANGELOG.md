@@ -2,6 +2,10 @@
 
 ---
 
+#### 5.12.2018
+
+* [SeekDialog] Dismissing the menu on click
+
 #### 4.12.2018
 
 * [SeekDialog] Setting proper max values in sliders and hiding them accordingly 
