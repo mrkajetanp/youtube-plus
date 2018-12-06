@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_start"
+        android:icon="@drawable/ic_youtube_24dp"
+        android:title="Start" />
+
+    <item
+        android:id="@+id/action_favourites"
+        android:icon="@drawable/ic_menu_24dp"
+        android:enabled="false"
+        android:title="Favourites" />
+
+    <item
+        android:id="@+id/action_others"
+        android:icon="@drawable/ic_play_36dp"
+        android:enabled="false"
+        android:title="Others" />
+</menu>

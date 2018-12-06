@@ -14,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -58,6 +59,8 @@ public class PlayerActivity extends AppCompatActivity
     private Video mVideoData;
     private Bitmap mVideoThumbnail;
 
+    private BottomNavigationView mBottomNavBar;
+
     private final YouTubePlayerTracker mTracker = new YouTubePlayerTracker();
 
     // TODO: fetch youtube data after restoring internet connection
@@ -78,6 +81,26 @@ public class PlayerActivity extends AppCompatActivity
 
         setupPlayer();
         setupMediaSession();
+        setupBottomBar();
+    }
+
+    private void setupBottomBar() {
+        mBottomNavBar = findViewById(R.id.bottom_bar);
+        mBottomNavBar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull android.view.MenuItem item) {
+                if (item.getItemId() == R.id.action_start) {
+                    finish();
+                    return true;
+                }
+
+                if (item.getItemId() == R.id.action_favourites) {
+                    Toast.makeText(getParent(), "Not implemented yet", Toast.LENGTH_LONG).show();
+                }
+
+                return false;
+            }
+        });
     }
 
     private void setupPlayer() {

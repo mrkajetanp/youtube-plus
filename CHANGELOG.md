@@ -2,6 +2,10 @@
 
 ---
 
+#### 6.12.2018
+
+* [BottomBar] Simple bottom navigation bar in the PlayerActivity
+
 #### 5.12.2018
 
 * [SeekDialog] Setting the time to the current video position 
