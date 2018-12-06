@@ -4,6 +4,7 @@
 
 #### 6.12.2018
 
+* [BottomBar] Improved bottom bar colour and state behaviour 
 * [BottomBar] Simple bottom navigation bar in the PlayerActivity
 
 #### 5.12.2018

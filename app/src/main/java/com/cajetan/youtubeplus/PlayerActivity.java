@@ -94,8 +94,10 @@ public class PlayerActivity extends AppCompatActivity
                     return true;
                 }
 
-                if (item.getItemId() == R.id.action_favourites) {
-                    Toast.makeText(getParent(), "Not implemented yet", Toast.LENGTH_LONG).show();
+                if (item.getItemId() == R.id.action_others) {
+                    Log.d(TAG, "Not implemented yet");
+                    item.setChecked(true);
+                    return true;
                 }
 
                 return false;
