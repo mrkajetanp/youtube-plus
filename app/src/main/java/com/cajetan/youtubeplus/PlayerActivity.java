@@ -65,6 +65,10 @@ public class PlayerActivity extends AppCompatActivity
 
     // TODO: fetch youtube data after restoring internet connection
 
+    /*//////////////////////////////////////////////////////////////////////////////
+    // Lifecycle
+    //////////////////////////////////////////////////////////////////////////////*/
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,26 +88,35 @@ public class PlayerActivity extends AppCompatActivity
         setupBottomBar();
     }
 
-    private void setupBottomBar() {
-        mBottomNavBar = findViewById(R.id.bottom_bar);
-        mBottomNavBar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull android.view.MenuItem item) {
-                if (item.getItemId() == R.id.action_start) {
-                    finish();
-                    return true;
-                }
-
-                if (item.getItemId() == R.id.action_others) {
-                    Log.d(TAG, "Not implemented yet");
-                    item.setChecked(true);
-                    return true;
-                }
-
-                return false;
-            }
-        });
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Log.d(TAG, "Getting a new intent");
+        Log.d(TAG, "New video id: " + getIntentVideoId());
+        super.onNewIntent(intent);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        youTubeData.onParentActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        youTubeData.receiveVideoData(mVideoId);
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    protected void onDestroy() {
+        ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(0);
+        mainPlayerView.release();
+        super.onDestroy();
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////////
+    // Init
+    //////////////////////////////////////////////////////////////////////////////*/
 
     private void setupPlayer() {
         final String videoId = mVideoId;
@@ -240,6 +253,31 @@ public class PlayerActivity extends AppCompatActivity
         notificationManager.notify(0, builder.build());
     }
 
+    private void setupBottomBar() {
+        mBottomNavBar = findViewById(R.id.bottom_bar);
+        mBottomNavBar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull android.view.MenuItem item) {
+                if (item.getItemId() == R.id.action_start) {
+                    finish();
+                    return true;
+                }
+
+                if (item.getItemId() == R.id.action_others) {
+                    Log.d(TAG, "Not implemented yet");
+                    item.setChecked(true);
+                    return true;
+                }
+
+                return false;
+            }
+        });
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////////
+    // Utils
+    //////////////////////////////////////////////////////////////////////////////*/
+
     private String getIntentVideoId() {
         String videoUrl = null;
         if (getIntent() != null && getIntent().getExtras() != null)
@@ -265,6 +303,11 @@ public class PlayerActivity extends AppCompatActivity
         return videoId;
     }
 
+    /*//////////////////////////////////////////////////////////////////////////////
+    // Callbacks and others
+    //////////////////////////////////////////////////////////////////////////////*/
+
+    // TODO: replace it with a call to picasso
     private class SetAlbumArtTask extends AsyncTask<String, Void, Bitmap> {
         @Override
         protected Bitmap doInBackground(String... strings) {
@@ -301,41 +344,13 @@ public class PlayerActivity extends AppCompatActivity
 
     public static class MediaReceiver extends BroadcastReceiver {
 
-        public MediaReceiver() { }
+        public MediaReceiver() {
+        }
 
         @Override
         public void onReceive(Context context, Intent intent) {
             MediaButtonReceiver.handleIntent(mMediaSession, intent);
         }
-    }
-
-    @Override
-    public void onVideoDataReceived(Video videoData) {
-        mVideoData = videoData;
-
-        if (mVideoData.getSnippet().getThumbnails().getStandard() != null)
-            new SetAlbumArtTask().execute(mVideoData.getSnippet().getThumbnails().getStandard().getUrl());
-
-        showMediaNotification(mStateBuilder.build());
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        Log.d(TAG, "Getting a new intent");
-        Log.d(TAG, "New video id: " + getIntentVideoId());
-        super.onNewIntent(intent);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        youTubeData.onParentActivityResult(requestCode, resultCode, data);
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        youTubeData.receiveVideoData(mVideoId);
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     // A service that calls necessary cleanup methods after the player is closed
@@ -362,15 +377,18 @@ public class PlayerActivity extends AppCompatActivity
     }
 
     @Override
-    public void onSeekButtonClicked(float duration) {
-        mainPlayerView.getPlayer().seekTo(duration);
-        mainPlayerView.resumePlayback();
+    public void onVideoDataReceived(Video videoData) {
+        mVideoData = videoData;
+
+        if (mVideoData.getSnippet().getThumbnails().getStandard() != null)
+            new SetAlbumArtTask().execute(mVideoData.getSnippet().getThumbnails().getStandard().getUrl());
+
+        showMediaNotification(mStateBuilder.build());
     }
 
     @Override
-    protected void onDestroy() {
-        ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(0);
-        mainPlayerView.release();
-        super.onDestroy();
+    public void onSeekButtonClicked(float duration) {
+        mainPlayerView.getPlayer().seekTo(duration);
+        mainPlayerView.resumePlayback();
     }
 }

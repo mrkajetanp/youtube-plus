@@ -4,6 +4,7 @@
 
 #### 7.12.2018
 
+* [PlayerActivity] Reorganised and categorised methods
 * [PlayerActivity] Bottom bar and seek menu option icons
 
 #### 6.12.2018
