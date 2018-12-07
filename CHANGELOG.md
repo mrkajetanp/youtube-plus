@@ -2,6 +2,10 @@
 
 ---
 
+#### 7.12.2018
+
+* [PlayerActivity] Bottom bar and seek menu option icons
+
 #### 6.12.2018
 
 * [BottomBar] Improved bottom bar colour and state behaviour 

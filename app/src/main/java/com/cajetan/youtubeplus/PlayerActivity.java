@@ -161,9 +161,7 @@ public class PlayerActivity extends AppCompatActivity
             return;
 
         mUIController.showMenuButton(true);
-
-        // TODO: get rid of the icon / replace it
-        mUIController.getMenu().addItem(new MenuItem("Seek", R.drawable.ic_youtube_24dp, new View.OnClickListener() {
+        mUIController.getMenu().addItem(new MenuItem("Seek", R.drawable.ic_timer_black_24dp, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bundle b = new Bundle();
