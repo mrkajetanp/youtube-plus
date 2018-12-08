@@ -4,6 +4,7 @@
 
 #### 8.12.2018
 
+* [VideoListAdapter] Reorganised and categorised methods
 * [MainActivity] Reorganised and categorised methods
 
 #### 7.12.2018

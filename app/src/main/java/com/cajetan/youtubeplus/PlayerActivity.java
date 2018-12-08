@@ -37,6 +37,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.player.listeners.YouTubeP
 import com.pierfrancescosoffritti.androidyoutubeplayer.ui.PlayerUIController;
 import com.pierfrancescosoffritti.androidyoutubeplayer.ui.menu.MenuItem;
 import com.pierfrancescosoffritti.androidyoutubeplayer.utils.YouTubePlayerTracker;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.net.URL;
@@ -381,9 +382,7 @@ public class PlayerActivity extends AppCompatActivity
         mVideoData = videoData;
 
         if (mVideoData.getSnippet().getThumbnails().getStandard() != null)
-            new SetAlbumArtTask().execute(mVideoData.getSnippet().getThumbnails().getStandard().getUrl());
-
-        showMediaNotification(mStateBuilder.build());
+            new SetAlbumArtTask().execute();
     }
 
     @Override

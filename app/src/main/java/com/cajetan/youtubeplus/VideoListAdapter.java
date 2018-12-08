@@ -26,28 +26,15 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
     private ArrayList<Video> mVideos;
     private Context context;
 
-    public interface ListItemClickListener {
-        void onListItemClick(String clickedVideoId);
-    }
-
-    public VideoListAdapter(List<Video> videos, ListItemClickListener listener, Context context) {
-        mOnClickListener = listener;
-        mVideos = new ArrayList<>(videos);
-        this.context = context;
-    }
-
-    public void setOnBottomReachedListener(OnBottomReachedListener onBottomReachedListener) {
-        this.onBottomReachedListener = onBottomReachedListener;
-    }
+    /*//////////////////////////////////////////////////////////////////////////////
+    // Lifecycle
+    //////////////////////////////////////////////////////////////////////////////*/
 
     @Override
     public VideoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-
         View view = inflater.inflate(R.layout.video_list_item, parent, false);
-        VideoViewHolder holder = new VideoViewHolder(view);
-
-        return holder;
+        return new VideoViewHolder(view);
     }
 
     @Override
@@ -58,9 +45,23 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
             onBottomReachedListener.onBottomReached(position);
     }
 
+    public VideoListAdapter(List<Video> videos, ListItemClickListener listener, Context context) {
+        mOnClickListener = listener;
+        mVideos = new ArrayList<>(videos);
+        this.context = context;
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////////
+    // Utils
+    //////////////////////////////////////////////////////////////////////////////*/
+
     @Override
     public int getItemCount() {
         return mVideos.size();
+    }
+
+    public void setOnBottomReachedListener(OnBottomReachedListener onBottomReachedListener) {
+        this.onBottomReachedListener = onBottomReachedListener;
     }
 
     public void addItems(List<Video> items) {
@@ -73,7 +74,15 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
         notifyDataSetChanged();
     }
 
-    // TODO: try caching thumbnail Bitmaps
+    private static int dpToPixel(float dp, Context context) {
+        Resources resources = context.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        return Math.round(dp * ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT));
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////////
+    // Callbacks & others
+    //////////////////////////////////////////////////////////////////////////////*/
 
     class VideoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -129,13 +138,11 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
         }
     }
 
-    public static int dpToPixel(float dp, Context context) {
-        Resources resources = context.getResources();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        return Math.round(dp * ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT));
-    }
-
     public interface OnBottomReachedListener {
         void onBottomReached(int position);
+    }
+
+    public interface ListItemClickListener {
+        void onListItemClick(String clickedVideoId);
     }
 }
