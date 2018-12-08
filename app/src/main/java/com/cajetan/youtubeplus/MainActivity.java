@@ -40,6 +40,10 @@ public class MainActivity extends AppCompatActivity
 
     // TODO: implement auto fullscreen on rotation
 
+    /*//////////////////////////////////////////////////////////////////////////////
+    // Lifecycle
+    //////////////////////////////////////////////////////////////////////////////*/
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +94,17 @@ public class MainActivity extends AppCompatActivity
         createNotificationChannel();
     }
 
+    // TODO: quite easy to omit, look for better solutions
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mYouTubeData.onParentActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////////
+    // Utils
+    //////////////////////////////////////////////////////////////////////////////*/
+
     public void videoSearch(String nextPageToken) {
         if (nextPageToken == null) {
             searchProgressBarCentre.setVisibility(View.VISIBLE);
@@ -102,8 +117,24 @@ public class MainActivity extends AppCompatActivity
         mYouTubeData.receiveSearchResults(mSearchQuery, nextPageToken);
     }
 
-    // TODO: another callback for new page results
+     private void createNotificationChannel() {
+        // No need for Notification Channels prior to Oreo
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
+            return;
 
+        NotificationChannel channel = new NotificationChannel(getString(R.string.notification_channel_id),
+                getString(R.string.notification_channel_name), NotificationManager.IMPORTANCE_LOW);
+        channel.setDescription(getString(R.string.notification_channel_description));
+
+        getSystemService(NotificationManager.class).createNotificationChannel(channel);
+    }
+
+
+    /*//////////////////////////////////////////////////////////////////////////////
+    // Callbacks and others
+    //////////////////////////////////////////////////////////////////////////////*/
+
+    // TODO: another callback for new page results
     @Override
     public void onSearchResultsReceived(List<Video> results,
                                         final String nextPageToken, String previousPageToken) {
@@ -127,24 +158,5 @@ public class MainActivity extends AppCompatActivity
         Intent videoPlayerIntent = new Intent(this, PlayerActivity.class);
         videoPlayerIntent.putExtra(getString(R.string.video_id_key), clickedVideoId);
         startActivity(videoPlayerIntent);
-    }
-
-    // TODO: quite easy to omit, look for better solutions
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mYouTubeData.onParentActivityResult(requestCode, resultCode, data);
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    private void createNotificationChannel() {
-        // No need for Notification Channels prior to Oreo
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
-            return;
-
-        NotificationChannel channel = new NotificationChannel(getString(R.string.notification_channel_id),
-                getString(R.string.notification_channel_name), NotificationManager.IMPORTANCE_LOW);
-        channel.setDescription(getString(R.string.notification_channel_description));
-
-        getSystemService(NotificationManager.class).createNotificationChannel(channel);
     }
 }

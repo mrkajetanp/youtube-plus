@@ -2,6 +2,10 @@
 
 ---
 
+#### 8.12.2018
+
+* [MainActivity] Reorganised and categorised methods
+
 #### 7.12.2018
 
 * [PlayerActivity] Reorganised and categorised methods
