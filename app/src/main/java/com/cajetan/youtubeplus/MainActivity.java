@@ -2,6 +2,8 @@ package com.cajetan.youtubeplus;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
@@ -10,11 +12,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cajetan.youtubeplus.utils.YouTubeData;
 import com.google.api.services.youtube.model.Video;
@@ -51,28 +57,6 @@ public class MainActivity extends AppCompatActivity
 
         mYouTubeData = new YouTubeData(this);
 
-        searchBox = findViewById(R.id.search_box);
-        searchBox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                boolean handled = false;
-
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    String textViewContent = textView.getText().toString();
-
-                    if (textViewContent.equals("") || textViewContent.equals(mSearchQuery))
-                        return true;
-
-                    mSearchQuery = textViewContent;
-
-                    videoSearch(null);
-                    handled = true;
-                }
-
-                return handled;
-            }
-        });
-
         mVideoList = findViewById(R.id.search_results);
         searchProgressBarCentre = findViewById(R.id.search_progress_bar_centre);
         searchProgressBarBottom = findViewById(R.id.search_progress_bar_bottom);
@@ -92,6 +76,8 @@ public class MainActivity extends AppCompatActivity
         mVideoList.setAdapter(mAdapter);
 
         createNotificationChannel();
+
+        handleIntent(getIntent());
     }
 
     // TODO: quite easy to omit, look for better solutions
@@ -99,6 +85,34 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         mYouTubeData.onParentActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_options_menu, menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false);
+        searchView.requestFocus();
+
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.requestFocus();
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleIntent(intent);
     }
 
     /*//////////////////////////////////////////////////////////////////////////////
@@ -113,11 +127,11 @@ public class MainActivity extends AppCompatActivity
             searchProgressBarBottom.setVisibility(View.VISIBLE);
         }
 
-        Log.d("YouTubeData", "Searching for a video: " + searchBox.getText().toString());
+        Log.d("YouTubeData", "Searching for a video: " + mSearchQuery);
         mYouTubeData.receiveSearchResults(mSearchQuery, nextPageToken);
     }
 
-     private void createNotificationChannel() {
+    private void createNotificationChannel() {
         // No need for Notification Channels prior to Oreo
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
             return;
@@ -129,6 +143,20 @@ public class MainActivity extends AppCompatActivity
         getSystemService(NotificationManager.class).createNotificationChannel(channel);
     }
 
+    private void handleIntent(Intent intent) {
+        if (intent == null)
+            return;
+
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+
+            if (query.equals("") || query.equals(mSearchQuery))
+                return;
+
+            mSearchQuery = query;
+            videoSearch(null);
+        }
+    }
 
     /*//////////////////////////////////////////////////////////////////////////////
     // Callbacks and others

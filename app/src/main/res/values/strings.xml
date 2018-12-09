@@ -13,4 +13,7 @@
     <!--Player Controls-->
     <string name="play" translatable="true">Play</string>
     <string name="pause" translatable="true">Pause</string>
+
+    <!--Search-->
+    <string name="search_hint">Search in YouTube</string>
 </resources>

@@ -382,7 +382,7 @@ public class PlayerActivity extends AppCompatActivity
         mVideoData = videoData;
 
         if (mVideoData.getSnippet().getThumbnails().getStandard() != null)
-            new SetAlbumArtTask().execute();
+            new SetAlbumArtTask().execute(mVideoData.getSnippet().getThumbnails().getStandard().getUrl());
     }
 
     @Override

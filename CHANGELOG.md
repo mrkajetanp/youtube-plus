@@ -2,6 +2,10 @@
 
 ---
 
+#### 9.12.2018
+
+* [MainActivity] Proper Search Widget instead of an EditText
+
 #### 8.12.2018
 
 * [VideoListAdapter] Reorganised and categorised methods
