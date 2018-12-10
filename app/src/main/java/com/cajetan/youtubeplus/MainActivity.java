@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -95,16 +96,16 @@ public class MainActivity extends AppCompatActivity
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setIconifiedByDefault(false);
-        searchView.requestFocus();
+//        searchView.setIconifiedByDefault(false);
+//        searchView.requestFocus();
 
         return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.requestFocus();
+//        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+//        searchView.requestFocus();
 
         return super.onPrepareOptionsMenu(menu);
     }

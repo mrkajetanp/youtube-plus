@@ -4,6 +4,7 @@
 
 #### 9.12.2018
 
+* [MainActivity] Fixed a minor issue with SearchView focusability 
 * [MainActivity] Proper Search Widget instead of an EditText
 
 #### 8.12.2018
