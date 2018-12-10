@@ -6,6 +6,8 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -45,6 +47,8 @@ public class MainActivity extends AppCompatActivity
     private String mSearchQuery = null;
     private String mNextPageToken = "";
 
+    private BottomNavigationView mBottomNavBar;
+
     // TODO: implement auto fullscreen on rotation
 
     /*//////////////////////////////////////////////////////////////////////////////
@@ -77,6 +81,7 @@ public class MainActivity extends AppCompatActivity
         mVideoList.setAdapter(mAdapter);
 
         createNotificationChannel();
+        setupBottomBar();
 
         handleIntent(getIntent());
     }
@@ -96,18 +101,8 @@ public class MainActivity extends AppCompatActivity
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-//        searchView.setIconifiedByDefault(false);
-//        searchView.requestFocus();
 
         return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-//        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-//        searchView.requestFocus();
-
-        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -157,6 +152,33 @@ public class MainActivity extends AppCompatActivity
             mSearchQuery = query;
             videoSearch(null);
         }
+    }
+
+    private void setupBottomBar() {
+        mBottomNavBar = findViewById(R.id.bottom_bar);
+        mBottomNavBar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull android.view.MenuItem item) {
+                if (item.getItemId() == R.id.action_start) {
+                    item.setChecked(true);
+                    return true;
+                }
+
+                if (item.getItemId() == R.id.action_others) {
+                    Log.d(TAG, "Others not implemented yet");
+                    item.setChecked(true);
+                    return true;
+                }
+
+                if (item.getItemId() == R.id.action_favourites) {
+                    Log.d(TAG, "Favourites not implemented yet");
+                    item.setChecked(true);
+                    return true;
+                }
+
+                return false;
+            }
+        });
     }
 
     /*//////////////////////////////////////////////////////////////////////////////
