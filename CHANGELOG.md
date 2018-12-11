@@ -4,6 +4,7 @@
 
 #### 11.12.2018
 
+* [General] Minor refactoring 
 * [General] Updated to API 28
 
 #### 10.12.2018

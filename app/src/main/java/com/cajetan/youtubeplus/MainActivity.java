@@ -13,17 +13,11 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cajetan.youtubeplus.utils.YouTubeData;
 import com.google.api.services.youtube.model.Video;
@@ -35,9 +29,10 @@ public class MainActivity extends AppCompatActivity
         implements YouTubeData.VideoSearchListener, VideoListAdapter.ListItemClickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private EditText searchBox;
     private VideoListAdapter mAdapter;
     private RecyclerView mVideoList;
+
+    private BottomNavigationView mBottomNavBar;
 
     private ProgressBar searchProgressBarCentre;
     private ProgressBar searchProgressBarBottom;
@@ -47,7 +42,6 @@ public class MainActivity extends AppCompatActivity
     private String mSearchQuery = null;
     private String mNextPageToken = "";
 
-    private BottomNavigationView mBottomNavBar;
 
     // TODO: implement auto fullscreen on rotation
 

@@ -23,7 +23,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.cajetan.youtubeplus.utils.FullScreenHelper;
 import com.cajetan.youtubeplus.utils.YouTubeData;
@@ -37,7 +36,6 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.player.listeners.YouTubeP
 import com.pierfrancescosoffritti.androidyoutubeplayer.ui.PlayerUIController;
 import com.pierfrancescosoffritti.androidyoutubeplayer.ui.menu.MenuItem;
 import com.pierfrancescosoffritti.androidyoutubeplayer.utils.YouTubePlayerTracker;
-import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.net.URL;
@@ -47,8 +45,10 @@ public class PlayerActivity extends AppCompatActivity
 
     private static final String TAG = PlayerActivity.class.getSimpleName();
 
-    private YouTubePlayerView mainPlayerView;
     private FullScreenHelper fullScreenHelper = new FullScreenHelper(this);
+
+    private YouTubePlayerView mainPlayerView;
+    private BottomNavigationView mBottomNavBar;
 
     private static MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
@@ -59,8 +59,6 @@ public class PlayerActivity extends AppCompatActivity
     private String mVideoId;
     private Video mVideoData;
     private Bitmap mVideoThumbnail;
-
-    private BottomNavigationView mBottomNavBar;
 
     private final YouTubePlayerTracker mTracker = new YouTubePlayerTracker();
 

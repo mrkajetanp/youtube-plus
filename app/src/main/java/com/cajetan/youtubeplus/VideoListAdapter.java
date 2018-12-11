@@ -3,6 +3,7 @@ package com.cajetan.youtubeplus;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -31,21 +32,22 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
     //////////////////////////////////////////////////////////////////////////////*/
 
     @Override
-    public VideoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    @NonNull
+    public VideoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.video_list_item, parent, false);
         return new VideoViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(VideoViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull VideoViewHolder holder, int position) {
         holder.bind(mVideos.get(position));
 
         if (onBottomReachedListener != null && position == mVideos.size() - 1)
             onBottomReachedListener.onBottomReached(position);
     }
 
-    public VideoListAdapter(List<Video> videos, ListItemClickListener listener, Context context) {
+    VideoListAdapter(List<Video> videos, ListItemClickListener listener, Context context) {
         mOnClickListener = listener;
         mVideos = new ArrayList<>(videos);
         this.context = context;
@@ -91,7 +93,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
         TextView videoDurationView;
         ImageView videoThumbnailView;
 
-        public VideoViewHolder(View itemView) {
+        VideoViewHolder(View itemView) {
             super(itemView);
 
             videoTitleView = itemView.findViewById(R.id.video_title);
