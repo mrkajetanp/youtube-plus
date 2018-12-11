@@ -244,7 +244,7 @@ public class PlayerActivity extends AppCompatActivity
                     .setLargeIcon(mVideoThumbnail);
         }
 
-        if (builder.mContentTitle == null) {
+        if (mVideoData == null) {
             Log.d(TAG, "Media notification hidden due to lack of the YouTube API data");
             ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(0);
             return;

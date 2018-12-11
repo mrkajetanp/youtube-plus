@@ -2,6 +2,10 @@
 
 ---
 
+#### 11.12.2018
+
+* [General] Updated to API 28
+
 #### 10.12.2018
 
 * [MainActivity] Added a bottom bar to this activity as well
