@@ -92,6 +92,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mBottomNavBar != null)
+            mBottomNavBar.setSelectedItemId(R.id.action_start);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_options_menu, menu);
@@ -154,6 +162,7 @@ public class MainActivity extends AppCompatActivity
 
     private void setupBottomBar() {
         mBottomNavBar = findViewById(R.id.bottom_bar);
+        mBottomNavBar.setSelectedItemId(R.id.action_start);
         mBottomNavBar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull android.view.MenuItem item) {
@@ -170,7 +179,6 @@ public class MainActivity extends AppCompatActivity
 
                 if (item.getItemId() == R.id.action_starred) {
                     startActivity(new Intent(mContext, StarredActivity.class));
-                    item.setChecked(true);
                     return true;
                 }
 

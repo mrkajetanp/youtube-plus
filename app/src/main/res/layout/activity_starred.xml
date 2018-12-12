@@ -12,8 +12,22 @@
         android:layout_height="wrap_content"
         android:text="Starred videos will show up here.."
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottom_bar"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
+
+     <android.support.design.widget.BottomNavigationView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_gravity="start"
+        android:background="@android:color/white"
+        app:elevation="8dp"
+        app:itemIconTint="@drawable/bottom_bar_colour_state"
+        app:itemTextColor="@drawable/bottom_bar_colour_state"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/bottom_bar_items" />
 
 </android.support.constraint.ConstraintLayout>

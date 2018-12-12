@@ -4,6 +4,7 @@
 
 #### 12.12.2018
 
+* [Starred] Bottom bar in the StarredActivity 
 * [Starred] Added a 'Star' button and StarredActivity
 
 #### 11.12.2018
