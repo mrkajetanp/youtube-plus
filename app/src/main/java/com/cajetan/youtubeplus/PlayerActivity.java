@@ -187,6 +187,16 @@ public class PlayerActivity extends AppCompatActivity
                 mUIController.getMenu().dismiss();
             }
         }));
+
+        mUIController.getMenu().addItem(new MenuItem("Star", R.drawable.ic_star_border_black_24dp, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: implement the functionality
+                Log.d("PlayerActivity", "Starred a video");
+
+                mUIController.getMenu().dismiss();
+            }
+        }));
     }
 
     private void setupMediaSession() {

@@ -7,10 +7,10 @@
         android:title="Start" />
 
     <item
-        android:id="@+id/action_favourites"
+        android:id="@+id/action_starred"
         android:icon="@drawable/ic_star_border_black_24dp"
         android:checked="false"
-        android:title="Favourites" />
+        android:title="Starred" />
 
     <item
         android:id="@+id/action_others"

@@ -2,6 +2,10 @@
 
 ---
 
+#### 12.12.2018
+
+* [Starred] Added a 'Star' button and StarredActivity
+
 #### 11.12.2018
 
 * [General] Minor refactoring 

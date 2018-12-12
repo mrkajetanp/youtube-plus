@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity
     private String mSearchQuery = null;
     private String mNextPageToken = "";
 
+    private Context mContext;
+
 
     // TODO: implement auto fullscreen on rotation
 
@@ -73,6 +75,8 @@ public class MainActivity extends AppCompatActivity
 
         mVideoList.setHasFixedSize(false);
         mVideoList.setAdapter(mAdapter);
+
+        mContext = this;
 
         createNotificationChannel();
         setupBottomBar();
@@ -164,8 +168,8 @@ public class MainActivity extends AppCompatActivity
                     return true;
                 }
 
-                if (item.getItemId() == R.id.action_favourites) {
-                    Log.d(TAG, "Favourites not implemented yet");
+                if (item.getItemId() == R.id.action_starred) {
+                    startActivity(new Intent(mContext, StarredActivity.class));
                     item.setChecked(true);
                     return true;
                 }

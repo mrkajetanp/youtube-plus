@@ -57,11 +57,14 @@ dependencies {
     implementation 'pub.devrel:easypermissions:2.0.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
 
-    implementation ('com.google.api-client:google-api-client-android:1.25.0') {
+    implementation "android.arch.persistence.room:runtime:1.1.1"
+    annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
+
+    implementation('com.google.api-client:google-api-client-android:1.25.0') {
         exclude group: 'org.apache.httpcomponents'
     }
 
-    implementation ('com.google.apis:google-api-services-youtube:v3-rev206-1.25.0') {
+    implementation('com.google.apis:google-api-services-youtube:v3-rev206-1.25.0') {
         exclude group: 'org.apache.httpcomponents'
     }
 

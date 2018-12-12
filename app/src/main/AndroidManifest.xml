@@ -13,15 +13,13 @@
         android:roundIcon="@mipmap/ic_launcher_main_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop">
-
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
-
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
@@ -41,17 +39,22 @@
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
             android:launchMode="singleTop"
             android:theme="@style/PlayerActivityTheme">
-
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data
                     android:host="www.youtube.com"
                     android:mimeType="text/*" />
             </intent-filter>
         </activity>
 
-        <service android:name=".PlayerActivity$PlayerLifecycleService" android:exported="false"/>
+        <service
+            android:name=".PlayerActivity$PlayerLifecycleService"
+            android:exported="false" />
+
+        <activity android:name=".StarredActivity"></activity>
     </application>
 
 </manifest>
