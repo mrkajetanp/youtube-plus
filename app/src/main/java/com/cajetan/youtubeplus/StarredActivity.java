@@ -46,12 +46,18 @@ public class StarredActivity extends AppCompatActivity {
         mVideoDataViewModel.getAllVideoData().observe(this, new Observer<List<VideoData>>() {
             @Override
             public void onChanged(@Nullable List<VideoData> videoData) {
-                if (videoData != null && videoData.size() > 0)
-                    mPlaceholderView.setText(videoData.get(0).getVideoId());
+                if (videoData != null && videoData.size() > 0) {
+                    StringBuilder result = new StringBuilder();
+
+                    for (VideoData data : videoData) {
+                        result.append(data.getVideoId());
+                        result.append('\n');
+                    }
+
+                    mPlaceholderView.setText(result.toString());
+                }
             }
         });
-
-        mVideoDataViewModel.insert(new VideoData("test_id"));
     }
 
      private void setupBottomBar() {
@@ -66,14 +72,13 @@ public class StarredActivity extends AppCompatActivity {
                     return true;
                 }
 
-                if (item.getItemId() == R.id.action_others) {
-                    Log.d(TAG, "Others not implemented yet");
+                if (item.getItemId() == R.id.action_starred) {
                     item.setChecked(true);
                     return true;
                 }
 
-                if (item.getItemId() == R.id.action_starred) {
-                    item.setChecked(true);
+                if (item.getItemId() == R.id.action_others) {
+//                    item.setChecked(true);
                     return true;
                 }
 

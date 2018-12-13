@@ -16,5 +16,6 @@
         android:id="@+id/action_others"
         android:icon="@drawable/ic_menu_24dp"
         android:checked="false"
+        android:enabled="false"
         android:title="Others" />
 </menu>

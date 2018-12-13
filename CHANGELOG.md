@@ -4,6 +4,7 @@
 
 #### 13.12.2018
 
+* [Starred] Functional Star button in PlayerActivity 
 * [Starred] Operational Room database for starred videos
 
 #### 12.12.2018

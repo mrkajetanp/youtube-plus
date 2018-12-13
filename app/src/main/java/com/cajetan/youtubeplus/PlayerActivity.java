@@ -4,6 +4,7 @@ import android.app.DialogFragment;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +25,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.cajetan.youtubeplus.data.VideoData;
+import com.cajetan.youtubeplus.data.VideoDataRepository;
+import com.cajetan.youtubeplus.data.VideoDataViewModel;
 import com.cajetan.youtubeplus.utils.FullScreenHelper;
 import com.cajetan.youtubeplus.utils.YouTubeData;
 import com.google.api.services.youtube.model.Video;
@@ -60,6 +64,8 @@ public class PlayerActivity extends AppCompatActivity
     private Video mVideoData;
     private Bitmap mVideoThumbnail;
 
+    private VideoDataViewModel mVideoDataViewModel;
+
     private final YouTubePlayerTracker mTracker = new YouTubePlayerTracker();
 
     // TODO: fetch youtube data after restoring internet connection
@@ -85,6 +91,8 @@ public class PlayerActivity extends AppCompatActivity
         setupPlayer();
         setupMediaSession();
         setupBottomBar();
+
+        mVideoDataViewModel = ViewModelProviders.of(this).get(VideoDataViewModel.class);
     }
 
     @Override
@@ -188,11 +196,15 @@ public class PlayerActivity extends AppCompatActivity
             }
         }));
 
+        // TODO: option to unstar if already starred
+
         mUIController.getMenu().addItem(new MenuItem("Star", R.drawable.ic_star_border_black_24dp, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: implement the functionality
                 Log.d("PlayerActivity", "Starred a video");
+                mVideoDataViewModel.insert(new VideoData(mVideoId));
+
+                // TODO: toast about starred video
 
                 mUIController.getMenu().dismiss();
             }
