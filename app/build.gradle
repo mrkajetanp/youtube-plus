@@ -57,6 +57,8 @@ dependencies {
     implementation 'pub.devrel:easypermissions:2.0.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
 
+    implementation "android.arch.lifecycle:extensions:1.1.1"
+    implementation "android.arch.lifecycle:viewmodel:1.1.1"
     implementation "android.arch.persistence.room:runtime:1.1.1"
     annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
 

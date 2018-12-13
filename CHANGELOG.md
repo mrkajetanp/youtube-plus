@@ -2,6 +2,10 @@
 
 ---
 
+#### 13.12.2018
+
+* [Starred] Operational Room database for starred videos
+
 #### 12.12.2018
 
 * [Starred] Bottom bar in the StarredActivity 
