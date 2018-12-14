@@ -4,6 +4,7 @@
 
 #### 14.12.2018
 
+* [Favourites] Working RecyclerView with favourite videos 
 * [Favourites] Changed 'Starred' to 'Favourites' and added Database delete
 
 #### 13.12.2018

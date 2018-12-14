@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.cajetan.youtubeplus.data.VideoData;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -57,10 +58,13 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
     private String mVideoId = "";
     private String searchQuery = "";
     private String searchPageToken = null;
+    private List<VideoData> mVideoData;
 
     private RequestType mRequestType;
 
     private Activity mActivity;
+
+//    TODO: think about a singleton here
 
     public YouTubeData(Activity parentActivity) {
         mCredential = GoogleAccountCredential.usingOAuth2(
@@ -85,6 +89,13 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
         getResultsFromApi();
     }
 
+    public void receiveFavouritesResults(List<VideoData> videoData) {
+        mVideoData = videoData;
+        mRequestType = RequestType.FAVOURITES_REQUEST;
+
+        getResultsFromApi();
+    }
+
     private void getResultsFromApi() {
         if (!isGooglePlayServicesAvailable())
             acquireGooglePlayServices();
@@ -97,6 +108,8 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
                 new VideoDataTask(mCredential).execute(mVideoId);
             else if (mRequestType == RequestType.SEARCH_REQUEST)
                 new VideoSearchTask(mCredential).execute(searchQuery, searchPageToken);
+            else if (mRequestType == RequestType.FAVOURITES_REQUEST)
+                new FavouritesTask(mCredential).execute(mVideoData.toArray(new VideoData[0]));
         }
     }
 
@@ -258,6 +271,73 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
         }
     }
 
+    private class FavouritesTask extends AsyncTask<VideoData, Void, List<Video>> {
+        private com.google.api.services.youtube.YouTube mService;
+        private Exception mLastError = null;
+
+        FavouritesTask(GoogleAccountCredential credential) {
+            HttpTransport transport = AndroidHttp.newCompatibleTransport();
+            JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+            mService = new com.google.api.services.youtube.YouTube.Builder(
+                    transport, jsonFactory, credential)
+                    .setApplicationName("YouTube Plus")
+                    .build();
+        }
+
+        @Override
+        protected List<Video> doInBackground(VideoData... args) {
+            Log.d(TAG, "Receiving search results..");
+
+            try {
+                List<Video> result = new ArrayList<>();
+
+                for (VideoData data : args) {
+                    Video v = mService.videos()
+                            .list("snippet, contentDetails")
+                            .setId(data.getVideoId())
+                            .execute().getItems().get(0);
+
+                    result.add(v);
+                }
+
+                return result;
+            } catch (Exception e) {
+                Log.e("YouTubeData", "Exception: " + e.toString());
+                mLastError = e;
+                cancel(true);
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(List<Video> results) {
+            Log.d(TAG, "Passing the results..");
+
+            if (mActivity instanceof FavouritesDataListener)
+                ((FavouritesDataListener) mActivity).onFavouritesReceived(results);
+            else
+                throw new UnsupportedOperationException("Activity must implement FavouritesDataListener.");
+        }
+
+        @Override
+        protected void onCancelled() {
+            if (mLastError != null) {
+                if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
+                    Toast.makeText(mActivity, "GooglePlayServices not available.", Toast.LENGTH_LONG).show();
+                } else if (mLastError instanceof UserRecoverableAuthIOException) {
+                    mActivity.startActivityForResult(
+                            ((UserRecoverableAuthIOException) mLastError).getIntent(),
+                            YouTubeData.REQUEST_AUTHORIZATION);
+                } else {
+                    Log.e("YouTubeData", "Error occurred: " + mLastError.getMessage());
+                }
+            } else {
+                Log.e("YouTubeData", "Request cancelled");
+            }
+        }
+    }
+
     public void onParentActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_GOOGLE_PLAY_SERVICES:
@@ -378,7 +458,8 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
 
     private enum RequestType {
         DATA_REQUEST,
-        SEARCH_REQUEST
+        SEARCH_REQUEST,
+        FAVOURITES_REQUEST,
     }
 
     public interface VideoDataListener {
@@ -388,5 +469,9 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
     public interface VideoSearchListener {
         void onSearchResultsReceived(List<Video> results,
                                      String nextPageToken, String previousPageToken);
+    }
+
+    public interface FavouritesDataListener {
+        void onFavouritesReceived(List<Video> results);
     }
 }

@@ -12,6 +12,8 @@ import java.util.List;
 @Dao
 public interface VideoDataDao {
 
+    // TODO: implement some ordering
+
     @Query("SELECT * FROM video_data_table")
     LiveData<List<VideoData>> getAll();
 
