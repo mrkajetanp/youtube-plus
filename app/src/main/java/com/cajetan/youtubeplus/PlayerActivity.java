@@ -24,6 +24,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.cajetan.youtubeplus.data.VideoData;
 import com.cajetan.youtubeplus.data.VideoDataRepository;
@@ -64,6 +65,8 @@ public class PlayerActivity extends AppCompatActivity
     private Video mVideoData;
     private Bitmap mVideoThumbnail;
 
+    private Context mContext;
+
     private VideoDataViewModel mVideoDataViewModel;
 
     private final YouTubePlayerTracker mTracker = new YouTubePlayerTracker();
@@ -78,6 +81,8 @@ public class PlayerActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
+
+        mContext = this;
 
         mVideoId = getIntentVideoId();
 
@@ -198,16 +203,19 @@ public class PlayerActivity extends AppCompatActivity
 
         // TODO: option to unstar if already starred
 
-        mUIController.getMenu().addItem(new MenuItem("Star", R.drawable.ic_star_border_black_24dp, new View.OnClickListener() {
+        mUIController.getMenu().addItem(new MenuItem("Add to favourites",
+                R.drawable.ic_star_border_black_24dp, new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                Log.d("PlayerActivity", "Starred a video");
+                Log.d("PlayerActivity", "Added a video to favourites");
                 mVideoDataViewModel.insert(new VideoData(mVideoId));
 
-                // TODO: toast about starred video
+                Toast.makeText(mContext, "Added to favourites", Toast.LENGTH_SHORT).show();
 
                 mUIController.getMenu().dismiss();
             }
+
         }));
     }
 

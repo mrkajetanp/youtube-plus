@@ -177,8 +177,8 @@ public class MainActivity extends AppCompatActivity
                     return true;
                 }
 
-                if (item.getItemId() == R.id.action_starred) {
-                    startActivity(new Intent(mContext, StarredActivity.class));
+                if (item.getItemId() == R.id.action_favourites) {
+                    startActivity(new Intent(mContext, FavouritesActivity.class));
                     return true;
                 }
 

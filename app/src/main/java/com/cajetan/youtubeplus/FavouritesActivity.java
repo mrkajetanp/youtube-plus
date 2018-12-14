@@ -1,16 +1,13 @@
 package com.cajetan.youtubeplus;
 
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.cajetan.youtubeplus.data.VideoData;
@@ -18,9 +15,9 @@ import com.cajetan.youtubeplus.data.VideoDataViewModel;
 
 import java.util.List;
 
-public class StarredActivity extends AppCompatActivity {
+public class FavouritesActivity extends AppCompatActivity {
 
-    private static final String TAG = StarredActivity.class.getSimpleName();
+    private static final String TAG = FavouritesActivity.class.getSimpleName();
 
     private VideoDataViewModel mVideoDataViewModel;
 
@@ -33,7 +30,7 @@ public class StarredActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_starred);
+        setContentView(R.layout.activity_favourites);
 
         mPlaceholderView = findViewById(R.id.placeholder);
 
@@ -58,11 +55,13 @@ public class StarredActivity extends AppCompatActivity {
                 }
             }
         });
+
+        mVideoDataViewModel.delete(new VideoData("test_id"));
     }
 
      private void setupBottomBar() {
         mBottomNavBar = findViewById(R.id.bottom_bar);
-        mBottomNavBar.setSelectedItemId(R.id.action_starred);
+        mBottomNavBar.setSelectedItemId(R.id.action_favourites);
         mBottomNavBar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull android.view.MenuItem item) {
@@ -72,7 +71,7 @@ public class StarredActivity extends AppCompatActivity {
                     return true;
                 }
 
-                if (item.getItemId() == R.id.action_starred) {
+                if (item.getItemId() == R.id.action_favourites) {
                     item.setChecked(true);
                     return true;
                 }

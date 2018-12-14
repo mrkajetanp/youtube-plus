@@ -17,12 +17,16 @@ public class VideoDataRepository {
         mAllVideoData = mVideoDataDao.getAll();
     }
 
-    public LiveData<List<VideoData>> getAllVideoData() {
+    LiveData<List<VideoData>> getAllVideoData() {
         return mAllVideoData;
     }
 
-    public void insert(VideoData videoData) {
+    void insert(VideoData videoData) {
         new InsertTask(mVideoDataDao).execute(videoData);
+    }
+
+    void delete(VideoData videoData) {
+        new DeleteTask(mVideoDataDao).execute(videoData);
     }
 
     private static class InsertTask extends AsyncTask<VideoData, Void, Void> {
@@ -35,6 +39,20 @@ public class VideoDataRepository {
         @Override
         protected Void doInBackground(VideoData... videoData) {
             mAsyncTaskDao.insertAll(videoData[0]);
+            return null;
+        }
+    }
+
+    private static class DeleteTask extends AsyncTask<VideoData, Void, Void> {
+        private VideoDataDao mAsyncTaskDao;
+
+        DeleteTask(VideoDataDao dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(VideoData... videoData) {
+            mAsyncTaskDao.delete(videoData[0]);
             return null;
         }
     }

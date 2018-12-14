@@ -2,6 +2,10 @@
 
 ---
 
+#### 14.12.2018
+
+* [Favourites] Changed 'Starred' to 'Favourites' and added Database delete
+
 #### 13.12.2018
 
 * [Starred] Functional Star button in PlayerActivity 

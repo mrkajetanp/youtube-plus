@@ -23,4 +23,8 @@ public class VideoDataViewModel extends AndroidViewModel {
     public void insert(VideoData videoData) {
         mRepository.insert(videoData);
     }
+
+    public void delete(VideoData videoData) {
+        mRepository.delete(videoData);
+    }
 }

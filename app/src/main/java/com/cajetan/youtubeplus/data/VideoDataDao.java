@@ -19,5 +19,5 @@ public interface VideoDataDao {
     void insertAll(VideoData... users);
 
     @Delete
-    void delete(VideoData user);
+    void delete(VideoData data);
 }
