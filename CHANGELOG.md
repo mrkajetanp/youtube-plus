@@ -4,6 +4,7 @@
 
 #### 15.12.2018
 
+* [Favourites] Removing favourite on hold and removed bottom bar from PlayerActivity
 * [Favourites] Playing on click and progress bar
 
 #### 14.12.2018

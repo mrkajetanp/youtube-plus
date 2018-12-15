@@ -38,7 +38,11 @@ public class FavouritesActivity extends AppCompatActivity
     private ProgressBar mProgressBarCentre;
     private YouTubeData mYouTubeData;
 
-    private Context mContext;
+    // TODO: caching results?
+
+    /*//////////////////////////////////////////////////////////////////////////////
+    // Lifecycle
+    //////////////////////////////////////////////////////////////////////////////*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +50,6 @@ public class FavouritesActivity extends AppCompatActivity
         setContentView(R.layout.activity_favourites);
 
         mYouTubeData = new YouTubeData(this);
-        mContext = this;
 
         mProgressBarCentre = findViewById(R.id.progress_bar_centre);
 
@@ -70,7 +73,16 @@ public class FavouritesActivity extends AppCompatActivity
         });
     }
 
-    // TODO: caching results?
+    // TODO: quite easy to omit, look for better solutions
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mYouTubeData.onParentActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////////
+    // Init
+    //////////////////////////////////////////////////////////////////////////////*/
 
     private void setupBottomBar() {
         mBottomNavBar = findViewById(R.id.bottom_bar);
@@ -99,6 +111,10 @@ public class FavouritesActivity extends AppCompatActivity
         });
     }
 
+    /*//////////////////////////////////////////////////////////////////////////////
+    // Utils
+    //////////////////////////////////////////////////////////////////////////////*/
+
     private void loadFavourites(List<VideoData> videoData) {
         mFavouriteList.setVisibility(View.INVISIBLE);
         mProgressBarCentre.setVisibility(View.VISIBLE);
@@ -106,9 +122,11 @@ public class FavouritesActivity extends AppCompatActivity
         mYouTubeData.receiveFavouritesResults(videoData);
     }
 
+    /*//////////////////////////////////////////////////////////////////////////////
+    // Callbacks and others
+    //////////////////////////////////////////////////////////////////////////////*/
 
     // TODO: loading bar like in other activities
-
     @Override
     public void onFavouritesReceived(List<Video> results) {
         mAdapter.clearItems();
@@ -125,10 +143,9 @@ public class FavouritesActivity extends AppCompatActivity
         startActivity(videoPlayerIntent);
     }
 
-    // TODO: quite easy to omit, look for better solutions
+    // TODO: confirmation dialog
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mYouTubeData.onParentActivityResult(requestCode, resultCode, data);
-        super.onActivityResult(requestCode, resultCode, data);
+    public void onListItemLongClick(String clickedVideoId) {
+        mVideoDataViewModel.delete(new VideoData(clickedVideoId));
     }
 }

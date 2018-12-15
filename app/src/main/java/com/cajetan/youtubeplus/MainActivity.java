@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity
 
     private Context mContext;
 
-
     // TODO: implement auto fullscreen on rotation
 
     /*//////////////////////////////////////////////////////////////////////////////
@@ -84,13 +83,6 @@ public class MainActivity extends AppCompatActivity
         handleIntent(getIntent());
     }
 
-    // TODO: quite easy to omit, look for better solutions
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mYouTubeData.onParentActivityResult(requestCode, resultCode, data);
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -115,6 +107,13 @@ public class MainActivity extends AppCompatActivity
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         handleIntent(intent);
+    }
+
+    // TODO: quite easy to omit, look for better solutions
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mYouTubeData.onParentActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     /*//////////////////////////////////////////////////////////////////////////////

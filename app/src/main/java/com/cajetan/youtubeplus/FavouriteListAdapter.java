@@ -20,6 +20,8 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: change ViewHolder colour onClick
+
 public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdapter.VideoViewHolder> {
     private static final String TAG = FavouriteListAdapter.class.getSimpleName();
 
@@ -79,7 +81,8 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
     // Callbacks & others
     //////////////////////////////////////////////////////////////////////////////*/
 
-    class VideoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class VideoViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener, View.OnLongClickListener {
 
         TextView videoTitleView;
         TextView videoChannelView;
@@ -95,6 +98,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
             videoDurationView = itemView.findViewById(R.id.video_duration);
 
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
         void bind(Video video) {
@@ -131,9 +135,16 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         public void onClick(View v) {
             mOnClickListener.onListItemClick(mVideos.get(getAdapterPosition()).getId());
         }
+
+        @Override
+        public boolean onLongClick(View v) {
+            mOnClickListener.onListItemLongClick(mVideos.get(getAdapterPosition()).getId());
+            return true;
+        }
     }
 
     public interface ListItemClickListener {
         void onListItemClick(String clickedVideoId);
+        void onListItemLongClick(String clickedVideoId);
     }
 }

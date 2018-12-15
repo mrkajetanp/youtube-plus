@@ -53,7 +53,6 @@ public class PlayerActivity extends AppCompatActivity
     private FullScreenHelper fullScreenHelper = new FullScreenHelper(this);
 
     private YouTubePlayerView mainPlayerView;
-    private BottomNavigationView mBottomNavBar;
 
     private static MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
@@ -95,7 +94,6 @@ public class PlayerActivity extends AppCompatActivity
 
         setupPlayer();
         setupMediaSession();
-        setupBottomBar();
 
         mVideoDataViewModel = ViewModelProviders.of(this).get(VideoDataViewModel.class);
     }
@@ -280,27 +278,6 @@ public class PlayerActivity extends AppCompatActivity
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(0, builder.build());
-    }
-
-    private void setupBottomBar() {
-        mBottomNavBar = findViewById(R.id.bottom_bar);
-        mBottomNavBar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull android.view.MenuItem item) {
-                if (item.getItemId() == R.id.action_start) {
-                    finish();
-                    return true;
-                }
-
-                if (item.getItemId() == R.id.action_others) {
-                    Log.d(TAG, "Not implemented yet");
-                    item.setChecked(true);
-                    return true;
-                }
-
-                return false;
-            }
-        });
     }
 
     /*//////////////////////////////////////////////////////////////////////////////
