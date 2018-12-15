@@ -11,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +35,7 @@ public class FavouritesActivity extends AppCompatActivity
     private FavouriteListAdapter mAdapter;
 
     private BottomNavigationView mBottomNavBar;
+    private ProgressBar mProgressBarCentre;
     private YouTubeData mYouTubeData;
 
     private Context mContext;
@@ -45,7 +48,11 @@ public class FavouritesActivity extends AppCompatActivity
         mYouTubeData = new YouTubeData(this);
         mContext = this;
 
+        mProgressBarCentre = findViewById(R.id.progress_bar_centre);
+
         setupBottomBar();
+
+        // TODO: export to a method
 
         mFavouriteList = findViewById(R.id.favourite_list);
         mFavouriteList.setLayoutManager(new LinearLayoutManager(this));
@@ -58,14 +65,14 @@ public class FavouritesActivity extends AppCompatActivity
         mVideoDataViewModel.getAllVideoData().observe(this, new Observer<List<VideoData>>() {
             @Override
             public void onChanged(@Nullable List<VideoData> videoData) {
-                mYouTubeData.receiveFavouritesResults(videoData);
+                loadFavourites(videoData);
             }
         });
-
-//        mYouTubeData.receiveFavouritesResults(mVideoDataViewModel.getAllVideoData().getValue());
     }
 
-     private void setupBottomBar() {
+    // TODO: caching results?
+
+    private void setupBottomBar() {
         mBottomNavBar = findViewById(R.id.bottom_bar);
         mBottomNavBar.setSelectedItemId(R.id.action_favourites);
         mBottomNavBar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -92,20 +99,33 @@ public class FavouritesActivity extends AppCompatActivity
         });
     }
 
+    private void loadFavourites(List<VideoData> videoData) {
+        mFavouriteList.setVisibility(View.INVISIBLE);
+        mProgressBarCentre.setVisibility(View.VISIBLE);
+
+        mYouTubeData.receiveFavouritesResults(videoData);
+    }
+
+
     // TODO: loading bar like in other activities
 
     @Override
     public void onFavouritesReceived(List<Video> results) {
         mAdapter.clearItems();
         mAdapter.addItems(results);
+
+        mProgressBarCentre.setVisibility(View.INVISIBLE);
+        mFavouriteList.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onListItemClick(String clickedVideoId) {
-        Toast.makeText(this, "List item clicked", Toast.LENGTH_LONG).show();
+        Intent videoPlayerIntent = new Intent(this, PlayerActivity.class);
+        videoPlayerIntent.putExtra(getString(R.string.video_id_key), clickedVideoId);
+        startActivity(videoPlayerIntent);
     }
 
-     // TODO: quite easy to omit, look for better solutions
+    // TODO: quite easy to omit, look for better solutions
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         mYouTubeData.onParentActivityResult(requestCode, resultCode, data);

@@ -2,6 +2,10 @@
 
 ---
 
+#### 15.12.2018
+
+* [Favourites] Playing on click and progress bar
+
 #### 14.12.2018
 
 * [Favourites] Working RecyclerView with favourite videos 
