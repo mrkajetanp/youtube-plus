@@ -138,7 +138,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
                 String nextPageToken = args[1];
 
                 YouTube.Search.List searchList = mService.search()
-                        .list("snippet")
+                        .list("id")
                         .setMaxResults(SEARCH_PAGE_SIZE)
                         .setQ(videoId)
                         .setType("");
@@ -153,11 +153,8 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
                 this.mNextPageToken = response.getNextPageToken();
                 mPreviousPageToken = response.getPrevPageToken();
 
-                List<SearchResult> searchResults = response.getItems();
-
-                List<Video> finalResults = new ArrayList<>();
-
-                for (SearchResult r : searchResults) {
+                StringBuilder finalId = new StringBuilder();
+                for (SearchResult r : response.getItems()) {
                     String id = r.getId().getVideoId();
 
 //                  TODO: Some stuff with this, if id turns out to be null
@@ -165,17 +162,16 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
                     if (id == null)
                         continue;
 
-                    Video v = mService.videos()
-                            .list("snippet,contentDetails")
-                            .setId(id)
-                            .execute()
-                            .getItems()
-                            .get(0);
-
-                    finalResults.add(v);
+                    finalId.append(id);
+                    finalId.append(',');
                 }
+                finalId.setLength(finalId.length()-1);
 
-                return finalResults;
+                return mService.videos()
+                        .list("snippet,contentDetails")
+                        .setId(finalId.toString())
+                        .execute()
+                        .getItems();
             } catch (Exception e) {
                 Log.e("YouTubeData", "Exception: " + e.toString());
                 mLastError = e;
@@ -290,18 +286,17 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
             Log.d(TAG, "Receiving search results..");
 
             try {
-                List<Video> result = new ArrayList<>();
-
+                StringBuilder finalId = new StringBuilder();
                 for (VideoData data : args) {
-                    Video v = mService.videos()
-                            .list("snippet, contentDetails")
-                            .setId(data.getVideoId())
-                            .execute().getItems().get(0);
-
-                    result.add(v);
+                    finalId.append(data.getVideoId());
+                    finalId.append(',');
                 }
+                finalId.setLength(finalId.length()-1);
 
-                return result;
+                return mService.videos()
+                        .list("snippet, contentDetails")
+                        .setId(finalId.toString())
+                        .execute().getItems();
             } catch (Exception e) {
                 Log.e("YouTubeData", "Exception: " + e.toString());
                 mLastError = e;
