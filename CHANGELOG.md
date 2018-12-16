@@ -4,6 +4,7 @@
 
 #### 16.12.2018
 
+* [YouTubeData] Started implementing mostPopular on start 
 * [YouTubeData] Reduced the amount of API requests
 
 #### 15.12.2018

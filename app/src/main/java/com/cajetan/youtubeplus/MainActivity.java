@@ -26,7 +26,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements YouTubeData.VideoSearchListener, VideoListAdapter.ListItemClickListener {
+        implements YouTubeData.VideoSearchListener, VideoListAdapter.ListItemClickListener,
+        YouTubeData.MostPopularListener {
+
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private VideoListAdapter mAdapter;
@@ -81,6 +83,7 @@ public class MainActivity extends AppCompatActivity
         setupBottomBar();
 
         handleIntent(getIntent());
+        loadMostPopularVideos();
     }
 
     @Override
@@ -130,6 +133,14 @@ public class MainActivity extends AppCompatActivity
 
         Log.d("YouTubeData", "Searching for a video: " + mSearchQuery);
         mYouTubeData.receiveSearchResults(mSearchQuery, nextPageToken);
+    }
+
+    public void loadMostPopularVideos() {
+        // TODO: finish implementing new pages
+        searchProgressBarCentre.setVisibility(View.VISIBLE);
+        mVideoList.setVisibility(View.INVISIBLE);
+
+        mYouTubeData.receiveMostPopularResults();
     }
 
     private void createNotificationChannel() {
@@ -207,6 +218,14 @@ public class MainActivity extends AppCompatActivity
 
         mAdapter.addItems(results);
         mNextPageToken = nextPageToken;
+    }
+
+    @Override
+    public void onMostPopularReceived(List<Video> results, String nextPageToken, String previousPageToken) {
+        searchProgressBarCentre.setVisibility(View.INVISIBLE);
+        mVideoList.setVisibility(View.VISIBLE);
+
+        mAdapter.addItems(results);
     }
 
     @Override
