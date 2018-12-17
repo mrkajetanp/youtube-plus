@@ -367,7 +367,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
                 YouTube.Videos.List list = mService.videos()
                         .list("snippet,contentDetails")
                         .setChart("mostPopular")
-                        .setRegionCode("US");
+                        .setRegionCode("GB");
 
                 if (args[0] != null)
                     list.setPageToken(args[0]);

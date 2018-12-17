@@ -4,6 +4,7 @@
 
 #### 17.12.2018
 
+* [General] Switched most popular's country to GB 
 * [General] Showing most popular videos on app startup
 
 #### 16.12.2018
