@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity
     private String mSearchQuery = null;
     private String mNextPageToken = "";
 
+    private boolean searching = false;
+
     private Context mContext;
 
     // TODO: implement auto fullscreen on rotation
@@ -70,7 +72,11 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onBottomReached(int position) {
                 Log.d(TAG, "Reached the bottom");
-                videoSearch(mNextPageToken);
+
+                if (mSearchQuery == null || mSearchQuery.equals(""))
+                    loadMostPopularVideos(mNextPageToken);
+                else
+                    videoSearch(mNextPageToken);
             }
         });
 
@@ -83,7 +89,7 @@ public class MainActivity extends AppCompatActivity
         setupBottomBar();
 
         handleIntent(getIntent());
-        loadMostPopularVideos();
+        loadMostPopularVideos(null);
     }
 
     @Override
@@ -124,6 +130,12 @@ public class MainActivity extends AppCompatActivity
     //////////////////////////////////////////////////////////////////////////////*/
 
     public void videoSearch(String nextPageToken) {
+        // Reset the state if searching for the first time
+        if (!searching) {
+            mNextPageToken = null;
+            searching = true;
+        }
+
         if (nextPageToken == null) {
             searchProgressBarCentre.setVisibility(View.VISIBLE);
             mVideoList.setVisibility(View.INVISIBLE);
@@ -135,12 +147,16 @@ public class MainActivity extends AppCompatActivity
         mYouTubeData.receiveSearchResults(mSearchQuery, nextPageToken);
     }
 
-    public void loadMostPopularVideos() {
-        // TODO: finish implementing new pages
-        searchProgressBarCentre.setVisibility(View.VISIBLE);
-        mVideoList.setVisibility(View.INVISIBLE);
+    public void loadMostPopularVideos(String nextPageToken) {
+        if (nextPageToken == null) {
+            searchProgressBarCentre.setVisibility(View.VISIBLE);
+            mVideoList.setVisibility(View.INVISIBLE);
+        } else {
+            searchProgressBarBottom.setVisibility(View.VISIBLE);
+        }
 
-        mYouTubeData.receiveMostPopularResults();
+        // TODO: finish implementing new pages
+        mYouTubeData.receiveMostPopularResults(nextPageToken);
     }
 
     private void createNotificationChannel() {
@@ -222,10 +238,18 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onMostPopularReceived(List<Video> results, String nextPageToken, String previousPageToken) {
-        searchProgressBarCentre.setVisibility(View.INVISIBLE);
-        mVideoList.setVisibility(View.VISIBLE);
+        if (previousPageToken == null || previousPageToken.equals("")) {
+            mAdapter.clearItems();
+            mVideoList.scrollToPosition(0);
+
+            searchProgressBarCentre.setVisibility(View.INVISIBLE);
+            mVideoList.setVisibility(View.VISIBLE);
+        } else {
+            searchProgressBarBottom.setVisibility(View.GONE);
+        }
 
         mAdapter.addItems(results);
+        mNextPageToken = nextPageToken;
     }
 
     @Override

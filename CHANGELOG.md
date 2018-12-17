@@ -2,6 +2,10 @@
 
 ---
 
+#### 17.12.2018
+
+* [General] Showing most popular videos on app startup
+
 #### 16.12.2018
 
 * [YouTubeData] Started implementing mostPopular on start 

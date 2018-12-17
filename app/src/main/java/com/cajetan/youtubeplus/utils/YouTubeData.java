@@ -97,8 +97,9 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
         getResultsFromApi();
     }
 
-    public void receiveMostPopularResults() {
+    public void receiveMostPopularResults(String pageToken) {
         mRequestType = RequestType.MOST_POPULAR_REQUEST;
+        searchPageToken = pageToken;
 
         getResultsFromApi();
     }
@@ -118,7 +119,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
             else if (mRequestType == RequestType.FAVOURITES_REQUEST)
                 new FavouritesTask(mCredential).execute(mVideoData.toArray(new VideoData[0]));
             else if (mRequestType == RequestType.MOST_POPULAR_REQUEST)
-                new MostPopularTask(mCredential).execute();
+                new MostPopularTask(mCredential).execute(searchPageToken);
         }
     }
 
@@ -342,7 +343,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
         }
     }
 
-    private class MostPopularTask extends AsyncTask<Void, Void, List<Video>> {
+    private class MostPopularTask extends AsyncTask<String, Void, List<Video>> {
         private com.google.api.services.youtube.YouTube mService;
         private Exception mLastError = null;
         private String mNextPageToken = null;
@@ -359,14 +360,19 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
         }
 
         @Override
-        protected List<Video> doInBackground(Void... args) {
+        protected List<Video> doInBackground(String... args) {
             Log.d(TAG, "Receiving search results..");
 
             try {
-                 VideoListResponse response = mService.videos()
+                YouTube.Videos.List list = mService.videos()
                         .list("snippet,contentDetails")
                         .setChart("mostPopular")
-                        .setRegionCode("US").execute();
+                        .setRegionCode("US");
+
+                if (args[0] != null)
+                    list.setPageToken(args[0]);
+
+                VideoListResponse response = list.execute();
 
                 this.mNextPageToken = response.getNextPageToken();
                 mPreviousPageToken = response.getPrevPageToken();
