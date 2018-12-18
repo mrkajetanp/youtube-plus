@@ -2,16 +2,19 @@ package com.cajetan.youtubeplus;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.cajetan.youtubeplus.data.VideoData;
 import com.cajetan.youtubeplus.data.VideoDataViewModel;
@@ -147,6 +150,14 @@ public class FavouritesActivity extends AppCompatActivity
     // TODO: confirmation dialog
     @Override
     public void onListItemLongClick(String clickedVideoId) {
-        mVideoDataViewModel.delete(new VideoData(clickedVideoId));
+        final String videoId = clickedVideoId;
+
+        new AlertDialog.Builder(this)
+                .setMessage("Do you really want to remove this video from favourites?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        mVideoDataViewModel.delete(new VideoData(videoId));
+                    }
+                }).setNegativeButton(android.R.string.no, null).show();
     }
 }

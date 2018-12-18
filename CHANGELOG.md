@@ -4,6 +4,7 @@
 
 #### 18.12.2018
 
+* [Favourites] Removal confirmation dialog 
 * [General] Refactoring and cleanup
 
 #### 17.12.2018
