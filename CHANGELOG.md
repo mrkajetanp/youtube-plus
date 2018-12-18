@@ -2,6 +2,10 @@
 
 ---
 
+#### 18.12.2018
+
+* [General] Refactoring and cleanup
+
 #### 17.12.2018
 
 * [General] Switched most popular's country to GB 

@@ -60,30 +60,12 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         mYouTubeData = new YouTubeData(this);
+        mContext = this;
 
-        mVideoList = findViewById(R.id.search_results);
         searchProgressBarCentre = findViewById(R.id.search_progress_bar_centre);
         searchProgressBarBottom = findViewById(R.id.search_progress_bar_bottom);
 
-        mVideoList.setLayoutManager(new LinearLayoutManager(this));
-
-        mAdapter = new VideoListAdapter(Collections.<Video>emptyList(), this, this);
-        mAdapter.setOnBottomReachedListener(new VideoListAdapter.OnBottomReachedListener() {
-            @Override
-            public void onBottomReached(int position) {
-                Log.d(TAG, "Reached the bottom");
-
-                if (mSearchQuery == null || mSearchQuery.equals(""))
-                    loadMostPopularVideos(mNextPageToken);
-                else
-                    videoSearch(mNextPageToken);
-            }
-        });
-
-        mVideoList.setHasFixedSize(false);
-        mVideoList.setAdapter(mAdapter);
-
-        mContext = this;
+        setupSearchResultList();
 
         createNotificationChannel();
         setupBottomBar();
@@ -126,6 +108,72 @@ public class MainActivity extends AppCompatActivity
     }
 
     /*//////////////////////////////////////////////////////////////////////////////
+    // Init
+    //////////////////////////////////////////////////////////////////////////////*/
+
+    private void setupSearchResultList() {
+        mVideoList = findViewById(R.id.search_results);
+        mVideoList.setLayoutManager(new LinearLayoutManager(this));
+
+        mAdapter = new VideoListAdapter(Collections.<Video>emptyList(), this, this);
+        mAdapter.setOnBottomReachedListener(new VideoListAdapter.OnBottomReachedListener() {
+            @Override
+            public void onBottomReached(int position) {
+                Log.d(TAG, "Reached the bottom");
+
+                if (mSearchQuery == null || mSearchQuery.equals(""))
+                    loadMostPopularVideos(mNextPageToken);
+                else
+                    videoSearch(mNextPageToken);
+            }
+        });
+
+        mVideoList.setHasFixedSize(false);
+        mVideoList.setAdapter(mAdapter);
+    }
+
+    private void setupBottomBar() {
+        mBottomNavBar = findViewById(R.id.bottom_bar);
+        mBottomNavBar.setSelectedItemId(R.id.action_start);
+        mBottomNavBar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull android.view.MenuItem item) {
+                int id = item.getItemId();
+
+                if (id == R.id.action_start) {
+                    item.setChecked(true);
+                    return true;
+                }
+
+                if (id == R.id.action_others) {
+                    Log.d(TAG, "Others not implemented yet");
+                    item.setChecked(true);
+                    return true;
+                }
+
+                if (id == R.id.action_favourites) {
+                    startActivity(new Intent(mContext, FavouritesActivity.class));
+                    return true;
+                }
+
+                return false;
+            }
+        });
+    }
+
+    private void createNotificationChannel() {
+        // No need for Notification Channels prior to Oreo
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
+            return;
+
+        NotificationChannel channel = new NotificationChannel(getString(R.string.notification_channel_id),
+                getString(R.string.notification_channel_name), NotificationManager.IMPORTANCE_LOW);
+        channel.setDescription(getString(R.string.notification_channel_description));
+
+        getSystemService(NotificationManager.class).createNotificationChannel(channel);
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////////
     // Utils
     //////////////////////////////////////////////////////////////////////////////*/
 
@@ -159,18 +207,6 @@ public class MainActivity extends AppCompatActivity
         mYouTubeData.receiveMostPopularResults(nextPageToken);
     }
 
-    private void createNotificationChannel() {
-        // No need for Notification Channels prior to Oreo
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
-            return;
-
-        NotificationChannel channel = new NotificationChannel(getString(R.string.notification_channel_id),
-                getString(R.string.notification_channel_name), NotificationManager.IMPORTANCE_LOW);
-        channel.setDescription(getString(R.string.notification_channel_description));
-
-        getSystemService(NotificationManager.class).createNotificationChannel(channel);
-    }
-
     private void handleIntent(Intent intent) {
         if (intent == null)
             return;
@@ -184,33 +220,6 @@ public class MainActivity extends AppCompatActivity
             mSearchQuery = query;
             videoSearch(null);
         }
-    }
-
-    private void setupBottomBar() {
-        mBottomNavBar = findViewById(R.id.bottom_bar);
-        mBottomNavBar.setSelectedItemId(R.id.action_start);
-        mBottomNavBar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull android.view.MenuItem item) {
-                if (item.getItemId() == R.id.action_start) {
-                    item.setChecked(true);
-                    return true;
-                }
-
-                if (item.getItemId() == R.id.action_others) {
-                    Log.d(TAG, "Others not implemented yet");
-                    item.setChecked(true);
-                    return true;
-                }
-
-                if (item.getItemId() == R.id.action_favourites) {
-                    startActivity(new Intent(mContext, FavouritesActivity.class));
-                    return true;
-                }
-
-                return false;
-            }
-        });
     }
 
     /*//////////////////////////////////////////////////////////////////////////////

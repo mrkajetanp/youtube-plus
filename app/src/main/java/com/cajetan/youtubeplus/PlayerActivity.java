@@ -15,7 +15,6 @@ import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -27,7 +26,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.cajetan.youtubeplus.data.VideoData;
-import com.cajetan.youtubeplus.data.VideoDataRepository;
 import com.cajetan.youtubeplus.data.VideoDataViewModel;
 import com.cajetan.youtubeplus.utils.FullScreenHelper;
 import com.cajetan.youtubeplus.utils.YouTubeData;
@@ -82,15 +80,10 @@ public class PlayerActivity extends AppCompatActivity
         setContentView(R.layout.activity_player);
 
         mContext = this;
-
         mVideoId = getIntentVideoId();
 
         youTubeData = new YouTubeData(this);
         youTubeData.receiveVideoData(mVideoId);
-
-        mainPlayerView = findViewById(R.id.main_player_view);
-
-        startService(new Intent(this, PlayerLifecycleService.class));
 
         setupPlayer();
         setupMediaSession();
@@ -129,8 +122,10 @@ public class PlayerActivity extends AppCompatActivity
     //////////////////////////////////////////////////////////////////////////////*/
 
     private void setupPlayer() {
-        final String videoId = mVideoId;
+        startService(new Intent(this, PlayerLifecycleService.class));
 
+        final String videoId = mVideoId;
+        mainPlayerView = findViewById(R.id.main_player_view);
         mainPlayerView.enableBackgroundPlayback(true);
         mainPlayerView.initialize(new YouTubePlayerInitListener() {
             @Override

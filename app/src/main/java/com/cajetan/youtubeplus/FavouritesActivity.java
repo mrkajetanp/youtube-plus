@@ -2,7 +2,6 @@ package com.cajetan.youtubeplus;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,8 +12,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cajetan.youtubeplus.data.VideoData;
 import com.cajetan.youtubeplus.data.VideoDataViewModel;
@@ -50,27 +47,11 @@ public class FavouritesActivity extends AppCompatActivity
         setContentView(R.layout.activity_favourites);
 
         mYouTubeData = new YouTubeData(this);
-
         mProgressBarCentre = findViewById(R.id.progress_bar_centre);
 
+        setupFavouritesList();
+        setupDatabase();
         setupBottomBar();
-
-        // TODO: export to a method
-
-        mFavouriteList = findViewById(R.id.favourite_list);
-        mFavouriteList.setLayoutManager(new LinearLayoutManager(this));
-
-        mAdapter = new FavouriteListAdapter(Collections.<Video>emptyList(), this, this);
-        mFavouriteList.setHasFixedSize(false);
-        mFavouriteList.setAdapter(mAdapter);
-
-        mVideoDataViewModel = ViewModelProviders.of(this).get(VideoDataViewModel.class);
-        mVideoDataViewModel.getAllVideoData().observe(this, new Observer<List<VideoData>>() {
-            @Override
-            public void onChanged(@Nullable List<VideoData> videoData) {
-                loadFavourites(videoData);
-            }
-        });
     }
 
     // TODO: quite easy to omit, look for better solutions
@@ -84,24 +65,45 @@ public class FavouritesActivity extends AppCompatActivity
     // Init
     //////////////////////////////////////////////////////////////////////////////*/
 
+    private void setupFavouritesList() {
+        mFavouriteList = findViewById(R.id.favourite_list);
+        mFavouriteList.setLayoutManager(new LinearLayoutManager(this));
+
+        mAdapter = new FavouriteListAdapter(Collections.<Video>emptyList(), this, this);
+        mFavouriteList.setHasFixedSize(false);
+        mFavouriteList.setAdapter(mAdapter);
+    }
+
+    private void setupDatabase() {
+        mVideoDataViewModel = ViewModelProviders.of(this).get(VideoDataViewModel.class);
+        mVideoDataViewModel.getAllVideoData().observe(this, new Observer<List<VideoData>>() {
+            @Override
+            public void onChanged(@Nullable List<VideoData> videoData) {
+                loadFavourites(videoData);
+            }
+        });
+    }
+
     private void setupBottomBar() {
         mBottomNavBar = findViewById(R.id.bottom_bar);
         mBottomNavBar.setSelectedItemId(R.id.action_favourites);
         mBottomNavBar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull android.view.MenuItem item) {
-                if (item.getItemId() == R.id.action_start) {
+                int id = item.getItemId();
+
+                if (id == R.id.action_start) {
                     finish();
                     item.setChecked(true);
                     return true;
                 }
 
-                if (item.getItemId() == R.id.action_favourites) {
+                if (id == R.id.action_favourites) {
                     item.setChecked(true);
                     return true;
                 }
 
-                if (item.getItemId() == R.id.action_others) {
+                if (id == R.id.action_others) {
 //                    item.setChecked(true);
                     return true;
                 }
@@ -126,7 +128,6 @@ public class FavouritesActivity extends AppCompatActivity
     // Callbacks and others
     //////////////////////////////////////////////////////////////////////////////*/
 
-    // TODO: loading bar like in other activities
     @Override
     public void onFavouritesReceived(List<Video> results) {
         mAdapter.clearItems();

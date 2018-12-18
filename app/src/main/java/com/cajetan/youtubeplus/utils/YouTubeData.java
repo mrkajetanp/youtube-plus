@@ -393,7 +393,7 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
             if (mActivity instanceof MostPopularListener)
                 ((MostPopularListener) mActivity).onMostPopularReceived(results, mNextPageToken, mPreviousPageToken);
             else
-                throw new UnsupportedOperationException("Activity must implement FavouritesDataListener.");
+                throw new UnsupportedOperationException("Activity must implement MostPopularListener.");
         }
 
         @Override
