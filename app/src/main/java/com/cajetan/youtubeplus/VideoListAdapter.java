@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,7 +87,8 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
     // Callbacks & others
     //////////////////////////////////////////////////////////////////////////////*/
 
-    class VideoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class VideoViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener, View.OnLongClickListener {
 
         TextView videoTitleView;
         TextView videoChannelView;
@@ -102,6 +104,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
             videoDurationView = itemView.findViewById(R.id.video_duration);
 
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
         void bind(Video video) {
@@ -138,6 +141,12 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
         public void onClick(View v) {
             mOnClickListener.onListItemClick(mVideos.get(getAdapterPosition()).getId());
         }
+
+        @Override
+        public boolean onLongClick(View v) {
+            mOnClickListener.onListItemLongClick(mVideos.get(getAdapterPosition()).getId());
+            return true;
+        }
     }
 
     public interface OnBottomReachedListener {
@@ -146,5 +155,6 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
 
     public interface ListItemClickListener {
         void onListItemClick(String clickedVideoId);
+        void onListItemLongClick(String clickedVideoId);
     }
 }

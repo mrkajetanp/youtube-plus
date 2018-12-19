@@ -3,11 +3,14 @@ package com.cajetan.youtubeplus;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.SearchManager;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,7 +21,10 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
+import android.widget.Toast;
 
+import com.cajetan.youtubeplus.data.VideoData;
+import com.cajetan.youtubeplus.data.VideoDataViewModel;
 import com.cajetan.youtubeplus.utils.YouTubeData;
 import com.google.api.services.youtube.model.Video;
 
@@ -46,6 +52,8 @@ public class MainActivity extends AppCompatActivity
 
     private boolean searching = false;
 
+    private VideoDataViewModel mVideoDataViewModel;
+
     private Context mContext;
 
     // TODO: implement auto fullscreen on rotation
@@ -72,6 +80,8 @@ public class MainActivity extends AppCompatActivity
 
         handleIntent(getIntent());
         loadMostPopularVideos(null);
+
+        mVideoDataViewModel = ViewModelProviders.of(this).get(VideoDataViewModel.class);
     }
 
     @Override
@@ -266,5 +276,18 @@ public class MainActivity extends AppCompatActivity
         Intent videoPlayerIntent = new Intent(this, PlayerActivity.class);
         videoPlayerIntent.putExtra(getString(R.string.video_id_key), clickedVideoId);
         startActivity(videoPlayerIntent);
+    }
+
+    @Override
+    public void onListItemLongClick(String clickedVideoId) {
+        final String videoId = clickedVideoId;
+
+        new AlertDialog.Builder(this)
+                .setMessage("Do you want to add this video to favourites?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        mVideoDataViewModel.insert(new VideoData(videoId));
+                    }
+                }).setNegativeButton(android.R.string.no, null).show();
     }
 }

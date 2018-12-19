@@ -147,7 +147,6 @@ public class FavouritesActivity extends AppCompatActivity
         startActivity(videoPlayerIntent);
     }
 
-    // TODO: confirmation dialog
     @Override
     public void onListItemLongClick(String clickedVideoId) {
         final String videoId = clickedVideoId;
