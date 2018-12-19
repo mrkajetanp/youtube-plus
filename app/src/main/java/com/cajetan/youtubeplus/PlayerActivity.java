@@ -383,6 +383,9 @@ public class PlayerActivity extends AppCompatActivity
 
         if (mVideoData.getSnippet().getThumbnails().getStandard() != null)
             new SetAlbumArtTask().execute(mVideoData.getSnippet().getThumbnails().getStandard().getUrl());
+
+        if (mVideoData.getContentDetails().getDuration().equals("PT0S"))
+            mainPlayerView.getPlayerUIController().enableLiveVideoUI(true);
     }
 
     @Override

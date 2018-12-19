@@ -4,6 +4,7 @@
 
 #### 19.12.2018
 
+* [General] Live video UI and LIVE 'duration' in a search list
 * [MainActivity] Adding to favourites onLongClick with a confirmation
 
 #### 18.12.2018

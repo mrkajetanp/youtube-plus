@@ -113,9 +113,17 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
             videoThumbnailView.setBackgroundColor(Color.parseColor("#e5e5e5"));
 
             String duration = video.getContentDetails().getDuration();
-            duration = duration.substring(2, duration.length()-1);
-            duration = duration.replace("M", ":");
-            videoDurationView.setText(duration);
+
+            // Show duration in HH:MM:SS or 'LIVE' accordingly
+            if (duration.equals("PT0S")) {
+                videoDurationView.setBackgroundColor(Color.RED);
+                videoDurationView.setTextColor(Color.WHITE);
+                videoDurationView.setText("LIVE");
+            } else {
+                duration = duration.substring(2, duration.length() - 1);
+                duration = duration.replace("M", ":");
+                videoDurationView.setText(duration);
+            }
 
             String thumbnailUrl = null;
 
