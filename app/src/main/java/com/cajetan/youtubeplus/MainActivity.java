@@ -213,7 +213,6 @@ public class MainActivity extends AppCompatActivity
             searchProgressBarBottom.setVisibility(View.VISIBLE);
         }
 
-        // TODO: finish implementing new pages
         mYouTubeData.receiveMostPopularResults(nextPageToken);
     }
 

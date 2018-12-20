@@ -2,6 +2,10 @@
 
 ---
 
+#### 20.12.2018
+
+* [General] Video list item selector and layout tweaks
+
 #### 19.12.2018
 
 * [General] Live video UI and LIVE 'duration' in a search list
