@@ -179,16 +179,17 @@ public class PlayerActivity extends AppCompatActivity
             return;
 
         mUIController.showMenuButton(true);
-        mUIController.getMenu().addItem(new MenuItem("Seek", R.drawable.ic_timer_black_24dp, new View.OnClickListener() {
+        mUIController.getMenu().addItem(new MenuItem(getString(R.string.seek),
+                R.drawable.ic_timer_black_24dp, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bundle b = new Bundle();
-                b.putString("duration_string", mVideoData.getContentDetails().getDuration());
-                b.putInt("current_second", Math.round(mTracker.getCurrentSecond()));
+                b.putString(getString(R.string.duration_string_key), mVideoData.getContentDetails().getDuration());
+                b.putInt(getString(R.string.current_second_key), Math.round(mTracker.getCurrentSecond()));
 
                 DialogFragment newFragment = new SeekDialog();
                 newFragment.setArguments(b);
-                newFragment.show(getFragmentManager(), "seeker_dialog");
+                newFragment.show(getFragmentManager(), getString(R.string.seeker_dialog_id));
 
                 mUIController.getMenu().dismiss();
             }
@@ -196,7 +197,7 @@ public class PlayerActivity extends AppCompatActivity
 
         // TODO: option to unstar if already starred
 
-        mUIController.getMenu().addItem(new MenuItem("Add to favourites",
+        mUIController.getMenu().addItem(new MenuItem(getString(R.string.favourites_add),
                 R.drawable.ic_star_border_black_24dp, new View.OnClickListener() {
 
             @Override
@@ -204,7 +205,7 @@ public class PlayerActivity extends AppCompatActivity
                 Log.d("PlayerActivity", "Added a video to favourites");
                 mVideoDataViewModel.insert(new VideoData(mVideoId));
 
-                Toast.makeText(mContext, "Added to favourites", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, getString(R.string.favourites_added), Toast.LENGTH_SHORT).show();
 
                 mUIController.getMenu().dismiss();
             }

@@ -110,7 +110,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
         void bind(Video video) {
             videoTitleView.setText(video.getSnippet().getTitle());
             videoChannelView.setText(video.getSnippet().getChannelTitle());
-            videoThumbnailView.setBackgroundColor(Color.parseColor("#e5e5e5"));
+            videoDurationView.setBackgroundResource(R.color.darkerLightGrey);
 
             String duration = video.getContentDetails().getDuration();
 
@@ -118,7 +118,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
             if (duration.equals("PT0S")) {
                 videoDurationView.setBackgroundColor(Color.RED);
                 videoDurationView.setTextColor(Color.WHITE);
-                videoDurationView.setText("LIVE");
+                videoDurationView.setText(context.getString(R.string.live));
             } else {
                 duration = duration.substring(2, duration.length() - 1);
                 duration = duration.replace("M", ":");

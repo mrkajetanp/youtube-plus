@@ -4,6 +4,7 @@
 
 #### 20.12.2018
 
+* [General] Converted various strings to resources 
 * [General] Video list item selector and layout tweaks
 
 #### 19.12.2018

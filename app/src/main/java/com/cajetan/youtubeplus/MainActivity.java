@@ -282,7 +282,7 @@ public class MainActivity extends AppCompatActivity
         final String videoId = clickedVideoId;
 
         new AlertDialog.Builder(this)
-                .setMessage("Do you want to add this video to favourites?")
+                .setMessage(getString(R.string.favourite_add_confirmation))
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         mVideoDataViewModel.insert(new VideoData(videoId));
