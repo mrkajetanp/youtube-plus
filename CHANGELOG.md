@@ -2,6 +2,10 @@
 
 ---
 
+#### 21.12.2018
+
+* [PlayerActivity] Getting playlist ID if shared
+
 #### 20.12.2018
 
 * [General] Converted various strings to resources 

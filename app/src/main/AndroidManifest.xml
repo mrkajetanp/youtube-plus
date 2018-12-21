@@ -54,7 +54,7 @@
             android:name=".PlayerActivity$PlayerLifecycleService"
             android:exported="false" />
 
-        <activity android:name=".FavouritesActivity"></activity>
+        <activity android:name=".FavouritesActivity" />
     </application>
 
 </manifest>

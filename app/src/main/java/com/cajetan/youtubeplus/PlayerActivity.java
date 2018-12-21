@@ -80,7 +80,13 @@ public class PlayerActivity extends AppCompatActivity
         setContentView(R.layout.activity_player);
 
         mContext = this;
-        mVideoId = getIntentVideoId();
+
+        String playlistId = getPlaylistId();
+        if (playlistId == null) {
+            mVideoId = getIntentVideoId();
+        } else {
+            mVideoId = playlistId;
+        }
 
         youTubeData = new YouTubeData(this);
         youTubeData.receiveVideoData(mVideoId);
@@ -303,6 +309,20 @@ public class PlayerActivity extends AppCompatActivity
         Log.d(TAG, "Video id: " + videoId);
 
         return videoId;
+    }
+
+    private String getPlaylistId() {
+        String videoUrl = null;
+        if (getIntent() != null && getIntent().getExtras() != null)
+            videoUrl = getIntent().getExtras().getString(Intent.EXTRA_TEXT);
+
+        if (videoUrl == null)
+            return null;
+
+        if (!videoUrl.contains("playlist?list="))
+            return null;
+
+        return videoUrl.substring(videoUrl.indexOf("playlist?list=", 0) + 14);
     }
 
     /*//////////////////////////////////////////////////////////////////////////////
