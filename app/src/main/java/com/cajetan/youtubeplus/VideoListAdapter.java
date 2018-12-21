@@ -122,6 +122,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
             } else {
                 duration = duration.substring(2, duration.length() - 1);
                 duration = duration.replace("M", ":");
+                videoDurationView.setBackgroundColor(Color.BLACK);
                 videoDurationView.setText(duration);
             }
 

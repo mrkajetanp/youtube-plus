@@ -4,6 +4,7 @@
 
 #### 21.12.2018
 
+* [YouTubeData] Getting playlist data
 * [PlayerActivity] Getting playlist ID if shared
 
 #### 20.12.2018

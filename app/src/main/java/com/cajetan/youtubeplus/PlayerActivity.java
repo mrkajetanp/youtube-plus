@@ -23,12 +23,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cajetan.youtubeplus.data.VideoData;
 import com.cajetan.youtubeplus.data.VideoDataViewModel;
 import com.cajetan.youtubeplus.utils.FullScreenHelper;
 import com.cajetan.youtubeplus.utils.YouTubeData;
+import com.google.api.services.youtube.model.PlaylistItem;
 import com.google.api.services.youtube.model.Video;
 import com.pierfrancescosoffritti.androidyoutubeplayer.player.PlayerConstants;
 import com.pierfrancescosoffritti.androidyoutubeplayer.player.YouTubePlayer;
@@ -42,9 +44,11 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.utils.YouTubePlayerTracke
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 public class PlayerActivity extends AppCompatActivity
-        implements YouTubeData.VideoDataListener, SeekDialog.SeekDialogListener {
+        implements YouTubeData.VideoDataListener, SeekDialog.SeekDialogListener,
+        YouTubeData.PlaylistDataListener {
 
     private static final String TAG = PlayerActivity.class.getSimpleName();
 
@@ -81,14 +85,16 @@ public class PlayerActivity extends AppCompatActivity
 
         mContext = this;
 
+        youTubeData = new YouTubeData(this);
+
         String playlistId = getPlaylistId();
         if (playlistId == null) {
             mVideoId = getIntentVideoId();
         } else {
             mVideoId = playlistId;
+            youTubeData.receivePlaylistResults(playlistId);
         }
 
-        youTubeData = new YouTubeData(this);
         youTubeData.receiveVideoData(mVideoId);
 
         setupPlayer();
@@ -407,6 +413,19 @@ public class PlayerActivity extends AppCompatActivity
 
         if (mVideoData.getContentDetails().getDuration().equals("PT0S"))
             mainPlayerView.getPlayerUIController().enableLiveVideoUI(true);
+    }
+
+    @Override
+    public void onPlaylistDataReceived(List<PlaylistItem> results) {
+        TextView tempView = findViewById(R.id.tempView);
+
+        StringBuilder builder = new StringBuilder();
+        for (PlaylistItem item : results) {
+            builder.append(item.getSnippet().getTitle());
+            builder.append('\n');
+        }
+
+        tempView.setText(builder.toString());
     }
 
     @Override
