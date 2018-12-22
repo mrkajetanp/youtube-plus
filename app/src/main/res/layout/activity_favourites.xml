@@ -7,18 +7,18 @@
     android:background="@android:color/white"
     tools:context=".FavouritesActivity">
 
-     <android.support.v7.widget.RecyclerView
-         android:id="@+id/favourite_list"
-         android:layout_width="0dp"
-         android:layout_height="0dp"
-         android:layout_marginTop="8dp"
-         android:visibility="invisible"
-         app:layout_constraintBottom_toTopOf="@+id/bottom_bar"
-         app:layout_constraintEnd_toEndOf="parent"
-         app:layout_constraintStart_toStartOf="parent"
-         app:layout_constraintTop_toTopOf="parent" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/favourite_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-     <ProgressBar
+    <ProgressBar
         android:id="@+id/progress_bar_centre"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
@@ -29,7 +29,7 @@
         app:layout_constraintStart_toStartOf="@+id/favourite_list"
         app:layout_constraintTop_toTopOf="@+id/favourite_list" />
 
-     <android.support.design.widget.BottomNavigationView
+    <android.support.design.widget.BottomNavigationView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/bottom_bar"
@@ -42,5 +42,19 @@
         app:itemTextColor="@drawable/bottom_bar_colour_state"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_bar_items" />
+
+    <TextView
+        android:id="@+id/no_favourites_view"
+        android:layout_width="217dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        android:text="@string/no_favourites_message"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
