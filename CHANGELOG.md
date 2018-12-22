@@ -2,6 +2,10 @@
 
 ---
 
+#### 22.12.2018
+
+* [Favourites] Fixed a bug occurring when there are no favourites
+
 #### 21.12.2018
 
 * [YouTubeData] Getting playlist data
