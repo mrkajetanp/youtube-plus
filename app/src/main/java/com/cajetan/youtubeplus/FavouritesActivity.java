@@ -14,6 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cajetan.youtubeplus.data.VideoData;
@@ -30,6 +31,8 @@ public class FavouritesActivity extends AppCompatActivity
     private static final String TAG = FavouritesActivity.class.getSimpleName();
 
     private VideoDataViewModel mVideoDataViewModel;
+
+    private TextView mNoFavouritesView;
 
     private RecyclerView mFavouriteList;
     private FavouriteListAdapter mAdapter;
@@ -51,6 +54,7 @@ public class FavouritesActivity extends AppCompatActivity
 
         mYouTubeData = new YouTubeData(this);
         mProgressBarCentre = findViewById(R.id.progress_bar_centre);
+        mNoFavouritesView = findViewById(R.id.no_favourites_view);
 
         setupFavouritesList();
         setupDatabase();
@@ -135,6 +139,11 @@ public class FavouritesActivity extends AppCompatActivity
     public void onFavouritesReceived(List<Video> results) {
         mAdapter.clearItems();
         mAdapter.addItems(results);
+
+        if (mAdapter.getItemCount() == 0)
+            mNoFavouritesView.setVisibility(View.VISIBLE);
+        else
+            mNoFavouritesView.setVisibility(View.GONE);
 
         mProgressBarCentre.setVisibility(View.INVISIBLE);
         mFavouriteList.setVisibility(View.VISIBLE);

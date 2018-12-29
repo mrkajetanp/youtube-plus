@@ -6,6 +6,11 @@
 
 * [General] Converted FullScreenHelper to Kotlin
 
+#### 22.12.2018
+
+* [Favourites] Added a message when there are no favourites
+* [Favourites] Fixed a bug occurring when there are no favourites
+
 #### 21.12.2018
 
 * [YouTubeData] Getting playlist data

@@ -312,6 +312,10 @@ public class YouTubeData implements EasyPermissions.PermissionCallbacks {
                     finalId.append(data.getVideoId());
                     finalId.append(',');
                 }
+
+                if (finalId.length() == 0)
+                    return new ArrayList<>();
+
                 finalId.setLength(finalId.length()-1);
 
                 return mService.videos()
