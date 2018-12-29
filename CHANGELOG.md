@@ -2,6 +2,10 @@
 
 ---
 
+#### 29.12.2018
+
+* [General] Converted FullScreenHelper to Kotlin
+
 #### 21.12.2018
 
 * [YouTubeData] Getting playlist data
