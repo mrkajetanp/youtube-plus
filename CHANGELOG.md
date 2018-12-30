@@ -2,6 +2,10 @@
 
 ---
 
+#### 30.12.2018
+
+* [General] Converted FavouritesActivity to Kotlin
+
 #### 29.12.2018
 
 * [General] Converted FullScreenHelper to Kotlin
