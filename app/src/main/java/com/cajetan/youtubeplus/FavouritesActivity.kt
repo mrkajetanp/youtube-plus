@@ -21,18 +21,17 @@ class FavouritesActivity : AppCompatActivity(),
         YouTubeData.FavouritesDataListener, FavouriteListAdapter.ListItemClickListener  {
 
     private var mVideoDataViewModel: VideoDataViewModel? = null
-
     private var mNoFavouritesView: TextView? = null
 
     private var mFavouriteList: RecyclerView? = null
-    private var mAdapter: FavouriteListAdapter? = null
+    private var mAdapter: FavouriteListAdapter = FavouriteListAdapter(emptyList(), this, this)
 
     private var mBottomNavBar: BottomNavigationView? = null
     private var mProgressBarCentre: ProgressBar? = null
+
     private var mYouTubeData: YouTubeData? = null
 
     // TODO: caching results?
-    // TODO: work on reducing nullable fields
 
     ///////////////////////////////////////////////////////////////////////////////
     // Lifecycle
@@ -63,8 +62,6 @@ class FavouritesActivity : AppCompatActivity(),
     private fun setupFavouritesList() {
         mFavouriteList = findViewById(R.id.favourite_list)
         mFavouriteList?.layoutManager = LinearLayoutManager(this)
-
-        mAdapter = FavouriteListAdapter(emptyList(), this, this)
         mFavouriteList?.setHasFixedSize(false)
         mFavouriteList?.adapter = mAdapter
     }
@@ -121,10 +118,10 @@ class FavouritesActivity : AppCompatActivity(),
     ///////////////////////////////////////////////////////////////////////////////
 
     override fun onFavouritesReceived(results: MutableList<Video>?) {
-        mAdapter?.clearItems()
-        mAdapter?.addItems(results)
+        mAdapter.clearItems()
+        mAdapter.addItems(results)
 
-        if (mAdapter?.itemCount == 0)
+        if (mAdapter.itemCount == 0)
             mNoFavouritesView?.visibility = View.VISIBLE
         else
             mNoFavouritesView?.visibility = View.GONE

@@ -4,6 +4,7 @@
 
 #### 30.12.2018
 
+* [FavouritesActivity] Removed Adapter nullability 
 * [General] Converted FavouritesActivity to Kotlin
 
 #### 29.12.2018
