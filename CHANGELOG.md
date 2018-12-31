@@ -2,6 +2,10 @@
 
 ---
 
+#### 31.12.2018
+
+* [General] Converted most of the database to Kotlin
+
 #### 30.12.2018
 
 * [FavouritesActivity] Removed Adapter nullability 

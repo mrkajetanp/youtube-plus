@@ -68,7 +68,7 @@ class FavouritesActivity : AppCompatActivity(),
 
     private fun setupDatabase() {
         mVideoDataViewModel = ViewModelProviders.of(this).get(VideoDataViewModel::class.java)
-        mVideoDataViewModel?.allVideoData?.observe(this, Observer {
+        mVideoDataViewModel?.getAllVideoData()?.observe(this, Observer {
             if (it != null)
                 loadFavourites(it)
         })
