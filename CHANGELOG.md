@@ -4,6 +4,7 @@
 
 #### 31.12.2018
 
+* [General] Converted the database to Kotlin and added improvements
 * [General] Converted most of the database to Kotlin
 
 #### 30.12.2018

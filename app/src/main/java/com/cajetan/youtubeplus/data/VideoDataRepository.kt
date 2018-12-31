@@ -4,38 +4,35 @@ import android.app.Application
 import android.arch.lifecycle.LiveData
 import android.os.AsyncTask
 
-class VideoDataRepository {
+class VideoDataRepository(application: Application) {
+    private var mVideoDataDao: VideoDataDao = VideoDatabase.getDatabase(application)!!.videoDataDao()
+    private var mAllVideoData: LiveData<List<VideoData>>
 
-    private var mVideoDataDao: VideoDataDao? = null
-    private var mAllVideoData: LiveData<List<VideoData>>? = null
-
-    // TODO: primary constructor
-    constructor(application: Application) {
-        mVideoDataDao = VideoDatabase.getDatabase(application)?.videoDataDao()
-        mAllVideoData = mVideoDataDao?.all
+    init {
+        mAllVideoData = mVideoDataDao.getAll()
     }
 
     fun getAllVideoData(): LiveData<List<VideoData>> {
-        return mAllVideoData!!
+        return mAllVideoData
     }
 
     fun insert(videoData: VideoData) {
-        InsertTask(mVideoDataDao!!).execute(videoData)
+        InsertTask(mVideoDataDao).execute(videoData)
     }
 
     fun delete(videoData: VideoData) {
-        DeleteTask(mVideoDataDao!!).execute(videoData)
+        DeleteTask(mVideoDataDao).execute(videoData)
     }
 
     private class InsertTask(val asyncTaskDao: VideoDataDao): AsyncTask<VideoData, Void, Void?>() {
-        override fun doInBackground(vararg videoData: VideoData?): Void? {
+        override fun doInBackground(vararg videoData: VideoData): Void? {
             asyncTaskDao.insertAll(videoData[0])
             return null
         }
     }
 
     private class DeleteTask(val asyncTaskDao: VideoDataDao): AsyncTask<VideoData, Void, Void?>() {
-        override fun doInBackground(vararg videoData: VideoData?): Void? {
+        override fun doInBackground(vararg videoData: VideoData): Void? {
             asyncTaskDao.delete(videoData[0])
             return null
         }

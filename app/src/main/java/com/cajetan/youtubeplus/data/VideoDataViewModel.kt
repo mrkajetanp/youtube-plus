@@ -5,23 +5,22 @@ import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 
 class VideoDataViewModel(val context: Application) : AndroidViewModel(context) {
-    private var mRepository: VideoDataRepository? = null
-    private var mAllVideoData: LiveData<List<VideoData>>? = null
+    private var mRepository: VideoDataRepository = VideoDataRepository(context)
+    private var mAllVideoData: LiveData<List<VideoData>>
 
     init {
-        mRepository = VideoDataRepository(context)
-        mAllVideoData = mRepository!!.getAllVideoData()
+        mAllVideoData = mRepository.getAllVideoData()
     }
 
-    fun getAllVideoData(): LiveData<List<VideoData>>? {
+    fun getAllVideoData(): LiveData<List<VideoData>> {
         return mAllVideoData
     }
 
     fun insert(videoData: VideoData) {
-        mRepository!!.insert(videoData)
+        mRepository.insert(videoData)
     }
 
     fun delete(videoData: VideoData) {
-        mRepository!!.delete(videoData)
+        mRepository.delete(videoData)
     }
 }
