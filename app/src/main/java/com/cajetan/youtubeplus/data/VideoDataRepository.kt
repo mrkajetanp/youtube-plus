@@ -2,7 +2,7 @@ package com.cajetan.youtubeplus.data
 
 import android.app.Application
 import android.arch.lifecycle.LiveData
-import android.os.AsyncTask
+import org.jetbrains.anko.doAsync
 
 class VideoDataRepository(application: Application) {
     private var mVideoDataDao: VideoDataDao = VideoDatabase.getDatabase(application)!!.videoDataDao()
@@ -17,25 +17,14 @@ class VideoDataRepository(application: Application) {
     }
 
     fun insert(videoData: VideoData) {
-        InsertTask(mVideoDataDao).execute(videoData)
+        doAsync {
+            mVideoDataDao.insertAll(videoData)
+        }
     }
 
     fun delete(videoData: VideoData) {
-        DeleteTask(mVideoDataDao).execute(videoData)
-    }
-
-    private class InsertTask(val asyncTaskDao: VideoDataDao): AsyncTask<VideoData, Void, Void?>() {
-        override fun doInBackground(vararg videoData: VideoData): Void? {
-            asyncTaskDao.insertAll(videoData[0])
-            return null
+        doAsync {
+            mVideoDataDao.delete(videoData)
         }
     }
-
-    private class DeleteTask(val asyncTaskDao: VideoDataDao): AsyncTask<VideoData, Void, Void?>() {
-        override fun doInBackground(vararg videoData: VideoData): Void? {
-            asyncTaskDao.delete(videoData[0])
-            return null
-        }
-    }
-
 }

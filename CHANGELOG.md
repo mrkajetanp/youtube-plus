@@ -2,6 +2,10 @@
 
 ---
 
+#### 1.01.2019
+
+* [General] Refactored Kotlin code using Anko library
+
 #### 31.12.2018
 
 * [General] Converted the database to Kotlin and added improvements

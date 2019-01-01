@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
-import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -16,6 +15,10 @@ import com.cajetan.youtubeplus.data.VideoData
 import com.cajetan.youtubeplus.data.VideoDataViewModel
 import com.cajetan.youtubeplus.utils.YouTubeData
 import com.google.api.services.youtube.model.Video
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.noButton
+import org.jetbrains.anko.yesButton
 
 class FavouritesActivity : AppCompatActivity(),
         YouTubeData.FavouritesDataListener, FavouriteListAdapter.ListItemClickListener  {
@@ -131,19 +134,16 @@ class FavouritesActivity : AppCompatActivity(),
     }
 
     override fun onListItemClick(clickedVideoId: String?) {
-        val videoPlayerIntent = Intent(this, PlayerActivity::class.java)
-        videoPlayerIntent.putExtra(getString(R.string.video_id_key), clickedVideoId)
-        startActivity(videoPlayerIntent)
+        startActivity(intentFor<PlayerActivity>(
+                getString(R.string.video_id_key) to clickedVideoId
+        ))
     }
 
     override fun onListItemLongClick(clickedVideoId: String?) {
-        val videoId: String = clickedVideoId as String
-
-        AlertDialog.Builder(this)
-                .setMessage(getString(R.string.favourite_remove_confirmation))
-                .setPositiveButton(android.R.string.yes) {
-                    _, _ -> mVideoDataViewModel?.delete(VideoData(videoId))
-                }.setNegativeButton(android.R.string.no, null).show()
+        alert(getString(R.string.favourite_remove_confirmation)) {
+            yesButton { mVideoDataViewModel?.delete(VideoData(clickedVideoId as String)) }
+            noButton { }
+        }.show()
     }
 }
 
