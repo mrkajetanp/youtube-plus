@@ -4,6 +4,7 @@
 
 #### 1.01.2019
 
+* [General] Refactored Kotlin code using Kotlin Android Extensions 
 * [General] Refactored Kotlin code using Anko library
 
 #### 31.12.2018

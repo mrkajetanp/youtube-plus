@@ -15,6 +15,7 @@ import com.cajetan.youtubeplus.data.VideoData
 import com.cajetan.youtubeplus.data.VideoDataViewModel
 import com.cajetan.youtubeplus.utils.YouTubeData
 import com.google.api.services.youtube.model.Video
+import kotlinx.android.synthetic.main.activity_favourites.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.noButton
@@ -23,14 +24,10 @@ import org.jetbrains.anko.yesButton
 class FavouritesActivity : AppCompatActivity(),
         YouTubeData.FavouritesDataListener, FavouriteListAdapter.ListItemClickListener  {
 
+    // TODO: convert ids to camelCase
+
     private var mVideoDataViewModel: VideoDataViewModel? = null
-    private var mNoFavouritesView: TextView? = null
-
-    private var mFavouriteList: RecyclerView? = null
     private var mAdapter: FavouriteListAdapter = FavouriteListAdapter(emptyList(), this, this)
-
-    private var mBottomNavBar: BottomNavigationView? = null
-    private var mProgressBarCentre: ProgressBar? = null
 
     private var mYouTubeData: YouTubeData? = null
 
@@ -45,8 +42,6 @@ class FavouritesActivity : AppCompatActivity(),
         setContentView(R.layout.activity_favourites)
 
         mYouTubeData = YouTubeData(this)
-        mProgressBarCentre = findViewById(R.id.progress_bar_centre)
-        mNoFavouritesView = findViewById(R.id.no_favourites_view)
 
         setupFavouritesList()
         setupDatabase()
@@ -63,10 +58,9 @@ class FavouritesActivity : AppCompatActivity(),
     ///////////////////////////////////////////////////////////////////////////////
 
     private fun setupFavouritesList() {
-        mFavouriteList = findViewById(R.id.favourite_list)
-        mFavouriteList?.layoutManager = LinearLayoutManager(this)
-        mFavouriteList?.setHasFixedSize(false)
-        mFavouriteList?.adapter = mAdapter
+        favourite_list.layoutManager = LinearLayoutManager(this)
+        favourite_list.setHasFixedSize(false)
+        favourite_list.adapter = mAdapter
     }
 
     private fun setupDatabase() {
@@ -78,9 +72,8 @@ class FavouritesActivity : AppCompatActivity(),
     }
 
     private fun setupBottomBar() {
-        mBottomNavBar = findViewById(R.id.bottom_bar)
-        mBottomNavBar?.selectedItemId = R.id.action_favourites
-        mBottomNavBar?.setOnNavigationItemSelectedListener {
+        bottom_bar.selectedItemId = R.id.action_favourites
+        bottom_bar.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.action_start -> {
                     finish()
@@ -110,8 +103,8 @@ class FavouritesActivity : AppCompatActivity(),
     ///////////////////////////////////////////////////////////////////////////////
 
     private fun loadFavourites(videoData: List<VideoData>) {
-        mFavouriteList?.visibility = View.INVISIBLE
-        mProgressBarCentre?.visibility = View.VISIBLE
+        favourite_list.visibility = View.INVISIBLE
+        progress_bar_centre.visibility = View.VISIBLE
 
         mYouTubeData?.receiveFavouritesResults(videoData)
     }
@@ -125,12 +118,12 @@ class FavouritesActivity : AppCompatActivity(),
         mAdapter.addItems(results)
 
         if (mAdapter.itemCount == 0)
-            mNoFavouritesView?.visibility = View.VISIBLE
+            no_favourites_view.visibility = View.VISIBLE
         else
-            mNoFavouritesView?.visibility = View.GONE
+            no_favourites_view.visibility = View.GONE
 
-        mProgressBarCentre?.visibility = View.INVISIBLE
-        mFavouriteList?.visibility = View.VISIBLE
+        progress_bar_centre.visibility = View.INVISIBLE
+        favourite_list.visibility = View.VISIBLE
     }
 
     override fun onListItemClick(clickedVideoId: String?) {
