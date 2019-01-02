@@ -20,12 +20,9 @@ import org.jetbrains.anko.yesButton
 class FavouritesActivity : AppCompatActivity(),
         YouTubeData.FavouritesDataListener, FavouriteListAdapter.ListItemClickListener  {
 
-    // TODO: convert ids to camelCase
-
-    private var mVideoDataViewModel: VideoDataViewModel? = null
     private var mAdapter: FavouriteListAdapter = FavouriteListAdapter(emptyList(), this, this)
-
-    private var mYouTubeData: YouTubeData? = null
+    private lateinit var mYouTubeData: YouTubeData
+    private lateinit var mVideoDataViewModel: VideoDataViewModel
 
     // TODO: caching results?
 
@@ -45,7 +42,7 @@ class FavouritesActivity : AppCompatActivity(),
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        mYouTubeData?.onParentActivityResult(requestCode, resultCode, data)
+        mYouTubeData.onParentActivityResult(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
     }
 
@@ -54,22 +51,22 @@ class FavouritesActivity : AppCompatActivity(),
     ///////////////////////////////////////////////////////////////////////////////
 
     private fun setupFavouritesList() {
-        favourite_list.layoutManager = LinearLayoutManager(this)
-        favourite_list.setHasFixedSize(false)
-        favourite_list.adapter = mAdapter
+        videoList.layoutManager = LinearLayoutManager(this)
+        videoList.setHasFixedSize(false)
+        videoList.adapter = mAdapter
     }
 
     private fun setupDatabase() {
         mVideoDataViewModel = ViewModelProviders.of(this).get(VideoDataViewModel::class.java)
-        mVideoDataViewModel?.getAllVideoData()?.observe(this, Observer {
+        mVideoDataViewModel.getAllVideoData().observe(this, Observer {
             if (it != null)
                 loadFavourites(it)
         })
     }
 
     private fun setupBottomBar() {
-        bottom_bar.selectedItemId = R.id.action_favourites
-        bottom_bar.setOnNavigationItemSelectedListener {
+        bottomBar.selectedItemId = R.id.action_favourites
+        bottomBar.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.action_start -> {
                     finish()
@@ -99,10 +96,10 @@ class FavouritesActivity : AppCompatActivity(),
     ///////////////////////////////////////////////////////////////////////////////
 
     private fun loadFavourites(videoData: List<VideoData>) {
-        favourite_list.visibility = View.INVISIBLE
-        progress_bar_centre.visibility = View.VISIBLE
+        videoList.visibility = View.INVISIBLE
+        progressBarCentre.visibility = View.VISIBLE
 
-        mYouTubeData?.receiveFavouritesResults(videoData)
+        mYouTubeData.receiveFavouritesResults(videoData)
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -114,12 +111,12 @@ class FavouritesActivity : AppCompatActivity(),
         mAdapter.addItems(results)
 
         if (mAdapter.itemCount == 0)
-            no_favourites_view.visibility = View.VISIBLE
+            noFavouritesView.visibility = View.VISIBLE
         else
-            no_favourites_view.visibility = View.GONE
+            noFavouritesView.visibility = View.GONE
 
-        progress_bar_centre.visibility = View.INVISIBLE
-        favourite_list.visibility = View.VISIBLE
+        progressBarCentre.visibility = View.INVISIBLE
+        videoList.visibility = View.VISIBLE
     }
 
     override fun onListItemClick(clickedVideoId: String?) {
@@ -130,7 +127,7 @@ class FavouritesActivity : AppCompatActivity(),
 
     override fun onListItemLongClick(clickedVideoId: String?) {
         alert(getString(R.string.favourite_remove_confirmation)) {
-            yesButton { mVideoDataViewModel?.delete(VideoData(clickedVideoId as String)) }
+            yesButton { mVideoDataViewModel.delete(VideoData(clickedVideoId as String)) }
             noButton { }
         }.show()
     }

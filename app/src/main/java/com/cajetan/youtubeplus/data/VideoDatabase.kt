@@ -10,7 +10,7 @@ abstract class VideoDatabase : RoomDatabase() {
     abstract fun videoDataDao(): VideoDataDao
 
     companion object {
-        var INSTANCE: VideoDatabase? = null
+        private var INSTANCE: VideoDatabase? = null
 
         fun getDatabase(context: Context): VideoDatabase? {
             if (INSTANCE == null) {

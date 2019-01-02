@@ -4,6 +4,7 @@
 
 #### 2.01.2019
 
+* [General] Converted ids to camel case 
 * [General] Converted MainActivity to Kotlin
 
 #### 1.01.2019
