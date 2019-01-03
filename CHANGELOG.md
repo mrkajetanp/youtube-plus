@@ -2,6 +2,10 @@
 
 ---
 
+#### 3.01.2019
+
+* [General] Converted FavouriteListAdapter to Kotlin
+
 #### 2.01.2019
 
 * [General] Converted ids to camel case 

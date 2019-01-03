@@ -108,7 +108,7 @@ class FavouritesActivity : AppCompatActivity(),
 
     override fun onFavouritesReceived(results: MutableList<Video>?) {
         mAdapter.clearItems()
-        mAdapter.addItems(results)
+        mAdapter.addItems(results?.toList() as List<Video>)
 
         if (mAdapter.itemCount == 0)
             noFavouritesView.visibility = View.VISIBLE
@@ -119,13 +119,13 @@ class FavouritesActivity : AppCompatActivity(),
         videoList.visibility = View.VISIBLE
     }
 
-    override fun onListItemClick(clickedVideoId: String?) {
+    override fun onListItemClick(clickedVideoId: String) {
         startActivity(intentFor<PlayerActivity>(
                 getString(R.string.video_id_key) to clickedVideoId
         ))
     }
 
-    override fun onListItemLongClick(clickedVideoId: String?) {
+    override fun onListItemLongClick(clickedVideoId: String) {
         alert(getString(R.string.favourite_remove_confirmation)) {
             yesButton { mVideoDataViewModel.delete(VideoData(clickedVideoId as String)) }
             noButton { }
