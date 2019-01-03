@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +13,10 @@ import android.widget.TextView
 import com.google.api.services.youtube.model.Video
 import com.squareup.picasso.Picasso
 
-class FavouriteListAdapter(videos: List<Video>, listener: ListItemClickListener, context: Context) :
-        RecyclerView.Adapter<FavouriteListAdapter.VideoViewHolder>() {
+class VideoListAdapter(videos: List<Video>, listener: ListItemClickListener, context: Context) :
+        RecyclerView.Adapter<VideoListAdapter.VideoViewHolder>() {
+
+    lateinit var onBottomReached: () -> Unit
 
     private val mVideos: ArrayList<Video> = ArrayList(videos)
     private val mOnClickListener = listener
@@ -31,6 +34,15 @@ class FavouriteListAdapter(videos: List<Video>, listener: ListItemClickListener,
 
     override fun onBindViewHolder(holder: VideoViewHolder, position: Int) {
         holder.bind(mVideos[position])
+
+        if (position != mVideos.size - 1)
+            return
+
+        try {
+            onBottomReached.invoke()
+        } catch (e: UninitializedPropertyAccessException) {
+            Log.e("VideoListAdapter", "onBottomReached not set!")
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////

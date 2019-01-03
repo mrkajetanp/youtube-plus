@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity(),
     private fun setupSearchResultList() {
         videoList.layoutManager = LinearLayoutManager(this)
 
-        mAdapter.setOnBottomReachedListener {
+        mAdapter.onBottomReached = {
             Log.d(TAG, "Reached the bottom")
 
             if (mSearchQuery == "")
@@ -199,7 +199,7 @@ class MainActivity : AppCompatActivity(),
             searchProgressBarBottom.visibility = View.GONE
         }
 
-        mAdapter.addItems(results)
+        mAdapter.addItems(results as List<Video>)
         mNextPageToken = nextPageToken as String
     }
 
@@ -215,17 +215,17 @@ class MainActivity : AppCompatActivity(),
             searchProgressBarBottom.visibility = View.GONE
         }
 
-        mAdapter.addItems(results)
+        mAdapter.addItems(results as List<Video>)
         mNextPageToken = nextPageToken as String
     }
 
-    override fun onListItemClick(clickedVideoId: String?) {
+    override fun onListItemClick(clickedVideoId: String) {
         startActivity(intentFor<PlayerActivity>(
                 getString(R.string.video_id_key) to clickedVideoId
         ))
     }
 
-    override fun onListItemLongClick(clickedVideoId: String?) {
+    override fun onListItemLongClick(clickedVideoId: String) {
         alert(getString(R.string.favourite_add_confirmation)) {
             yesButton { mVideoDataViewModel.insert(VideoData(clickedVideoId as String)) }
             noButton { }
