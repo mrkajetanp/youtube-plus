@@ -8,7 +8,7 @@
     tools:context=".PlayerActivity">
 
     <com.pierfrancescosoffritti.androidyoutubeplayer.player.YouTubePlayerView
-        android:id="@+id/main_player_view"
+        android:id="@+id/mainPlayerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,6 +25,6 @@
         android:visibility="visible"
         android:textColor="@android:color/black"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_player_view" />
+        app:layout_constraintTop_toBottomOf="@+id/mainPlayerView" />
 
 </android.support.constraint.ConstraintLayout>

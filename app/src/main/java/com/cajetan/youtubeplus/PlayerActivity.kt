@@ -37,6 +37,7 @@ import kotlinx.android.synthetic.main.activity_player.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.lang.IllegalArgumentException
+import java.lang.IllegalStateException
 import java.lang.StringBuilder
 import java.net.URL
 
@@ -107,7 +108,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
 
     override fun onDestroy() {
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(0)
-        main_player_view.release()
+        mainPlayerView.release()
         super.onDestroy()
     }
 
@@ -118,8 +119,8 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
     private fun setupPlayer() {
         startService(Intent(this, PlayerLifecycleService::class.java))
 
-        main_player_view.enableBackgroundPlayback(true)
-        main_player_view.initialize({ initialisedYouTubePlayer ->
+        mainPlayerView.enableBackgroundPlayback(true)
+        mainPlayerView.initialize({ initialisedYouTubePlayer ->
             initialisedYouTubePlayer.addListener(mTracker)
             initialisedYouTubePlayer.addListener(object: AbstractYouTubePlayerListener() {
                 override fun onReady() {
@@ -127,17 +128,14 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
                 }
 
                 override fun onStateChange(state: PlayerConstants.PlayerState) {
-                    // TODO: refactor
-
-                    when (state) {
-                        PlayerConstants.PlayerState.PLAYING ->
-                            mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
-                                    mTracker.currentSecond.toLong(), 1f)
-                        PlayerConstants.PlayerState.PAUSED ->
-                            mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
-                                    mTracker.currentSecond.toLong(), 1f)
-                        else -> {}
+                    val playerState: Int? = when (state) {
+                        PlayerConstants.PlayerState.PLAYING -> PlaybackStateCompat.STATE_PLAYING
+                        PlayerConstants.PlayerState.PAUSED -> PlaybackStateCompat.STATE_PAUSED
+                        else -> null
                     }
+
+                    if (playerState != null)
+                        mStateBuilder.setState(playerState, mTracker.currentSecond.toLong(), 1f)
 
                     mMediaSession.setPlaybackState(mStateBuilder.build())
                     showMediaNotification(mStateBuilder.build())
@@ -146,7 +144,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
             })
         }, true)
 
-        main_player_view.addFullScreenListener(object: YouTubePlayerFullScreenListener {
+        mainPlayerView.addFullScreenListener(object: YouTubePlayerFullScreenListener {
             override fun onYouTubePlayerEnterFullScreen() {
                 requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
                 mFullScreenHelper.enterFullScreen()
@@ -158,7 +156,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
             }
         })
 
-        mUIController = main_player_view.playerUIController
+        mUIController = mainPlayerView.playerUIController
 
         if (mUIController.menu == null)
             return
@@ -255,20 +253,17 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
     ////////////////////////////////////////////////////////////////////////////////
 
     private fun getIntentVideoId(): String {
-        val videoUrl: String = intent?.extras?.getString(Intent.EXTRA_TEXT) ?: ""
+        val extras: Bundle = intent!!.extras!!
+        val videoUrl: String = extras.getString(Intent.EXTRA_TEXT) ?: ""
 
-        lateinit var videoId: String
+        return when {
+            videoUrl != "" -> videoUrl.substring(videoUrl.length - 11, videoUrl.length)
 
-        // TODO: refactor
-        if (videoUrl != "") {
-            videoId = videoUrl.substring(videoUrl.length-11, videoUrl.length)
-        } else if(intent!!.extras!!.containsKey(getString(R.string.video_id_key))) {
-            videoId = intent!!.extras!!.getString(getString(R.string.video_id_key)) as String
-        } else {
-            throw IllegalArgumentException("No video id available, cannot initialise the player")
+            extras.containsKey(getString(R.string.video_id_key)) ->
+                extras.getString(getString(R.string.video_id_key)) as String
+
+            else -> throw IllegalArgumentException("No video id available, cannot initialise the player")
         }
-
-        return videoId
     }
 
     private fun getPlaylistId(): String? {
@@ -297,11 +292,11 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
 
     private inner class PlayerSessionCallback : MediaSessionCompat.Callback() {
         override fun onPlay() {
-            main_player_view.togglePlayPause()
+            mainPlayerView.togglePlayPause()
         }
 
         override fun onPause() {
-            main_player_view.togglePlayPause()
+            mainPlayerView.togglePlayPause()
         }
     }
 
@@ -331,7 +326,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
             setAlbumArt(mVideoData.snippet.thumbnails.standard.url)
 
         if (mVideoData.contentDetails.duration == "PT0S")
-            main_player_view.playerUIController.enableLiveVideoUI(true)
+            mainPlayerView.playerUIController.enableLiveVideoUI(true)
     }
 
     override fun onPlaylistDataReceived(results: MutableList<PlaylistItem>?) {
@@ -346,7 +341,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
     }
 
     override fun onSeekButtonClicked(duration: Float) {
-        main_player_view.player.seekTo(duration)
-        main_player_view.resumePlayback()
+        mainPlayerView.player.seekTo(duration)
+        mainPlayerView.resumePlayback()
     }
 }
