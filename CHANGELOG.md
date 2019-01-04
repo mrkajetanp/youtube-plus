@@ -2,6 +2,10 @@
 
 ---
 
+#### 4.01.2019
+
+* [General] Converted PlayerActivity to Kotlin
+
 #### 3.01.2019
 
 * [General] Converted VideoListAdapter to Kotlin
