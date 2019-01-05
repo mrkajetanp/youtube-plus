@@ -4,6 +4,7 @@
 
 #### 5.01.2019
 
+* [General] SeekDialog Kotlin improvements
 * [General] Converted SeekDialog to Kotlin
 
 #### 4.01.2019

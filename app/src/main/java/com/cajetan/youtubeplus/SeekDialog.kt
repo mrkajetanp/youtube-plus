@@ -4,13 +4,10 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.app.DialogFragment
-import android.util.Log
+import android.support.v4.app.DialogFragment
 import android.view.View
 import android.widget.Button
 import android.widget.NumberPicker
-import android.widget.TimePicker
-import kotlinx.android.synthetic.main.dialog_seek.*
 import java.lang.ClassCastException
 
 class SeekDialog : DialogFragment() {
@@ -20,10 +17,10 @@ class SeekDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder: AlertDialog.Builder = AlertDialog.Builder(activity)
 
-        val layoutView: View = activity.layoutInflater.inflate(R.layout.dialog_seek, null)
+        val layoutView: View = activity?.layoutInflater!!.inflate(R.layout.dialog_seek, null)
         builder.setView(layoutView)
 
-        var currentSecond = arguments.getInt("current_second")
+        var currentSecond = arguments!!.getInt("current_second")
         var currentMinute = Math.floor(currentSecond / 60.0).toInt()
         val currentHour = Math.floor(currentMinute / 60.0).toInt()
 
@@ -32,7 +29,7 @@ class SeekDialog : DialogFragment() {
         currentSecond -= currentMinute*60
 
         // TODO: investigate what's going on with that last item
-        val durationParts: List<String> = arguments.getString("duration_string")!!
+        val durationParts: List<String> = arguments?.getString("duration_string")!!
                 .substring(2).replace('M', ' ').replace('S', ' ')
                 .replace('H', ' ').split(" ").dropLast(1)
 
@@ -41,19 +38,22 @@ class SeekDialog : DialogFragment() {
         val maxMinutes: Int
         val maxHours: Int
 
-        // TODO: refactor with when
-        if (durationParts.size == 3) {
-            maxHours = durationParts[0].toInt()
-            maxMinutes = 59
-            maxSeconds = 59
-        } else if (durationParts.size == 2) {
-            maxHours = 0
-            maxMinutes = durationParts[0].toInt()
-            maxSeconds = 59
-        } else {
-            maxHours = 0
-            maxMinutes = 0
-            maxSeconds = durationParts[0].toInt()
+        when (durationParts.size) {
+            3 -> {
+                maxHours = durationParts[0].toInt()
+                maxMinutes = 59
+                maxSeconds = 59
+            }
+            2 -> {
+                maxHours = 0
+                maxMinutes = durationParts[0].toInt()
+                maxSeconds = 59
+            }
+            else -> {
+                maxHours = 0
+                maxMinutes = 0
+                maxSeconds = durationParts[0].toInt()
+            }
         }
 
         val secondPicker: NumberPicker = layoutView.findViewById(R.id.second_picker)
@@ -102,8 +102,3 @@ class SeekDialog : DialogFragment() {
         fun onSeekButtonClicked(duration: Float)
     }
 }
-
-
-
-
-

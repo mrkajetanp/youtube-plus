@@ -1,6 +1,5 @@
 package com.cajetan.youtubeplus
 
-import android.app.DialogFragment
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
@@ -13,6 +12,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.IBinder
+import android.support.v4.app.DialogFragment
 import android.support.v4.app.NotificationCompat
 import android.support.v4.media.session.MediaButtonReceiver
 import android.support.v4.media.session.MediaSessionCompat
@@ -173,7 +173,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
             // TODO: fix
             val newFragment: DialogFragment = SeekDialog()
             newFragment.arguments = b
-            newFragment.show(fragmentManager, getString(R.string.seeker_dialog_id))
+            newFragment.show(supportFragmentManager, getString(R.string.seeker_dialog_id))
 
             menu.dismiss()
         })
