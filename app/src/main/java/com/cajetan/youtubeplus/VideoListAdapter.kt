@@ -68,6 +68,47 @@ class VideoListAdapter(videos: List<Video>, listener: ListItemClickListener, con
         return Math.round(dp * (metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT))
     }
 
+    private fun parseDuration(input: String): String {
+        var result = input.filterNot { it == 'P' || it == 'T' }
+
+        var hours: Int = when {
+            result.contains('D') -> {
+                val temp = result.takeWhile { it != 'D' }.toInt() * 24
+                result = result.dropWhile { it != 'D' }.filterNot { it == 'D' }
+                temp
+            }
+            else -> 0
+        }
+
+        hours += when {
+            result.contains('H') -> {
+                val temp = result.takeWhile { it != 'H' }.toInt()
+                result = result.dropWhile { it != 'H' }.filterNot { it == 'H' }
+                temp
+            }
+            else -> 0
+        }
+
+        val minutes: Int = when {
+            result.contains('M') -> {
+                val temp = result.takeWhile { it != 'M' }.toInt()
+                result = result.dropWhile { it != 'M' }.filterNot { it == 'M' }
+                temp
+            }
+            else -> 0
+        }
+
+        val seconds: Int = when {
+            result.contains('S') -> result.takeWhile { it != 'S' }.toInt()
+            else -> 0
+        }
+
+        return when (hours) {
+            0 -> "$minutes:${String.format("%02d", seconds)}"
+            else -> "$hours:${String.format("%02d", minutes)}:${String.format("%02d", seconds)}"
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // Callbacks & others
     ////////////////////////////////////////////////////////////////////////////////
@@ -97,10 +138,7 @@ class VideoListAdapter(videos: List<Video>, listener: ListItemClickListener, con
                     videoDurationView.setTextColor(Color.WHITE)
                     mContext.getString(R.string.live)
                 }
-                else -> {
-                    duration.substring(2, duration.length - 1)
-                            .replace("M", ":")
-                }
+                else -> parseDuration(duration)
             }
 
             val thumbnailUrl: String = when {

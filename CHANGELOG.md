@@ -4,6 +4,7 @@
 
 #### 5.01.2019
 
+* [VideoList] Proper video duration parsing 
 * [General] SeekDialog Kotlin improvements
 * [General] Converted SeekDialog to Kotlin
 
