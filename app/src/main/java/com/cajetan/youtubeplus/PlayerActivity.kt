@@ -37,7 +37,6 @@ import kotlinx.android.synthetic.main.activity_player.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.lang.IllegalArgumentException
-import java.lang.IllegalStateException
 import java.lang.StringBuilder
 import java.net.URL
 

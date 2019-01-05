@@ -2,6 +2,10 @@
 
 ---
 
+#### 5.01.2019
+
+* [General] Converted SeekDialog to Kotlin
+
 #### 4.01.2019
 
 * [General] PlayerActivity Kotlin improvements
