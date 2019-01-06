@@ -106,9 +106,9 @@ class FavouritesActivity : AppCompatActivity(),
     // Callbacks and others
     ///////////////////////////////////////////////////////////////////////////////
 
-    override fun onFavouritesReceived(results: MutableList<Video>?) {
+    override fun onFavouritesReceived(results: List<Video>) {
         mAdapter.clearItems()
-        mAdapter.addItems(results?.toList() as List<Video>)
+        mAdapter.addItems(results.toList())
 
         if (mAdapter.itemCount == 0)
             noFavouritesView.visibility = View.VISIBLE

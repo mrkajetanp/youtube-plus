@@ -2,6 +2,10 @@
 
 ---
 
+#### 6.01.2019
+
+* [General] Converted YouTubeData to Kotlin
+
 #### 5.01.2019
 
 * [VideoList] Proper video duration parsing 

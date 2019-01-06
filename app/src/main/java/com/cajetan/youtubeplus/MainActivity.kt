@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity(),
         createNotificationChannel()
         setupBottomBar()
         handleIntent(intent)
-        loadMostPopularVideos(null)
+        loadMostPopularVideos("")
 
         mVideoDataViewModel = ViewModelProviders.of(this).get(VideoDataViewModel::class.java)
     }
@@ -143,13 +143,13 @@ class MainActivity : AppCompatActivity(),
     // Utils
     ////////////////////////////////////////////////////////////////////////////////
 
-    private fun videoSearch(nextPageToken: String?) {
+    private fun videoSearch(nextPageToken: String) {
         if (!searching) {
             mNextPageToken = ""
             searching = true
         }
 
-        if (nextPageToken == null) {
+        if (nextPageToken == "") {
             searchProgressBarCentre.visibility = View.VISIBLE
             videoList.visibility = View.INVISIBLE
         } else {
@@ -160,8 +160,8 @@ class MainActivity : AppCompatActivity(),
         mYouTubeData.receiveSearchResults(mSearchQuery, nextPageToken)
     }
 
-    private fun loadMostPopularVideos(nextPageToken: String?) {
-        if (nextPageToken == null) {
+    private fun loadMostPopularVideos(nextPageToken: String) {
+        if (nextPageToken == "") {
             searchProgressBarCentre.visibility = View.VISIBLE
             videoList.visibility = View.INVISIBLE
         } else {
@@ -179,7 +179,7 @@ class MainActivity : AppCompatActivity(),
                 return
 
             mSearchQuery = query
-            videoSearch(null)
+            videoSearch("")
         }
     }
 
@@ -187,9 +187,9 @@ class MainActivity : AppCompatActivity(),
     // Callbacks and others
     ////////////////////////////////////////////////////////////////////////////////
 
-    override fun onSearchResultsReceived(results: MutableList<Video>?,
-                                         nextPageToken: String?, previousPageToken: String?) {
-        if (previousPageToken == null || previousPageToken == "") {
+    override fun onSearchResultsReceived(results: List<Video>,
+                                         nextPageToken: String, previousPageToken: String) {
+        if (previousPageToken == "") {
             mAdapter.clearItems()
             videoList.scrollToPosition(0)
 
@@ -199,13 +199,13 @@ class MainActivity : AppCompatActivity(),
             searchProgressBarBottom.visibility = View.GONE
         }
 
-        mAdapter.addItems(results as List<Video>)
-        mNextPageToken = nextPageToken as String
+        mAdapter.addItems(results)
+        mNextPageToken = nextPageToken
     }
 
-    override fun onMostPopularReceived(results: MutableList<Video>?,
-                                       nextPageToken: String?, previousPageToken: String?) {
-        if (previousPageToken == null || previousPageToken == "") {
+    override fun onMostPopularReceived(results: List<Video>,
+                                       nextPageToken: String, previousPageToken: String) {
+        if (previousPageToken == "") {
             mAdapter.clearItems()
             videoList.scrollToPosition(0)
 
@@ -215,8 +215,8 @@ class MainActivity : AppCompatActivity(),
             searchProgressBarBottom.visibility = View.GONE
         }
 
-        mAdapter.addItems(results as List<Video>)
-        mNextPageToken = nextPageToken as String
+        mAdapter.addItems(results)
+        mNextPageToken = nextPageToken
     }
 
     override fun onListItemClick(clickedVideoId: String) {
@@ -227,7 +227,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onListItemLongClick(clickedVideoId: String) {
         alert(getString(R.string.favourite_add_confirmation)) {
-            yesButton { mVideoDataViewModel.insert(VideoData(clickedVideoId as String)) }
+            yesButton { mVideoDataViewModel.insert(VideoData(clickedVideoId)) }
             noButton { }
         }.show()
     }

@@ -318,8 +318,8 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         }
     }
 
-    override fun onVideoDataReceived(videoData: Video?) {
-        mVideoData = videoData as Video
+    override fun onVideoDataReceived(videoData: Video) {
+        mVideoData = videoData
 
         if (mVideoData.snippet.thumbnails.standard != null)
             setAlbumArt(mVideoData.snippet.thumbnails.standard.url)
@@ -328,10 +328,10 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
             mainPlayerView.playerUIController.enableLiveVideoUI(true)
     }
 
-    override fun onPlaylistDataReceived(results: MutableList<PlaylistItem>?) {
+    override fun onPlaylistDataReceived(results: List<PlaylistItem>) {
         val builder = StringBuilder()
 
-        for (item in results as MutableList<PlaylistItem>) {
+        for (item in results) {
             builder.append(item.snippet.title)
             builder.append('\n')
         }
