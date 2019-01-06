@@ -4,6 +4,7 @@
 
 #### 6.01.2019
 
+* [YouTubeData] Fixed a bug in video search  
 * [General] Converted YouTubeData to Kotlin
 
 #### 5.01.2019

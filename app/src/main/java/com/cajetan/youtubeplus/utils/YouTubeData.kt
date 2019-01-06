@@ -22,6 +22,7 @@ import com.google.api.services.youtube.YouTube
 import com.google.api.services.youtube.YouTubeScopes
 import com.google.api.services.youtube.model.PlaylistItem
 import com.google.api.services.youtube.model.Video
+import com.google.api.services.youtube.model.VideoListResponse
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import pub.devrel.easypermissions.AfterPermissionGranted
@@ -134,8 +135,8 @@ class YouTubeData(parentActivity: Activity) : EasyPermissions.PermissionCallback
 
                 val response = searchList.execute()
 
-                nextPageToken = response.nextPageToken
-                prevPageToken = response.prevPageToken
+                nextPageToken = response.nextPageToken ?: ""
+                prevPageToken = response.prevPageToken ?: ""
 
                 val finalId = StringBuilder()
                 for (r in response.items) {
@@ -243,6 +244,7 @@ class YouTubeData(parentActivity: Activity) : EasyPermissions.PermissionCallback
             val nextPageToken: String
             val prevPageToken: String
 
+            Log.d("MainActivity", "Running the request")
             try {
                 val searchList: YouTube.Videos.List = service.videos()
                         .list("snippet,contentDetails")
@@ -252,20 +254,23 @@ class YouTubeData(parentActivity: Activity) : EasyPermissions.PermissionCallback
                 if (pageToken != "")
                     searchList.pageToken = pageToken
 
-                val response = searchList.execute()
+                val response: VideoListResponse = searchList.execute()
 
-                nextPageToken = response.nextPageToken
-                prevPageToken = response.prevPageToken
+                nextPageToken = response.nextPageToken ?: ""
+                prevPageToken = response.prevPageToken ?: ""
 
                 result = response.items
             } catch (e: java.lang.Exception) {
                 onTaskCancelled(e)
                 throw CancellationException()
             }
+            Log.d("MainActivity", "Request complete")
 
             uiThread {
+                Log.d("MainActivity", "Sending the result")
+
                 if (mActivity is MostPopularListener)
-                    mActivity.onMostPopularReceived(result.toList(),
+                    mActivity.onMostPopularReceived(result,
                             nextPageToken, prevPageToken)
                 else
                     throw UnsupportedOperationException("Activity must implement VideoSearchListener")

@@ -168,6 +168,7 @@ class MainActivity : AppCompatActivity(),
             searchProgressBarBottom.visibility = View.VISIBLE
         }
 
+        Log.d(TAG, "Receiving most popular results")
         mYouTubeData.receiveMostPopularResults(nextPageToken)
     }
 
@@ -205,6 +206,8 @@ class MainActivity : AppCompatActivity(),
 
     override fun onMostPopularReceived(results: List<Video>,
                                        nextPageToken: String, previousPageToken: String) {
+        Log.d(TAG, "Most popular received")
+
         if (previousPageToken == "") {
             mAdapter.clearItems()
             videoList.scrollToPosition(0)
