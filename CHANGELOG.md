@@ -4,6 +4,7 @@
 
 #### 7.01.2019
 
+* [YouTubeData] Changed app theme to light Material Design
 * [YouTubeData] Reduced unnecessary service.build() calls
 
 #### 6.01.2019
