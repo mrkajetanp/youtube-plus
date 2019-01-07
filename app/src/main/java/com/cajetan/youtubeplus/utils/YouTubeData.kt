@@ -28,6 +28,7 @@ import org.jetbrains.anko.uiThread
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import java.lang.UnsupportedOperationException
+import java.util.Collections.emptyList
 import java.util.concurrent.CancellationException
 
 class YouTubeData(parentActivity: Activity) : EasyPermissions.PermissionCallbacks {
@@ -50,6 +51,11 @@ class YouTubeData(parentActivity: Activity) : EasyPermissions.PermissionCallback
     private val mCredential: GoogleAccountCredential = GoogleAccountCredential
             .usingOAuth2(parentActivity.applicationContext, SCOPES.toList())
             .setBackOff(ExponentialBackOff())
+
+    private var service: YouTube = YouTube.Builder(AndroidHttp.newCompatibleTransport(),
+                JacksonFactory.getDefaultInstance(), mCredential)
+                .setApplicationName("YouTube Plus")
+                .build()
 
     private var mVideoId = ""
     private var mPlaylistId = ""
@@ -111,13 +117,6 @@ class YouTubeData(parentActivity: Activity) : EasyPermissions.PermissionCallback
     }
 
     private fun videoSearchTask(videoId: String, pageToken: String) {
-        // TODO: extract to execute just once
-        val transport = AndroidHttp.newCompatibleTransport()
-        val jsonFactory = JacksonFactory.getDefaultInstance()
-        val service = YouTube.Builder(transport, jsonFactory, mCredential)
-                .setApplicationName("YouTube Plus")
-                .build()
-
         doAsync {
             val result: List<Video>
             val nextPageToken: String
@@ -166,13 +165,6 @@ class YouTubeData(parentActivity: Activity) : EasyPermissions.PermissionCallback
     }
 
     private fun videoDataTask(videoId: String) {
-        // TODO: extract to execute just once
-        val transport = AndroidHttp.newCompatibleTransport()
-        val jsonFactory = JacksonFactory.getDefaultInstance()
-        val service = YouTube.Builder(transport, jsonFactory, mCredential)
-                .setApplicationName("YouTube Plus")
-                .build()
-
         doAsync {
             val result: Video
             try {
@@ -193,13 +185,6 @@ class YouTubeData(parentActivity: Activity) : EasyPermissions.PermissionCallback
     }
 
     private fun favouritesTask(videoData: List<VideoData>) {
-        // TODO: extract to execute just once
-        val transport = AndroidHttp.newCompatibleTransport()
-        val jsonFactory = JacksonFactory.getDefaultInstance()
-        val service = YouTube.Builder(transport, jsonFactory, mCredential)
-                .setApplicationName("YouTube Plus")
-                .build()
-
         doAsync {
             val finalId = StringBuilder()
             for (data in videoData) {
@@ -232,13 +217,6 @@ class YouTubeData(parentActivity: Activity) : EasyPermissions.PermissionCallback
     }
 
     private fun mostPopularTask(pageToken: String) {
-        // TODO: extract to execute just once
-        val transport = AndroidHttp.newCompatibleTransport()
-        val jsonFactory = JacksonFactory.getDefaultInstance()
-        val service = YouTube.Builder(transport, jsonFactory, mCredential)
-                .setApplicationName("YouTube Plus")
-                .build()
-
         doAsync {
             val result: List<Video>
             val nextPageToken: String
@@ -279,13 +257,6 @@ class YouTubeData(parentActivity: Activity) : EasyPermissions.PermissionCallback
     }
 
     private fun playlistDataTask(playlistId: String) {
-        // TODO: extract to execute just once
-        val transport = AndroidHttp.newCompatibleTransport()
-        val jsonFactory = JacksonFactory.getDefaultInstance()
-        val service = YouTube.Builder(transport, jsonFactory, mCredential)
-                .setApplicationName("YouTube Plus")
-                .build()
-
         doAsync {
             val result: List<PlaylistItem>
             try {
