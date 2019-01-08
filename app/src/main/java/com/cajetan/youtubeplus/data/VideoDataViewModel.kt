@@ -1,8 +1,8 @@
 package com.cajetan.youtubeplus.data
 
 import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 
 class VideoDataViewModel(val context: Application) : AndroidViewModel(context) {
     private var mRepository: VideoDataRepository = VideoDataRepository(context)

@@ -1,7 +1,7 @@
 package com.cajetan.youtubeplus.data
 
 import android.app.Application
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import org.jetbrains.anko.doAsync
 
 class VideoDataRepository(application: Application) {

@@ -19,7 +19,7 @@ android {
         minSdkVersion 19
         versionCode generateVersionCode()
         versionName generateVersionName()
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         setProperty("archivesBaseName", "YTPlus-" + generateVersionName())
         multiDexEnabled true
     }
@@ -53,24 +53,24 @@ private String generateVersionName() {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.11"
-    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'androidx.multidex:multidex:2.0.1'
 
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support:recyclerview-v7:28.0.0'
-    implementation 'com.android.support:design:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha01'
+    implementation 'com.google.android.material:material:1.1.0-alpha02'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
 
     implementation 'pub.devrel:easypermissions:2.0.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation "org.jetbrains.anko:anko-commons:0.10.8"
 
-    implementation "android.arch.lifecycle:extensions:1.1.1"
-    implementation "android.arch.lifecycle:viewmodel:1.1.1"
-    implementation "android.arch.persistence.room:runtime:1.1.1"
+    implementation "androidx.lifecycle:lifecycle-extensions:2.1.0-alpha01"
+    implementation "androidx.lifecycle:lifecycle-viewmodel:2.1.0-alpha01"
+    implementation "androidx.room:room-runtime:2.1.0-alpha03"
 
-    annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
-    kapt "android.arch.persistence.room:compiler:1.1.1"
+    annotationProcessor "androidx.room:room-compiler:2.1.0-alpha03"
+    kapt "androidx.room:room-compiler:2.1.0-alpha03"
 
     implementation('com.google.api-client:google-api-client-android:1.25.0') {
         exclude group: 'org.apache.httpcomponents'
@@ -81,6 +81,10 @@ dependencies {
     }
 
     implementation project(":youtube-player")
+
+    configurations {
+        all*.exclude group: 'com.google.guava', module: 'listenablefuture'
+    }
 }
 repositories {
     mavenCentral()

@@ -2,6 +2,10 @@
 
 ---
 
+#### 8.01.2019
+
+* [General] Migrated to AndroidX
+
 #### 7.01.2019
 
 * [YouTubeData] Changed app theme to light Material Design

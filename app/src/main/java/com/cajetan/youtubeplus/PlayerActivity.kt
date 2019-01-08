@@ -3,7 +3,7 @@ package com.cajetan.youtubeplus
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProviders
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -12,14 +12,14 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.IBinder
-import android.support.v4.app.DialogFragment
-import android.support.v4.app.NotificationCompat
-import android.support.v4.media.session.MediaButtonReceiver
+import androidx.fragment.app.DialogFragment
+import androidx.media.session.MediaButtonReceiver
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
 import com.cajetan.youtubeplus.data.VideoData
 import com.cajetan.youtubeplus.data.VideoDataViewModel
 import com.cajetan.youtubeplus.utils.FullScreenHelper
@@ -229,7 +229,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .addAction(playPauseAction)
                 .setOngoing(isPlaying)
-                .setStyle(android.support.v4.media.app.NotificationCompat.MediaStyle()
+                .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
                         .setShowActionsInCompactView(0)
                         .setMediaSession(mMediaSession.sessionToken))
 
