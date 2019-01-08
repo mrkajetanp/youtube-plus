@@ -4,6 +4,7 @@
 
 #### 8.01.2019
 
+* [General] Minor fixes 
 * [General] Migrated to AndroidX
 
 #### 7.01.2019

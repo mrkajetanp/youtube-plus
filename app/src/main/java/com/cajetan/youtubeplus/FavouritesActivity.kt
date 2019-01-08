@@ -127,7 +127,7 @@ class FavouritesActivity : AppCompatActivity(),
 
     override fun onListItemLongClick(clickedVideoId: String) {
         alert(getString(R.string.favourite_remove_confirmation)) {
-            yesButton { mVideoDataViewModel.delete(VideoData(clickedVideoId as String)) }
+            yesButton { mVideoDataViewModel.delete(VideoData(clickedVideoId)) }
             noButton { }
         }.show()
     }
