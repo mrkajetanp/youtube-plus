@@ -4,6 +4,7 @@
 
 #### 9.01.2019
 
+* [PlayerActivity] Minor fixes 
 * [PlayerActivity] Fixed a bug by switching to a dynamic BroadcastReceiver
 
 #### 8.01.2019

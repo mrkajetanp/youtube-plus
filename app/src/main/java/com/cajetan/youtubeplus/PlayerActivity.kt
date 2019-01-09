@@ -63,8 +63,10 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
 
     private val mTracker: YouTubePlayerTracker = YouTubePlayerTracker()
 
+    // TODO: migrate to API 21 to fix this
     private val mBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
+            Log.d(TAG, "HereXX")
             MediaButtonReceiver.handleIntent(mMediaSession, intent)
         }
     }
@@ -86,6 +88,10 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
             mVideoId = playlistId
             mYouTubeData.receivePlaylistResults(playlistId)
         }
+
+        registerReceiver(mBroadcastReceiver,
+                IntentFilter().apply { addAction(Intent.ACTION_MEDIA_BUTTON) }
+        )
 
         mYouTubeData.receiveVideoData(mVideoId)
 
@@ -199,9 +205,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
     }
 
     private fun setupMediaSession() {
-        registerReceiver(mBroadcastReceiver,
-                IntentFilter().apply { addAction(Intent.ACTION_MEDIA_BUTTON) }
-        )
+
 
         mMediaSession = MediaSessionCompat(this, TAG)
 
