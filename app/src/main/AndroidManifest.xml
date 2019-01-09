@@ -29,12 +29,6 @@
                 android:resource="@xml/searchable" />
         </activity>
 
-        <receiver android:name=".PlayerActivity$MediaReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.MEDIA_BUTTON" />
-            </intent-filter>
-        </receiver>
-
         <activity
             android:name=".PlayerActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProviders
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -62,6 +63,12 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
 
     private val mTracker: YouTubePlayerTracker = YouTubePlayerTracker()
 
+    private val mBroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            MediaButtonReceiver.handleIntent(mMediaSession, intent)
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // Lifecycle
     ////////////////////////////////////////////////////////////////////////////////
@@ -107,6 +114,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
 
     override fun onDestroy() {
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(0)
+        unregisterReceiver(mBroadcastReceiver)
         mainPlayerView.release()
         super.onDestroy()
     }
@@ -191,6 +199,10 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
     }
 
     private fun setupMediaSession() {
+        registerReceiver(mBroadcastReceiver,
+                IntentFilter().apply { addAction(Intent.ACTION_MEDIA_BUTTON) }
+        )
+
         mMediaSession = MediaSessionCompat(this, TAG)
 
         mMediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or
@@ -296,12 +308,6 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
 
         override fun onPause() {
             mainPlayerView.togglePlayPause()
-        }
-    }
-
-    inner class MediaReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            MediaButtonReceiver.handleIntent(mMediaSession, intent)
         }
     }
 
