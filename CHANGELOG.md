@@ -2,6 +2,10 @@
 
 ---
 
+#### 10.01.2019
+
+* [PlayerActivity] Fixed the playPause action on the notification
+
 #### 9.01.2019
 
 * [PlayerActivity] Minor fixes 

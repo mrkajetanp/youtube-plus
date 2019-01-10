@@ -63,11 +63,9 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
 
     private val mTracker: YouTubePlayerTracker = YouTubePlayerTracker()
 
-    // TODO: migrate to API 21 to fix this
     private val mBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            Log.d(TAG, "HereXX")
-            MediaButtonReceiver.handleIntent(mMediaSession, intent)
+            mainPlayerView?.togglePlayPause()
         }
     }
 
@@ -89,10 +87,6 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
             mYouTubeData.receivePlaylistResults(playlistId)
         }
 
-        registerReceiver(mBroadcastReceiver,
-                IntentFilter().apply { addAction(Intent.ACTION_MEDIA_BUTTON) }
-        )
-
         mYouTubeData.receiveVideoData(mVideoId)
 
         setupPlayer()
@@ -101,7 +95,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         mVideoDataViewModel = ViewModelProviders.of(this).get(VideoDataViewModel::class.java)
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         // TODO: implement the functionality
         Log.d(TAG, "Getting a new intent")
         Log.d(TAG, "New video id: " + getIntentVideoId())
@@ -130,6 +124,10 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
     ////////////////////////////////////////////////////////////////////////////////
 
     private fun setupPlayer() {
+        registerReceiver(mBroadcastReceiver,
+                IntentFilter().apply { addAction(Intent.ACTION_MEDIA_BUTTON) }
+        )
+
         startService(Intent(this, PlayerLifecycleService::class.java))
 
         mainPlayerView.enableBackgroundPlayback(true)
@@ -234,8 +232,9 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
                 getString(R.string.notification_channel_id))
 
         val playPauseAction = NotificationCompat.Action(icon, playPause,
-                MediaButtonReceiver.buildMediaButtonPendingIntent(this,
-                        PlaybackStateCompat.ACTION_PLAY_PAUSE))
+                PendingIntent.getBroadcast(this, 2923588,
+                        Intent().apply { action = Intent.ACTION_MEDIA_BUTTON },
+                        PendingIntent.FLAG_UPDATE_CURRENT))
 
         val contentPendingIntent = PendingIntent.getActivity(this, 0,
                 Intent(this, PlayerActivity::class.java), 0)
