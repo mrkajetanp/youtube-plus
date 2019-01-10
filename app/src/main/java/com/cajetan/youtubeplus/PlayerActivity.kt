@@ -64,8 +64,10 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
     private val mTracker: YouTubePlayerTracker = YouTubePlayerTracker()
 
     private val mBroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            mainPlayerView?.togglePlayPause()
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.extras?.getString("player_action") == "action_play_pause") {
+                mainPlayerView?.togglePlayPause()
+            }
         }
     }
 
@@ -142,6 +144,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
                     val playerState: Int? = when (state) {
                         PlayerConstants.PlayerState.PLAYING -> PlaybackStateCompat.STATE_PLAYING
                         PlayerConstants.PlayerState.PAUSED -> PlaybackStateCompat.STATE_PAUSED
+                        PlayerConstants.PlayerState.ENDED -> PlaybackStateCompat.STATE_PAUSED
                         else -> null
                     }
 
@@ -233,7 +236,10 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
 
         val playPauseAction = NotificationCompat.Action(icon, playPause,
                 PendingIntent.getBroadcast(this, 2923588,
-                        Intent().apply { action = Intent.ACTION_MEDIA_BUTTON },
+                        Intent().apply {
+                            action = Intent.ACTION_MEDIA_BUTTON
+                            putExtra("player_action", "action_play_pause")
+                        },
                         PendingIntent.FLAG_UPDATE_CURRENT))
 
         val contentPendingIntent = PendingIntent.getActivity(this, 0,

@@ -4,6 +4,7 @@
 
 #### 10.01.2019
 
+* [PlayerActivity] Fixed the notification after video ends
 * [PlayerActivity] Fixed the playPause action on the notification
 
 #### 9.01.2019
