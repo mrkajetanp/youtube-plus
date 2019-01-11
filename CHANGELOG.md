@@ -2,6 +2,10 @@
 
 ---
 
+#### 11.01.2019
+
+* [General] Converted video search to a Fragment
+
 #### 10.01.2019
 
 * [PlayerActivity] Fixed the notification after video ends

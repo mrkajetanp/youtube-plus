@@ -3,40 +3,25 @@ package com.cajetan.youtubeplus
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.SearchManager
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.util.Log
 import android.view.Menu
-import android.view.View
 import android.widget.SearchView
-import com.cajetan.youtubeplus.data.VideoData
-import com.cajetan.youtubeplus.data.VideoDataViewModel
-import com.cajetan.youtubeplus.utils.YouTubeData
-import com.google.api.services.youtube.model.Video
+import android.widget.Toast
+import com.cajetan.youtubeplus.fragments.VideoListFragment
 import kotlinx.android.synthetic.main.activity_main.*
-import org.jetbrains.anko.alert
 import org.jetbrains.anko.intentFor
-import org.jetbrains.anko.noButton
-import org.jetbrains.anko.yesButton
 
-class MainActivity : AppCompatActivity(),
-        YouTubeData.VideoSearchListener, YouTubeData.MostPopularListener,
-        VideoListAdapter.ListItemClickListener {
-
+class MainActivity : AppCompatActivity() {
     private val TAG = this.javaClass.simpleName
 
-    private val mAdapter: VideoListAdapter = VideoListAdapter(emptyList(), this, this)
-    private lateinit var mYouTubeData: YouTubeData
-    private lateinit var mVideoDataViewModel: VideoDataViewModel
+    private lateinit var mMenu: Menu
 
-    private var mSearchQuery: String = ""
-    private var mNextPageToken: String = ""
-    private var searching = false
+    private var userIsInteracting = false
 
     ////////////////////////////////////////////////////////////////////////////////
     // Lifecycle
@@ -46,15 +31,13 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mYouTubeData = YouTubeData(this)
-
-        setupSearchResultList()
         createNotificationChannel()
         setupBottomBar()
         handleIntent(intent)
-        loadMostPopularVideos("")
 
-        mVideoDataViewModel = ViewModelProviders.of(this).get(VideoDataViewModel::class.java)
+        supportFragmentManager.beginTransaction()
+                .add(R.id.mainContainer, VideoListFragment())
+                .commit()
     }
 
     override fun onResume() {
@@ -62,8 +45,16 @@ class MainActivity : AppCompatActivity(),
         bottomBar.selectedItemId = R.id.action_start
     }
 
+    override fun onUserInteraction() {
+        super.onUserInteraction()
+        userIsInteracting = true
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_options_menu, menu)
+
+        if (menu != null)
+            mMenu = menu
 
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         val searchView = menu?.findItem(R.id.search)?.actionView as SearchView
@@ -74,39 +65,27 @@ class MainActivity : AppCompatActivity(),
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
+        userIsInteracting = false
         handleIntent(intent as Intent)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        mYouTubeData.onParentActivityResult(requestCode, resultCode, data)
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     ////////////////////////////////////////////////////////////////////////////////
     // Init
     ////////////////////////////////////////////////////////////////////////////////
 
-    private fun setupSearchResultList() {
-        videoList.layoutManager = LinearLayoutManager(this)
-
-        mAdapter.onBottomReached = {
-            Log.d(TAG, "Reached the bottom")
-
-            if (mSearchQuery == "")
-                loadMostPopularVideos(mNextPageToken)
-            else
-                videoSearch(mNextPageToken)
-        }
-
-        videoList.setHasFixedSize(false)
-        videoList.adapter = mAdapter
-    }
-
     private fun setupBottomBar() {
         bottomBar.selectedItemId = R.id.action_start
         bottomBar.setOnNavigationItemSelectedListener {
+            Log.d(TAG, "Navigation item selected")
+
              when (it.itemId) {
                 R.id.action_start -> {
+                    if (userIsInteracting) {
+                        val transaction = supportFragmentManager.beginTransaction()
+                        transaction.replace(R.id.mainContainer, VideoListFragment())
+                        transaction.commit()
+                    }
+
                     it.setChecked(true)
                     true
                 }
@@ -117,6 +96,21 @@ class MainActivity : AppCompatActivity(),
                 }
 
                 R.id.action_others -> {
+                    if (userIsInteracting) {
+                        val transaction = supportFragmentManager.beginTransaction()
+                        val fragment = supportFragmentManager.findFragmentById(R.id.mainContainer)
+
+                        if (fragment != null)
+                            transaction.remove(fragment)
+
+                        transaction.commit()
+
+                        // Reset the search menu
+                        val searchView = mMenu.findItem(R.id.search)?.actionView as SearchView
+                        searchView.setQuery("", false)
+                        searchView.isIconified = true
+                    }
+
                     it.setChecked(true)
                     true
                 }
@@ -143,95 +137,16 @@ class MainActivity : AppCompatActivity(),
     // Utils
     ////////////////////////////////////////////////////////////////////////////////
 
-    private fun videoSearch(nextPageToken: String) {
-        if (!searching) {
-            mNextPageToken = ""
-            searching = true
-        }
-
-        if (nextPageToken == "") {
-            searchProgressBarCentre.visibility = View.VISIBLE
-            videoList.visibility = View.INVISIBLE
-        } else {
-            searchProgressBarBottom.visibility = View.VISIBLE
-        }
-
-        Log.d(TAG, "Searching for a video $mSearchQuery")
-        mYouTubeData.receiveSearchResults(mSearchQuery, nextPageToken)
-    }
-
-    private fun loadMostPopularVideos(nextPageToken: String) {
-        if (nextPageToken == "") {
-            searchProgressBarCentre.visibility = View.VISIBLE
-            videoList.visibility = View.INVISIBLE
-        } else {
-            searchProgressBarBottom.visibility = View.VISIBLE
-        }
-
-        Log.d(TAG, "Receiving most popular results")
-        mYouTubeData.receiveMostPopularResults(nextPageToken)
-    }
-
     private fun handleIntent(intent: Intent) {
         if (intent.action == Intent.ACTION_SEARCH) {
             val query = intent.getStringExtra(SearchManager.QUERY)
 
-            if (query == "" || query == mSearchQuery)
-                return
-
-            mSearchQuery = query
-            videoSearch("")
+            val fragment = supportFragmentManager.findFragmentById(R.id.mainContainer)
+            if (fragment is VideoListFragment) {
+                fragment.searchVideos(query)
+            } else {
+                Toast.makeText(this, "No fragment found", Toast.LENGTH_SHORT).show()
+            }
         }
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////
-    // Callbacks and others
-    ////////////////////////////////////////////////////////////////////////////////
-
-    override fun onSearchResultsReceived(results: List<Video>,
-                                         nextPageToken: String, previousPageToken: String) {
-        if (previousPageToken == "") {
-            mAdapter.clearItems()
-            videoList.scrollToPosition(0)
-
-            searchProgressBarCentre.visibility = View.INVISIBLE
-            videoList.visibility = View.VISIBLE
-        } else {
-            searchProgressBarBottom.visibility = View.GONE
-        }
-
-        mAdapter.addItems(results)
-        mNextPageToken = nextPageToken
-    }
-
-    override fun onMostPopularReceived(results: List<Video>,
-                                       nextPageToken: String, previousPageToken: String) {
-        Log.d(TAG, "Most popular received")
-
-        if (previousPageToken == "") {
-            mAdapter.clearItems()
-            videoList.scrollToPosition(0)
-
-            searchProgressBarCentre.visibility = View.INVISIBLE
-            videoList.visibility = View.VISIBLE
-        } else {
-            searchProgressBarBottom.visibility = View.GONE
-        }
-
-        mAdapter.addItems(results)
-        mNextPageToken = nextPageToken
-    }
-
-    override fun onListItemClick(clickedVideoId: String) {
-        startActivity(intentFor<PlayerActivity>(
-                getString(R.string.video_id_key) to clickedVideoId
-        ))
-    }
-
-    override fun onListItemLongClick(clickedVideoId: String) {
-        alert(getString(R.string.favourite_add_confirmation)) {
-            yesButton { mVideoDataViewModel.insert(VideoData(clickedVideoId)) }
-            noButton { }
-        }.show()
     }
 }

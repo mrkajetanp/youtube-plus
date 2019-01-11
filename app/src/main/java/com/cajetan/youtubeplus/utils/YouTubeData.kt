@@ -9,6 +9,7 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.util.Log
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.cajetan.youtubeplus.data.VideoData
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
@@ -31,7 +32,8 @@ import java.lang.UnsupportedOperationException
 import java.util.Collections.emptyList
 import java.util.concurrent.CancellationException
 
-class YouTubeData(parentActivity: Activity) : EasyPermissions.PermissionCallbacks {
+class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
+        EasyPermissions.PermissionCallbacks {
 
     companion object {
         private val TAG = this::class.java.simpleName
@@ -47,6 +49,7 @@ class YouTubeData(parentActivity: Activity) : EasyPermissions.PermissionCallback
     }
 
     private val mActivity = parentActivity
+    private val mFragment = fragment
 
     private val mCredential: GoogleAccountCredential = GoogleAccountCredential
             .usingOAuth2(parentActivity.applicationContext, SCOPES.toList())
@@ -155,11 +158,14 @@ class YouTubeData(parentActivity: Activity) : EasyPermissions.PermissionCallback
             }
 
             uiThread {
-                if (mActivity is VideoSearchListener)
-                    mActivity.onSearchResultsReceived(result.toList(),
-                            nextPageToken, prevPageToken)
-                else
-                    throw UnsupportedOperationException("Activity must implement VideoSearchListener")
+                val listener: VideoSearchListener? = when {
+                    mActivity is VideoSearchListener -> mActivity
+                    mFragment is VideoSearchListener -> mFragment
+                    else -> null
+                }
+
+                listener?.onSearchResultsReceived(result.toList(), nextPageToken, prevPageToken)
+                        ?: throw UnsupportedOperationException("Parent must implement VideoSearchListener")
             }
         }
     }
@@ -176,10 +182,14 @@ class YouTubeData(parentActivity: Activity) : EasyPermissions.PermissionCallback
             }
 
             uiThread {
-                if (mActivity is VideoDataListener)
-                    mActivity.onVideoDataReceived(result)
-                else
-                    throw UnsupportedOperationException("Activity must implement VideoSearchListener")
+                val listener: VideoDataListener? = when {
+                    mActivity is VideoDataListener -> mActivity
+                    mFragment is VideoDataListener -> mFragment
+                    else -> null
+                }
+
+                listener?.onVideoDataReceived(result)
+                        ?: throw UnsupportedOperationException("Activity must implement VideoDataListener")
             }
         }
     }
@@ -208,10 +218,14 @@ class YouTubeData(parentActivity: Activity) : EasyPermissions.PermissionCallback
             }
 
             uiThread {
-                if (mActivity is FavouritesDataListener)
-                    mActivity.onFavouritesReceived(result.toList())
-                else
-                    throw UnsupportedOperationException("Activity must implement VideoSearchListener")
+                val listener: FavouritesDataListener? = when {
+                    mActivity is FavouritesDataListener -> mActivity
+                    mFragment is FavouritesDataListener -> mFragment
+                    else -> null
+                }
+
+                listener?.onFavouritesReceived(result.toList())
+                        ?: throw UnsupportedOperationException("Activity must implement FavouritesDataListener")
             }
         }
     }
@@ -245,13 +259,14 @@ class YouTubeData(parentActivity: Activity) : EasyPermissions.PermissionCallback
             Log.d("MainActivity", "Request complete")
 
             uiThread {
-                Log.d("MainActivity", "Sending the result")
+                val listener: MostPopularListener? = when {
+                    mActivity is MostPopularListener-> mActivity
+                    mFragment is MostPopularListener -> mFragment
+                    else -> null
+                }
 
-                if (mActivity is MostPopularListener)
-                    mActivity.onMostPopularReceived(result,
-                            nextPageToken, prevPageToken)
-                else
-                    throw UnsupportedOperationException("Activity must implement VideoSearchListener")
+                listener?.onMostPopularReceived(result, nextPageToken, prevPageToken)
+                        ?: throw UnsupportedOperationException("Activity must implement MostPopularListener")
             }
         }
     }
@@ -268,10 +283,14 @@ class YouTubeData(parentActivity: Activity) : EasyPermissions.PermissionCallback
             }
 
             uiThread {
-                if (mActivity is PlaylistDataListener)
-                    mActivity.onPlaylistDataReceived(result.toList())
-                else
-                    throw UnsupportedOperationException("Activity must implement VideoSearchListener")
+                val listener: PlaylistDataListener? = when {
+                    mActivity is PlaylistDataListener-> mActivity
+                    mFragment is PlaylistDataListener -> mFragment
+                    else -> null
+                }
+
+                listener?.onPlaylistDataReceived(result.toList())
+                        ?: throw UnsupportedOperationException("Activity must implement PlaylistDataListener")
             }
         }
     }
