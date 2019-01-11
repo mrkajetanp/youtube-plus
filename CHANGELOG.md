@@ -4,6 +4,7 @@
 
 #### 11.01.2019
 
+* [VideoListFragment] General refactoring
 * [General] Converted video search to a Fragment
 
 #### 10.01.2019

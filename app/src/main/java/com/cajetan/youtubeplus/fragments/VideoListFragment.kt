@@ -26,7 +26,7 @@ import org.jetbrains.anko.yesButton
 class VideoListFragment : Fragment(), VideoListAdapter.ListItemClickListener,
         YouTubeData.MostPopularListener, YouTubeData.VideoSearchListener {
 
-    private val TAG: String = "VideoListFragment"
+    private val TAG: String = this.javaClass.simpleName
 
     private lateinit var mAdapter: VideoListAdapter
     private lateinit var mYouTubeData: YouTubeData

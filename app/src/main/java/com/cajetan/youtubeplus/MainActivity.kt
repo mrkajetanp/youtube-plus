@@ -78,12 +78,12 @@ class MainActivity : AppCompatActivity() {
         bottomBar.setOnNavigationItemSelectedListener {
             Log.d(TAG, "Navigation item selected")
 
-             when (it.itemId) {
+            when (it.itemId) {
                 R.id.action_start -> {
                     if (userIsInteracting) {
-                        val transaction = supportFragmentManager.beginTransaction()
-                        transaction.replace(R.id.mainContainer, VideoListFragment())
-                        transaction.commit()
+                        supportFragmentManager.beginTransaction()
+                                .replace(R.id.mainContainer, VideoListFragment())
+                                .commit()
                     }
 
                     it.setChecked(true)
@@ -97,13 +97,13 @@ class MainActivity : AppCompatActivity() {
 
                 R.id.action_others -> {
                     if (userIsInteracting) {
-                        val transaction = supportFragmentManager.beginTransaction()
                         val fragment = supportFragmentManager.findFragmentById(R.id.mainContainer)
 
-                        if (fragment != null)
-                            transaction.remove(fragment)
-
-                        transaction.commit()
+                        if (fragment != null) {
+                            supportFragmentManager.beginTransaction()
+                                    .remove(fragment)
+                                    .commit()
+                        }
 
                         // Reset the search menu
                         val searchView = mMenu.findItem(R.id.search)?.actionView as SearchView
