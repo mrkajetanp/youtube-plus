@@ -105,8 +105,10 @@ class MainActivity : AppCompatActivity() {
                                 .commit()
                     }
 
-                    searchView?.visibility = View.GONE
+                    searchView?.queryHint = "Search in favourites"
+                    searchView?.visibility = View.VISIBLE
 
+                    it.setChecked(true)
                     true
                 }
 
@@ -157,10 +159,11 @@ class MainActivity : AppCompatActivity() {
             val query = intent.getStringExtra(SearchManager.QUERY)
 
             val fragment = supportFragmentManager.findFragmentById(R.id.mainContainer)
-            if (fragment is VideoListFragment) {
-                fragment.searchVideos(query)
-            } else {
-                Toast.makeText(this, "No fragment found", Toast.LENGTH_SHORT).show()
+            when (fragment) {
+                is VideoListFragment -> fragment.searchVideos(query)
+                is FavouritesFragment -> fragment.filterVideos(query)
+                else -> Toast.makeText(this, "No fragment found", Toast.LENGTH_SHORT)
+                        .show()
             }
         }
     }

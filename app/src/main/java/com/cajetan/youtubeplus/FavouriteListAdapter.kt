@@ -2,6 +2,7 @@ package com.cajetan.youtubeplus
 
 import android.content.Context
 import android.graphics.Color
+import android.os.Build
 import androidx.recyclerview.widget.RecyclerView
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -49,6 +50,14 @@ class FavouriteListAdapter(videos: List<Video>, listener: ListItemClickListener,
     fun clearItems() {
         mVideos.clear()
         notifyDataSetChanged()
+    }
+
+    fun filterItems(query: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            mVideos.removeIf { !it.snippet.title.toLowerCase().contains(query.toLowerCase()) }
+        notifyDataSetChanged()
+
+//        TODO: implement functionality for older versions
     }
 
     private fun dpToPixel(dp: Float, context: Context): Int {

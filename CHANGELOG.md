@@ -4,6 +4,7 @@
 
 #### 12.01.2019
 
+* [General] Filtering videos in FavouritesFragment
 * [General] Converted favourites to a Fragment
 
 #### 11.01.2019

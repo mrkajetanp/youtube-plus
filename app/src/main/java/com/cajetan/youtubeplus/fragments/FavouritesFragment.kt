@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.cajetan.youtubeplus.FavouriteListAdapter
 import com.cajetan.youtubeplus.PlayerActivity
 import com.cajetan.youtubeplus.R
 import com.cajetan.youtubeplus.VideoListAdapter
@@ -24,10 +25,10 @@ import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.noButton
 import org.jetbrains.anko.yesButton
 
-class FavouritesFragment : Fragment(), VideoListAdapter.ListItemClickListener,
+class FavouritesFragment : Fragment(), FavouriteListAdapter.ListItemClickListener,
         YouTubeData.FavouritesDataListener {
 
-    private lateinit var mAdapter: VideoListAdapter
+    private lateinit var mAdapter: FavouriteListAdapter
     private lateinit var mYouTubeData: YouTubeData
     private lateinit var mVideoDataViewModel: VideoDataViewModel
 
@@ -49,7 +50,7 @@ class FavouritesFragment : Fragment(), VideoListAdapter.ListItemClickListener,
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        mAdapter = VideoListAdapter(emptyList(), this, activity!!)
+        mAdapter = FavouriteListAdapter(emptyList(), this, activity!!)
         mYouTubeData = YouTubeData(activity!!, this)
 
         setupFavouritesList()
@@ -91,6 +92,10 @@ class FavouritesFragment : Fragment(), VideoListAdapter.ListItemClickListener,
     ////////////////////////////////////////////////////////////////////////////////
     // Utils
     ////////////////////////////////////////////////////////////////////////////////
+
+    fun filterVideos(query: String) {
+        mAdapter.filterItems(query)
+    }
 
     private fun loadFavourites(videoData: List<VideoData>) {
         videoList.visibility = View.INVISIBLE
