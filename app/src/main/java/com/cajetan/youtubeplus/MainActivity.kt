@@ -10,8 +10,10 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
+import android.view.View
 import android.widget.SearchView
 import android.widget.Toast
+import com.cajetan.youtubeplus.fragments.FavouritesFragment
 import com.cajetan.youtubeplus.fragments.VideoListFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.intentFor
@@ -76,7 +78,11 @@ class MainActivity : AppCompatActivity() {
     private fun setupBottomBar() {
         bottomBar.selectedItemId = R.id.action_start
         bottomBar.setOnNavigationItemSelectedListener {
-            Log.d(TAG, "Navigation item selected")
+            val searchView  = if (this::mMenu.isInitialized) {
+                mMenu.findItem(R.id.search)?.actionView as SearchView
+            } else {
+                null
+            }
 
             when (it.itemId) {
                 R.id.action_start -> {
@@ -86,12 +92,21 @@ class MainActivity : AppCompatActivity() {
                                 .commit()
                     }
 
+                    searchView?.visibility = View.VISIBLE
+
                     it.setChecked(true)
                     true
                 }
 
                 R.id.action_favourites -> {
-                    startActivity(intentFor<FavouritesActivity>())
+                    if (userIsInteracting) {
+                        supportFragmentManager.beginTransaction()
+                                .replace(R.id.mainContainer, FavouritesFragment())
+                                .commit()
+                    }
+
+                    searchView?.visibility = View.GONE
+
                     true
                 }
 
@@ -106,9 +121,9 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         // Reset the search menu
-                        val searchView = mMenu.findItem(R.id.search)?.actionView as SearchView
-                        searchView.setQuery("", false)
-                        searchView.isIconified = true
+                        searchView?.setQuery("", false)
+                        searchView?.isIconified = true
+                        searchView?.visibility = View.GONE
                     }
 
                     it.setChecked(true)

@@ -2,6 +2,10 @@
 
 ---
 
+#### 12.01.2019
+
+* [General] Converted favourites to a Fragment
+
 #### 11.01.2019
 
 * [VideoListFragment] General refactoring
