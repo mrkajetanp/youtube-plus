@@ -277,7 +277,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         val videoUrl: String = extras.getString(Intent.EXTRA_TEXT) ?: ""
 
         return when {
-            videoUrl != "" -> videoUrl.substring(videoUrl.length - 11, videoUrl.length)
+            videoUrl.isNotEmpty() -> videoUrl.substring(videoUrl.length - 11, videoUrl.length)
 
             extras.containsKey(getString(R.string.video_id_key)) ->
                 extras.getString(getString(R.string.video_id_key)) as String

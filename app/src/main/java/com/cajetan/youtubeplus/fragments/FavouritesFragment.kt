@@ -94,7 +94,8 @@ class FavouritesFragment : Fragment(), FavouriteListAdapter.ListItemClickListene
     ////////////////////////////////////////////////////////////////////////////////
 
     fun filterVideos(query: String) {
-        mAdapter.filterItems(query)
+        if (query.isNotEmpty())
+            mAdapter.filterItems(query)
     }
 
     private fun loadFavourites(videoData: List<VideoData>) {

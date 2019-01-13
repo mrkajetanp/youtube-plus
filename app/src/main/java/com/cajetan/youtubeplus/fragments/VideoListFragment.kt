@@ -82,9 +82,7 @@ class VideoListFragment : Fragment(), VideoListAdapter.ListItemClickListener,
         videoList.layoutManager = LinearLayoutManager(activity!!)
 
         mAdapter.onBottomReached = {
-            Log.d(TAG, "Reached the bottom")
-
-            if (mSearchQuery == "")
+            if (mSearchQuery.isEmpty())
                 loadMostPopularVideos(mNextPageToken)
             else
                 loadSearchResults(mNextPageToken)
@@ -99,7 +97,7 @@ class VideoListFragment : Fragment(), VideoListAdapter.ListItemClickListener,
     ////////////////////////////////////////////////////////////////////////////////
 
     fun searchVideos(query: String) {
-        if (query == "" || query == mSearchQuery)
+        if (query.isEmpty() || query == mSearchQuery)
             return
 
         mSearchQuery = query
@@ -112,26 +110,24 @@ class VideoListFragment : Fragment(), VideoListAdapter.ListItemClickListener,
             searching = true
         }
 
-        if (nextPageToken == "") {
+        if (nextPageToken.isEmpty()) {
             searchProgressBarCentre.visibility = View.VISIBLE
             videoList.visibility = View.INVISIBLE
         } else {
             searchProgressBarBottom.visibility = View.VISIBLE
         }
 
-        Log.d(TAG, "Searching for a video $mSearchQuery")
         mYouTubeData.receiveSearchResults(mSearchQuery, nextPageToken)
     }
 
     private fun loadMostPopularVideos(nextPageToken: String) {
-        if (nextPageToken == "") {
+        if (nextPageToken.isEmpty()) {
             searchProgressBarCentre.visibility = View.VISIBLE
             videoList.visibility = View.INVISIBLE
         } else {
             searchProgressBarBottom.visibility = View.VISIBLE
         }
 
-        Log.d(TAG, "Receiving most popular results")
         mYouTubeData.receiveMostPopularResults(nextPageToken)
     }
 
@@ -141,7 +137,7 @@ class VideoListFragment : Fragment(), VideoListAdapter.ListItemClickListener,
 
     override fun onSearchResultsReceived(results: List<Video>,
                                          nextPageToken: String, previousPageToken: String) {
-        if (previousPageToken == "") {
+        if (previousPageToken.isEmpty()) {
             mAdapter.clearItems()
             videoList.scrollToPosition(0)
 
@@ -157,7 +153,7 @@ class VideoListFragment : Fragment(), VideoListAdapter.ListItemClickListener,
 
     override fun onMostPopularReceived(results: List<Video>,
                                        nextPageToken: String, previousPageToken: String) {
-        if (previousPageToken == "") {
+        if (previousPageToken.isEmpty()) {
             mAdapter.clearItems()
             videoList.scrollToPosition(0)
 
