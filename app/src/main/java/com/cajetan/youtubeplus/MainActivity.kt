@@ -8,15 +8,14 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.cajetan.youtubeplus.fragments.FavouritesFragment
 import com.cajetan.youtubeplus.fragments.VideoListFragment
 import kotlinx.android.synthetic.main.activity_main.*
-import org.jetbrains.anko.intentFor
 
 class MainActivity : AppCompatActivity() {
     private val TAG = this.javaClass.simpleName
@@ -42,11 +41,6 @@ class MainActivity : AppCompatActivity() {
                 .commit()
     }
 
-    override fun onResume() {
-        super.onResume()
-        bottomBar.selectedItemId = R.id.action_start
-    }
-
     override fun onUserInteraction() {
         super.onUserInteraction()
         userIsInteracting = true
@@ -69,6 +63,16 @@ class MainActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         userIsInteracting = false
         handleIntent(intent as Intent)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        val fragment = supportFragmentManager.findFragmentById(R.id.mainContainer)
+        when (fragment) {
+            is Fragment -> fragment.onActivityResult(requestCode, resultCode, data)
+            else -> Toast.makeText(this, "No fragment found", Toast.LENGTH_SHORT)
+                    .show()
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////

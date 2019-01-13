@@ -2,6 +2,10 @@
 
 ---
 
+#### 13.01.2019
+
+* [General] Fixed retaining the bottom bar state
+
 #### 12.01.2019
 
 * [General] Filtering videos in FavouritesFragment
