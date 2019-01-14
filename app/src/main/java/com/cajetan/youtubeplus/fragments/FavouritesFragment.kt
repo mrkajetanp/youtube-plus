@@ -1,6 +1,7 @@
 package com.cajetan.youtubeplus.fragments
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -94,24 +95,31 @@ class FavouritesFragment : Fragment(), FavouriteListAdapter.ListItemClickListene
     ////////////////////////////////////////////////////////////////////////////////
 
     fun filterVideos(query: String) {
-        if (query.isNotEmpty())
-            mAdapter.filterItems(query)
+        loadFavourites(mVideoDataViewModel.getAllVideoData().value!!) {
+            it.filter { t -> t.snippet.title.toLowerCase().contains(query.toLowerCase()) }
+        }
     }
 
-    private fun loadFavourites(videoData: List<VideoData>) {
+    private fun loadFavourites(videoData: List<VideoData>,
+                               block: ((List<Video>) -> List<Video>)? = null) {
         videoList.visibility = View.INVISIBLE
         progressBarCentre.visibility = View.VISIBLE
 
-        mYouTubeData.receiveFavouritesResults(videoData)
+        mYouTubeData.receiveFavouritesResults(videoData, block)
     }
 
     ////////////////////////////////////////////////////////////////////////////////
     // Callbacks
     ////////////////////////////////////////////////////////////////////////////////
 
-    override fun onFavouritesReceived(results: List<Video>) {
+    override fun onFavouritesReceived(results: List<Video>,
+                                      block: ((List<Video>) -> List<Video>)?) {
         mAdapter.clearItems()
-        mAdapter.addItems(results.toList())
+
+        // If an additional function was passed, apply it to the results
+        val result = block?.invoke(results)?.toList() ?: results.toList()
+
+        mAdapter.addItems(result)
 
         noFavouritesView.visibility = if (mAdapter.itemCount == 0) View.VISIBLE else View.GONE
         progressBarCentre.visibility = View.INVISIBLE

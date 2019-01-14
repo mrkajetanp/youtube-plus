@@ -67,6 +67,8 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
     private lateinit var mVideoData: List<VideoData>
     private lateinit var mRequestType: RequestType
 
+    private var favouritesCallback: ((List<Video>) -> List<Video>)? = null
+
     fun receiveVideoData(videoId: String) {
         mVideoId = videoId
         mRequestType = RequestType.DATA_REQUEST
@@ -82,9 +84,11 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
         getResultsFromApi()
     }
 
-    fun receiveFavouritesResults(videoData: List<VideoData>) {
+    fun receiveFavouritesResults(videoData: List<VideoData>,
+                                 block: ((List<Video>) -> List<Video>)? = null) {
         mVideoData = videoData
         mRequestType = RequestType.FAVOURITES_REQUEST
+        favouritesCallback = block
 
         getResultsFromApi()
     }
@@ -224,7 +228,7 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
                     else -> null
                 }
 
-                listener?.onFavouritesReceived(result.toList())
+                listener?.onFavouritesReceived(result.toList(), favouritesCallback)
                         ?: throw UnsupportedOperationException("Activity must implement FavouritesDataListener")
             }
         }
@@ -420,7 +424,8 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
     }
 
     interface FavouritesDataListener {
-        fun onFavouritesReceived(results: List<Video>)
+        fun onFavouritesReceived(results: List<Video>,
+                                 block: ((List<Video>) -> List<Video>)? = null)
     }
 
     interface PlaylistDataListener {

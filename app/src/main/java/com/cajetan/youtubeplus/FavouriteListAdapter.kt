@@ -52,14 +52,6 @@ class FavouriteListAdapter(videos: List<Video>, listener: ListItemClickListener,
         notifyDataSetChanged()
     }
 
-    fun filterItems(query: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            mVideos.removeIf { !it.snippet.title.toLowerCase().contains(query.toLowerCase()) }
-        notifyDataSetChanged()
-
-//        TODO: implement functionality for older versions
-    }
-
     private fun dpToPixel(dp: Float, context: Context): Int {
         val metrics = context.resources.displayMetrics
         return Math.round(dp * (metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT))

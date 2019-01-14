@@ -2,6 +2,10 @@
 
 ---
 
+#### 14.01.2019
+
+* [Favourites] Fixed filtering with an optional callback
+
 #### 13.01.2019
 
 * [General] Refactoring and improvements 
