@@ -4,6 +4,7 @@
 
 #### 14.01.2019
 
+* [Favourites] Clearing the search query on reseting to mostPopular 
 * [Favourites] Fixed filtering with an optional callback
 
 #### 13.01.2019

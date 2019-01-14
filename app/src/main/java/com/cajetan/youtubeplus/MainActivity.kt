@@ -96,6 +96,8 @@ class MainActivity : AppCompatActivity() {
                                 .commit()
                     }
 
+                    searchView?.setQuery("", false)
+                    searchView?.isIconified = true
                     searchView?.visibility = View.VISIBLE
 
                     it.setChecked(true)
