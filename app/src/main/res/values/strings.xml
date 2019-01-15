@@ -10,6 +10,9 @@
     <string name="duration_string_key" translatable="false">duration_string</string>
     <string name="current_second_key" translatable="false">current_second</string>
     <string name="seeker_dialog_id" translatable="false">seeker_dialog</string>
+    <string name="player_action_key" translatable="false">player_action</string>
+    <string name="player_action_play_pause" translatable="false">action_play_pause</string>
+    <string name="live_video_duration" translatable="false">PT0S</string>
 
     <!--Notification Channel-->
     <string name="notification_channel_id" translatable="false">main-channel-id</string>

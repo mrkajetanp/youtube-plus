@@ -122,7 +122,7 @@ class FavouriteListAdapter(videos: List<Video>, listener: ListItemClickListener,
 
             val duration = video.contentDetails.duration
             videoDurationView.text = when (duration) {
-                "PT0S" -> {
+                mContext.getString(R.string.live_video_duration) -> {
                     videoDurationView.setBackgroundColor(Color.RED)
                     videoDurationView.setTextColor(Color.WHITE)
                     mContext.getString(R.string.live)
@@ -139,7 +139,7 @@ class FavouriteListAdapter(videos: List<Video>, listener: ListItemClickListener,
                 else -> ""
             }
 
-            if (thumbnailUrl != "") {
+            if (thumbnailUrl.isNotEmpty()) {
                 Picasso.get().load(thumbnailUrl)
                         .resize(dpToPixel(160f, mContext), dpToPixel(90f, mContext))
                         .centerCrop().into(videoThumbnailView)

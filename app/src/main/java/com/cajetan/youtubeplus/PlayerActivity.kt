@@ -65,7 +65,8 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
 
     private val mBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if (intent.extras?.getString("player_action") == "action_play_pause") {
+            if (intent.extras?.getString(getString(R.string.player_action_key)) ==
+                    getString(R.string.player_action_play_pause)) {
                 mainPlayerView?.togglePlayPause()
             }
         }
@@ -188,14 +189,14 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         menu.addItem(MenuItem(getString(R.string.seek),
                 R.drawable.ic_timer_black_24dp) {
 
-            val b = Bundle()
-            b.putString(getString(R.string.duration_string_key), mVideoData.contentDetails.duration)
-            b.putInt(getString(R.string.current_second_key), Math.round(mTracker.currentSecond))
-
-            // TODO: fix
-            val newFragment: DialogFragment = SeekDialog()
-            newFragment.arguments = b
-            newFragment.show(supportFragmentManager, getString(R.string.seeker_dialog_id))
+            SeekDialog().apply {
+                arguments = Bundle().apply {
+                    putString(getString(R.string.duration_string_key),
+                            mVideoData.contentDetails.duration)
+                    putInt(getString(R.string.current_second_key),
+                            Math.round(mTracker.currentSecond))
+                }
+            }.show(supportFragmentManager, getString(R.string.seeker_dialog_id))
 
             menu.dismiss()
         })
@@ -245,7 +246,8 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
                 PendingIntent.getBroadcast(this, 2923588,
                         Intent().apply {
                             action = Intent.ACTION_MEDIA_BUTTON
-                            putExtra("player_action", "action_play_pause")
+                            putExtra(getString(R.string.player_action_key),
+                                    getString(R.string.player_action_play_pause))
                         },
                         PendingIntent.FLAG_UPDATE_CURRENT))
 
@@ -346,7 +348,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         if (mVideoData.snippet.thumbnails.standard != null)
             setAlbumArt(mVideoData.snippet.thumbnails.standard.url)
 
-        if (mVideoData.contentDetails.duration == "PT0S")
+        if (mVideoData.contentDetails.duration == getString(R.string.live_video_duration))
             mainPlayerView.playerUIController.enableLiveVideoUI(true)
     }
 
