@@ -2,6 +2,10 @@
 
 ---
 
+#### 15.01.2019
+
+* [PlayerActivity] Fixed switching to a new video on a new share Intent
+
 #### 14.01.2019
 
 * [Favourites] Clearing the search query on reseting to mostPopular 

@@ -81,9 +81,9 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
 
         mYouTubeData = YouTubeData(this)
 
-        val playlistId = getPlaylistId()
+        val playlistId = getPlaylistId(intent)
         if (playlistId == null) {
-            mVideoId = getIntentVideoId()
+            mVideoId = getIntentVideoId(intent!!)
         } else {
             mVideoId = playlistId
             mYouTubeData.receivePlaylistResults(playlistId)
@@ -91,17 +91,24 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
 
         mYouTubeData.receiveVideoData(mVideoId)
 
-        setupPlayer()
+        setupPlayer(mVideoId)
         setupMediaSession()
 
         mVideoDataViewModel = ViewModelProviders.of(this).get(VideoDataViewModel::class.java)
     }
 
     override fun onNewIntent(intent: Intent) {
-        // TODO: implement the functionality
-        Log.d(TAG, "Getting a new intent")
-        Log.d(TAG, "New video id: " + getIntentVideoId())
         super.onNewIntent(intent)
+
+        val playlistId = getPlaylistId(intent)
+        if (playlistId == null) {
+            mVideoId = getIntentVideoId(intent)
+        } else {
+            mVideoId = playlistId
+            mYouTubeData.receivePlaylistResults(playlistId)
+        }
+
+        mainPlayerView.player.loadVideo(mVideoId, 0f)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -125,7 +132,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
     // Init
     ////////////////////////////////////////////////////////////////////////////////
 
-    private fun setupPlayer() {
+    private fun setupPlayer(videoId: String) {
         registerReceiver(mBroadcastReceiver,
                 IntentFilter().apply { addAction(Intent.ACTION_MEDIA_BUTTON) }
         )
@@ -137,7 +144,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
             initialisedYouTubePlayer.addListener(mTracker)
             initialisedYouTubePlayer.addListener(object: AbstractYouTubePlayerListener() {
                 override fun onReady() {
-                    initialisedYouTubePlayer.loadVideo(mVideoId, 0F)
+                    initialisedYouTubePlayer.loadVideo(videoId, 0F)
                 }
 
                 override fun onStateChange(state: PlayerConstants.PlayerState) {
@@ -272,8 +279,8 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
     // Utils
     ////////////////////////////////////////////////////////////////////////////////
 
-    private fun getIntentVideoId(): String {
-        val extras: Bundle = intent!!.extras!!
+    private fun getIntentVideoId(intent: Intent): String {
+        val extras: Bundle = intent.extras!!
         val videoUrl: String = extras.getString(Intent.EXTRA_TEXT) ?: ""
 
         return when {
@@ -286,7 +293,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         }
     }
 
-    private fun getPlaylistId(): String? {
+    private fun getPlaylistId(intent: Intent?): String? {
         val videoUrl = intent?.extras?.getString(Intent.EXTRA_TEXT) ?: return null
 
         if (!videoUrl.contains("playlist?list="))
