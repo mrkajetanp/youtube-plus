@@ -16,6 +16,10 @@ class VideoDataViewModel(val context: Application) : AndroidViewModel(context) {
         return mAllVideoData
     }
 
+    fun contains(id: String): Boolean {
+        return mRepository.contains(id)
+    }
+
     fun insert(videoData: VideoData) {
         mRepository.insert(videoData)
     }

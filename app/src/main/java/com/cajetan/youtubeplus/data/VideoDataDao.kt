@@ -13,6 +13,9 @@ interface VideoDataDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertAll(vararg users: VideoData)
 
+    @Query("SELECT * FROM video_data_table WHERE video_id = :id LIMIT 1")
+    fun getWithId(id: String): VideoData?
+
     @Delete
     fun delete(data: VideoData)
 }

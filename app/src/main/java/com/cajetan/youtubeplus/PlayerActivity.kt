@@ -91,11 +91,10 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         }
 
         mYouTubeData.receiveVideoData(mVideoId)
+        mVideoDataViewModel = ViewModelProviders.of(this).get(VideoDataViewModel::class.java)
 
         setupPlayer(mVideoId)
         setupMediaSession()
-
-        mVideoDataViewModel = ViewModelProviders.of(this).get(VideoDataViewModel::class.java)
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -201,21 +200,43 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
             menu.dismiss()
         })
 
-        // TODO: option to unstar if already starred
+        addMenuItems(menu)
+    }
 
-        menu.addItem(MenuItem(getString(R.string.favourites_add),
-                R.drawable.ic_star_border_black_24dp) {
+    private fun addMenuItems(menu: YouTubePlayerMenu) {
+        doAsync {
+            val contains = mVideoDataViewModel.contains(mVideoId)
 
-            mVideoDataViewModel.insert(VideoData(mVideoId))
-            Toast.makeText(mContext, getString(R.string.favourites_added), Toast.LENGTH_SHORT).show()
+            val text = when (contains) {
+                true -> "Remove from favourites"
+                false -> getString(R.string.favourites_add)
+            }
 
-            menu.dismiss()
-        })
+            val icon = when (contains) {
+                true -> R.drawable.ic_star_black_24dp
+                false -> R.drawable.ic_star_border_black_24dp
+            }
+
+            val message = when (contains) {
+                true -> getString(R.string.favourites_removed)
+                false -> getString(R.string.favourites_added)
+            }
+
+            uiThread {
+                menu.addItem(MenuItem(text, icon) {
+                    when (contains) {
+                        true -> mVideoDataViewModel.delete(VideoData(mVideoId))
+                        false -> mVideoDataViewModel.insert(VideoData(mVideoId))
+                    }
+
+                    Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show()
+                    menu.dismiss()
+                })
+            }
+        }
     }
 
     private fun setupMediaSession() {
-
-
         mMediaSession = MediaSessionCompat(this, TAG)
 
         mMediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or

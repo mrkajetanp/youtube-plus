@@ -1,6 +1,7 @@
 package com.cajetan.youtubeplus.data
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.LiveData
 import org.jetbrains.anko.doAsync
 
@@ -14,6 +15,11 @@ class VideoDataRepository(application: Application) {
 
     fun getAllVideoData(): LiveData<List<VideoData>> {
         return mAllVideoData
+    }
+
+    fun contains(videoId: String): Boolean {
+        Log.d("Repository", "Size with $videoId is ${mVideoDataDao.getWithId(videoId)}")
+        return mVideoDataDao.getWithId(videoId) != null
     }
 
     fun insert(videoData: VideoData) {

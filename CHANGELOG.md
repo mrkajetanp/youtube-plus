@@ -2,9 +2,13 @@
 
 ---
 
+#### 16.01.2019
+
+* [PlayerActivity] Added an option to remove from favourites
+
 #### 15.01.2019
 
-* [PlayerActivity] Refactoring and improvements 
+* [PlayerActivity] Refactoring and improvements
 * [PlayerActivity] Fixed switching to a new video on a new share Intent
 
 #### 14.01.2019

@@ -7,6 +7,7 @@
     <string name="seek" translatable="true">Seek</string>
     <string name="favourites_add" translatable="true">Add to favourites</string>
     <string name="favourites_added" translatable="true">Added to favourites</string>
+    <string name="favourites_removed" translatable="true">Removed from favourites</string>
     <string name="duration_string_key" translatable="false">duration_string</string>
     <string name="current_second_key" translatable="false">current_second</string>
     <string name="seeker_dialog_id" translatable="false">seeker_dialog</string>
