@@ -4,6 +4,7 @@
 
 #### 16.01.2019
 
+* [PlayerActivity] Fixed broken Seek dialog 
 * [PlayerActivity] Added an option to remove from favourites
 
 #### 15.01.2019

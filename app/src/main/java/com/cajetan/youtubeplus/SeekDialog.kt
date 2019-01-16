@@ -33,7 +33,6 @@ class SeekDialog : DialogFragment() {
                 .substring(2).replace('M', ' ').replace('S', ' ')
                 .replace('H', ' ').split(" ").dropLast(1)
 
-        // TODO: fix situations like 2:00
         val maxSeconds: Int
         val maxMinutes: Int
         val maxHours: Int

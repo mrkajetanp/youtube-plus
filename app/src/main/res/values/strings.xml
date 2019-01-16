@@ -6,6 +6,7 @@
     <string name="video_id_key" translatable="false">video_id</string>
     <string name="seek" translatable="true">Seek</string>
     <string name="favourites_add" translatable="true">Add to favourites</string>
+    <string name="favourites_remove" translatable="true">Remove from favourites</string>
     <string name="favourites_added" translatable="true">Added to favourites</string>
     <string name="favourites_removed" translatable="true">Removed from favourites</string>
     <string name="duration_string_key" translatable="false">duration_string</string>

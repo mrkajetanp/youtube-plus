@@ -183,32 +183,32 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
             return
 
         mUIController.showMenuButton(true)
-        val menu: YouTubePlayerMenu = mUIController.menu as YouTubePlayerMenu
+        addMenuItems(mUIController.menu as YouTubePlayerMenu)
+    }
 
+    private fun addMenuItems(menu: YouTubePlayerMenu) {
         menu.addItem(MenuItem(getString(R.string.seek),
                 R.drawable.ic_timer_black_24dp) {
 
+            val bundle = Bundle().apply {
+                putString(getString(R.string.duration_string_key),
+                        mVideoData.contentDetails.duration)
+                putInt(getString(R.string.current_second_key),
+                        Math.round(mTracker.currentSecond))
+            }
+
             SeekDialog().apply {
-                arguments = Bundle().apply {
-                    putString(getString(R.string.duration_string_key),
-                            mVideoData.contentDetails.duration)
-                    putInt(getString(R.string.current_second_key),
-                            Math.round(mTracker.currentSecond))
-                }
+                arguments = bundle
             }.show(supportFragmentManager, getString(R.string.seeker_dialog_id))
 
             menu.dismiss()
         })
 
-        addMenuItems(menu)
-    }
-
-    private fun addMenuItems(menu: YouTubePlayerMenu) {
         doAsync {
             val contains = mVideoDataViewModel.contains(mVideoId)
 
             val text = when (contains) {
-                true -> "Remove from favourites"
+                true -> getString(R.string.favourites_remove)
                 false -> getString(R.string.favourites_add)
             }
 
