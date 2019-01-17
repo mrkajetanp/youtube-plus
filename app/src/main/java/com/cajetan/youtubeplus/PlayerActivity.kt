@@ -230,6 +230,13 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
                     }
 
                     Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show()
+
+                    // Remove menu items
+                    for (x in 0 until menu.itemCount)
+                        menu.removeItem(0)
+
+                    // Add items again to update the state
+                    addMenuItems(menu)
                     menu.dismiss()
                 })
             }

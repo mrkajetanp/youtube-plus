@@ -2,6 +2,10 @@
 
 ---
 
+#### 17.01.2019
+
+* [PlayerActivity] Updating menu item state after adding to favourites
+
 #### 16.01.2019
 
 * [PlayerActivity] Fixed broken Seek dialog 
