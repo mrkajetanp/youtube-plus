@@ -36,7 +36,7 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
         EasyPermissions.PermissionCallbacks {
 
     companion object {
-        private val TAG = this::class.java.simpleName
+        private val TAG = "YouTubeData"
 
         private const val SEARCH_PAGE_SIZE = 20
         private const val REQUEST_ACCOUNT_PICKER = 1000
@@ -47,6 +47,7 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
         private const val PREF_ACCOUNT_NAME = "accountName"
         private val SCOPES: Array<String> = arrayOf(YouTubeScopes.YOUTUBE_READONLY)
     }
+
 
     private val mActivity = parentActivity
     private val mFragment = fragment
@@ -280,7 +281,7 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
             val result: List<PlaylistItem>
             try {
                 result = service.playlistItems().list("snippet,contentDetails")
-                        .setId(playlistId).execute().items
+                        .setMaxResults(20).setPlaylistId(playlistId).execute().items
             } catch (e: java.lang.Exception) {
                 onTaskCancelled(e)
                 throw CancellationException()

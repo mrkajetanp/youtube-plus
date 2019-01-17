@@ -20,6 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_marginStart="8dp"
+        android:inputType="textImeMultiLine"
         android:layout_marginTop="8dp"
         android:text="Placeholder"
         android:visibility="visible"

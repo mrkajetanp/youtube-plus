@@ -383,10 +383,12 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
     override fun onPlaylistDataReceived(results: List<PlaylistItem>) {
         val builder = StringBuilder()
 
+        Log.d("YouTubeData", "Results: ${results.size}")
         for (item in results) {
             builder.append(item.snippet.title)
             builder.append('\n')
         }
+        Log.d("YouTubeData", "Final: ${builder}")
 
         tempView.text = builder.toString()
     }

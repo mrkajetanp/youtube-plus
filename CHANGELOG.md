@@ -4,6 +4,7 @@
 
 #### 17.01.2019
 
+* [PlayerActivity] Fixed getting playlist data
 * [PlayerActivity] Updating menu item state after adding to favourites
 
 #### 16.01.2019
