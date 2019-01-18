@@ -2,6 +2,10 @@
 
 ---
 
+#### 18.01.2019
+
+* [PlayerActivity] Playing the first video on receiving a playlist
+
 #### 17.01.2019
 
 * [PlayerActivity] Fixed getting playlist data

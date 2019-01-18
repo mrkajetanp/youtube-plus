@@ -84,17 +84,17 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
 
         val playlistId = getPlaylistId(intent)
         if (playlistId == null) {
+            // A single video
             mVideoId = getIntentVideoId(intent!!)
+            mYouTubeData.receiveVideoData(mVideoId)
+            setupPlayer(mVideoId)
+            setupMediaSession()
         } else {
-            mVideoId = playlistId
+            // A playlist, setup player after receiving the data
             mYouTubeData.receivePlaylistResults(playlistId)
         }
 
-        mYouTubeData.receiveVideoData(mVideoId)
         mVideoDataViewModel = ViewModelProviders.of(this).get(VideoDataViewModel::class.java)
-
-        setupPlayer(mVideoId)
-        setupMediaSession()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -381,14 +381,17 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
     }
 
     override fun onPlaylistDataReceived(results: List<PlaylistItem>) {
-        val builder = StringBuilder()
+        mVideoId = results[0].contentDetails.videoId
+        mYouTubeData.receiveVideoData(mVideoId)
 
-        Log.d("YouTubeData", "Results: ${results.size}")
+        setupPlayer(mVideoId)
+        setupMediaSession()
+
+        val builder = StringBuilder()
         for (item in results) {
             builder.append(item.snippet.title)
             builder.append('\n')
         }
-        Log.d("YouTubeData", "Final: ${builder}")
 
         tempView.text = builder.toString()
     }
