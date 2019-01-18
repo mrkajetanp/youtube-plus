@@ -4,6 +4,7 @@
 
 #### 18.01.2019
 
+* [PlayerActivity] Playlist RecyclerView in PlayerActivity
 * [PlayerActivity] Playing the first video on receiving a playlist
 
 #### 17.01.2019

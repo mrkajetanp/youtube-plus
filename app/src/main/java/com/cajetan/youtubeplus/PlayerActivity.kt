@@ -19,8 +19,10 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.cajetan.youtubeplus.data.VideoData
 import com.cajetan.youtubeplus.data.VideoDataViewModel
 import com.cajetan.youtubeplus.utils.FullScreenHelper
@@ -42,11 +44,14 @@ import java.lang.StringBuilder
 import java.net.URL
 
 class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
+        YouTubeData.FavouritesDataListener, FavouriteListAdapter.ListItemClickListener,
         SeekDialog.SeekDialogListener, YouTubeData.PlaylistDataListener {
 
     private val TAG: String = this.javaClass.simpleName
 
     private val mFullScreenHelper: FullScreenHelper = FullScreenHelper(this)
+
+    private lateinit var mAdapter: FavouriteListAdapter
 
     private lateinit var mMediaSession: MediaSessionCompat
     private lateinit var mStateBuilder: PlaybackStateCompat.Builder
@@ -55,7 +60,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
     private lateinit var mUIController: PlayerUIController
 
     private lateinit var mVideoId: String
-    private lateinit var mVideoData: Video
+    private var mVideoData: Video? = null
     private lateinit var mVideoThumbnail: Bitmap
 
     private val mContext: Context = this
@@ -192,7 +197,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
 
             val bundle = Bundle().apply {
                 putString(getString(R.string.duration_string_key),
-                        mVideoData.contentDetails.duration)
+                        mVideoData?.contentDetails?.duration)
                 putInt(getString(R.string.current_second_key),
                         Math.round(mTracker.currentSecond))
             }
@@ -292,12 +297,12 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
                         .setMediaSession(mMediaSession.sessionToken))
 
         if (this::mVideoThumbnail.isInitialized) {
-            builder.setContentTitle(mVideoData.snippet.title)
-                    .setContentText(mVideoData.snippet.channelTitle)
+            builder.setContentTitle(mVideoData?.snippet?.title)
+                    .setContentText(mVideoData?.snippet?.channelTitle)
                     .setLargeIcon(mVideoThumbnail)
         }
 
-        if (!this::mVideoData.isInitialized) {
+        if (mVideoData == null) {
             (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(0)
             return
         }
@@ -373,10 +378,13 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
     override fun onVideoDataReceived(videoData: Video) {
         mVideoData = videoData
 
-        if (mVideoData.snippet.thumbnails.standard != null)
-            setAlbumArt(mVideoData.snippet.thumbnails.standard.url)
+        if (mVideoData?.snippet?.thumbnails?.standard != null) {
+            val url = mVideoData?.snippet?.thumbnails?.standard?.url
+            if (url != null)
+                setAlbumArt(url)
+        }
 
-        if (mVideoData.contentDetails.duration == getString(R.string.live_video_duration))
+        if (mVideoData?.contentDetails?.duration == getString(R.string.live_video_duration))
             mainPlayerView.playerUIController.enableLiveVideoUI(true)
     }
 
@@ -387,14 +395,31 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         setupPlayer(mVideoId)
         setupMediaSession()
 
-        val builder = StringBuilder()
-        for (item in results) {
-            builder.append(item.snippet.title)
-            builder.append('\n')
-        }
+        val playlistItems: List<VideoData> = results.map { VideoData(it.contentDetails.videoId) }
+        videoList.visibility = View.INVISIBLE
 
-        tempView.text = builder.toString()
+        // TODO: convert to a general request for a list of videos
+        mYouTubeData.receiveFavouritesResults(playlistItems)
     }
+
+    override fun onFavouritesReceived(results: List<Video>, block: ((List<Video>) -> List<Video>)?) {
+        val result = block?.invoke(results)?.toList() ?: results.toList()
+        mAdapter = FavouriteListAdapter(result, this, this)
+        videoList.layoutManager = LinearLayoutManager(this)
+        videoList.setHasFixedSize(false)
+        videoList.adapter = mAdapter
+
+        videoList.visibility = View.VISIBLE
+    }
+
+    override fun onListItemClick(clickedVideoId: String) {
+        mVideoId = clickedVideoId
+        mainPlayerView.player.loadVideo(mVideoId, 0f)
+        mVideoData = null
+        mYouTubeData.receiveVideoData(mVideoId)
+    }
+
+    override fun onListItemLongClick(clickedVideoId: String) { }
 
     override fun onSeekButtonClicked(duration: Float) {
         mainPlayerView.player.seekTo(duration)
