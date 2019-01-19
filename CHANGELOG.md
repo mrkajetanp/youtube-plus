@@ -2,6 +2,10 @@
 
 ---
 
+#### 19.01.2019
+
+* [PlayerActivity] Converted FavouritesAdapter to PlaylistContentAdapter
+
 #### 18.01.2019
 
 * [PlayerActivity] Playlist RecyclerView in PlayerActivity

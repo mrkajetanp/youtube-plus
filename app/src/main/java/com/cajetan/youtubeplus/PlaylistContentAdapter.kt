@@ -2,7 +2,6 @@ package com.cajetan.youtubeplus
 
 import android.content.Context
 import android.graphics.Color
-import android.os.Build
 import androidx.recyclerview.widget.RecyclerView
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -13,8 +12,8 @@ import android.widget.TextView
 import com.google.api.services.youtube.model.Video
 import com.squareup.picasso.Picasso
 
-class FavouriteListAdapter(videos: List<Video>, listener: ListItemClickListener, context: Context) :
-        RecyclerView.Adapter<FavouriteListAdapter.VideoViewHolder>() {
+class PlaylistContentAdapter(videos: List<Video>, listener: ListItemClickListener, context: Context) :
+        RecyclerView.Adapter<PlaylistContentAdapter.VideoViewHolder>() {
 
     private val mVideos: ArrayList<Video> = ArrayList(videos)
     private val mOnClickListener = listener

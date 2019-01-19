@@ -1,7 +1,6 @@
 package com.cajetan.youtubeplus.fragments
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,10 +12,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.cajetan.youtubeplus.FavouriteListAdapter
+import com.cajetan.youtubeplus.PlaylistContentAdapter
 import com.cajetan.youtubeplus.PlayerActivity
 import com.cajetan.youtubeplus.R
-import com.cajetan.youtubeplus.VideoListAdapter
 import com.cajetan.youtubeplus.data.VideoData
 import com.cajetan.youtubeplus.data.VideoDataViewModel
 import com.cajetan.youtubeplus.utils.YouTubeData
@@ -26,10 +24,10 @@ import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.noButton
 import org.jetbrains.anko.yesButton
 
-class FavouritesFragment : Fragment(), FavouriteListAdapter.ListItemClickListener,
-        YouTubeData.FavouritesDataListener {
+class FavouritesFragment : Fragment(), PlaylistContentAdapter.ListItemClickListener,
+        YouTubeData.VideoListDataListener {
 
-    private lateinit var mAdapter: FavouriteListAdapter
+    private lateinit var mAdapter: PlaylistContentAdapter
     private lateinit var mYouTubeData: YouTubeData
     private lateinit var mVideoDataViewModel: VideoDataViewModel
 
@@ -51,7 +49,7 @@ class FavouritesFragment : Fragment(), FavouriteListAdapter.ListItemClickListene
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        mAdapter = FavouriteListAdapter(emptyList(), this, activity!!)
+        mAdapter = PlaylistContentAdapter(emptyList(), this, activity!!)
         mYouTubeData = YouTubeData(activity!!, this)
 
         setupFavouritesList()
@@ -105,7 +103,7 @@ class FavouritesFragment : Fragment(), FavouriteListAdapter.ListItemClickListene
         videoList.visibility = View.INVISIBLE
         progressBarCentre.visibility = View.VISIBLE
 
-        mYouTubeData.receiveFavouritesResults(videoData, block)
+        mYouTubeData.receiveVideoListResults(videoData, block)
     }
 
     ////////////////////////////////////////////////////////////////////////////////

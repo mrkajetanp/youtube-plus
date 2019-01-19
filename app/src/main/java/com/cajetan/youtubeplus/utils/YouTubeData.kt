@@ -85,10 +85,10 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
         getResultsFromApi()
     }
 
-    fun receiveFavouritesResults(videoData: List<VideoData>,
-                                 block: ((List<Video>) -> List<Video>)? = null) {
+    fun receiveVideoListResults(videoData: List<VideoData>,
+                                block: ((List<Video>) -> List<Video>)? = null) {
         mVideoData = videoData
-        mRequestType = RequestType.FAVOURITES_REQUEST
+        mRequestType = RequestType.VIDEO_LIST_REQUEST
         favouritesCallback = block
 
         getResultsFromApi()
@@ -117,7 +117,7 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
             else -> when (mRequestType) {
                 RequestType.DATA_REQUEST -> videoDataTask(mVideoId)
                 RequestType.SEARCH_REQUEST -> videoSearchTask(searchQuery, searchPageToken)
-                RequestType.FAVOURITES_REQUEST -> favouritesTask(mVideoData)
+                RequestType.VIDEO_LIST_REQUEST -> videoListTask(mVideoData)
                 RequestType.MOST_POPULAR_REQUEST -> mostPopularTask(searchPageToken)
                 RequestType.PLAYLIST_DATA_REQUEST -> playlistDataTask(mPlaylistId)
             }
@@ -199,7 +199,7 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
         }
     }
 
-    private fun favouritesTask(videoData: List<VideoData>) {
+    private fun videoListTask(videoData: List<VideoData>) {
         doAsync {
             val finalId = StringBuilder()
             for (data in videoData) {
@@ -223,14 +223,14 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
             }
 
             uiThread {
-                val listener: FavouritesDataListener? = when {
-                    mActivity is FavouritesDataListener -> mActivity
-                    mFragment is FavouritesDataListener -> mFragment
+                val listener: VideoListDataListener? = when {
+                    mActivity is VideoListDataListener -> mActivity
+                    mFragment is VideoListDataListener -> mFragment
                     else -> null
                 }
 
                 listener?.onFavouritesReceived(result.toList(), favouritesCallback)
-                        ?: throw UnsupportedOperationException("Activity must implement FavouritesDataListener")
+                        ?: throw UnsupportedOperationException("Activity must implement VideoListDataListener")
             }
         }
     }
@@ -410,7 +410,7 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
     private enum class RequestType {
         DATA_REQUEST,
         SEARCH_REQUEST,
-        FAVOURITES_REQUEST,
+        VIDEO_LIST_REQUEST,
         MOST_POPULAR_REQUEST,
         PLAYLIST_DATA_REQUEST
     }
@@ -424,7 +424,7 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
                                     nextPageToken: String, previousPageToken: String)
     }
 
-    interface FavouritesDataListener {
+    interface VideoListDataListener {
         fun onFavouritesReceived(results: List<Video>,
                                  block: ((List<Video>) -> List<Video>)? = null)
     }

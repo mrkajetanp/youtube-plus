@@ -13,12 +13,9 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.IBinder
-import androidx.fragment.app.DialogFragment
-import androidx.media.session.MediaButtonReceiver
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.appcompat.app.AppCompatActivity
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
@@ -40,18 +37,17 @@ import kotlinx.android.synthetic.main.activity_player.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.lang.IllegalArgumentException
-import java.lang.StringBuilder
 import java.net.URL
 
 class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
-        YouTubeData.FavouritesDataListener, FavouriteListAdapter.ListItemClickListener,
+        YouTubeData.VideoListDataListener, PlaylistContentAdapter.ListItemClickListener,
         SeekDialog.SeekDialogListener, YouTubeData.PlaylistDataListener {
 
     private val TAG: String = this.javaClass.simpleName
 
     private val mFullScreenHelper: FullScreenHelper = FullScreenHelper(this)
 
-    private lateinit var mAdapter: FavouriteListAdapter
+    private lateinit var mAdapter: PlaylistContentAdapter
 
     private lateinit var mMediaSession: MediaSessionCompat
     private lateinit var mStateBuilder: PlaybackStateCompat.Builder
@@ -399,12 +395,12 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         videoList.visibility = View.INVISIBLE
 
         // TODO: convert to a general request for a list of videos
-        mYouTubeData.receiveFavouritesResults(playlistItems)
+        mYouTubeData.receiveVideoListResults(playlistItems)
     }
 
     override fun onFavouritesReceived(results: List<Video>, block: ((List<Video>) -> List<Video>)?) {
         val result = block?.invoke(results)?.toList() ?: results.toList()
-        mAdapter = FavouriteListAdapter(result, this, this)
+        mAdapter = PlaylistContentAdapter(result, this, this)
         videoList.layoutManager = LinearLayoutManager(this)
         videoList.setHasFixedSize(false)
         videoList.adapter = mAdapter
