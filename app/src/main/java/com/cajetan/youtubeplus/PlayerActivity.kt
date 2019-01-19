@@ -82,6 +82,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         setContentView(R.layout.activity_player)
 
         mYouTubeData = YouTubeData(this)
+        mVideoDataViewModel = ViewModelProviders.of(this).get(VideoDataViewModel::class.java)
 
         val playlistId = getPlaylistId(intent)
         if (playlistId == null) {
@@ -94,8 +95,6 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
             // A playlist, setup player after receiving the data
             mYouTubeData.receivePlaylistResults(playlistId)
         }
-
-        mVideoDataViewModel = ViewModelProviders.of(this).get(VideoDataViewModel::class.java)
     }
 
     override fun onNewIntent(intent: Intent) {

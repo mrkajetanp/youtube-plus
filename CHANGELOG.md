@@ -4,6 +4,7 @@
 
 #### 19.01.2019
 
+* [PlayerActivity] Fixed a bug with late ViewModel initialisation 
 * [PlayerActivity] Converted FavouritesAdapter to PlaylistContentAdapter
 
 #### 18.01.2019
