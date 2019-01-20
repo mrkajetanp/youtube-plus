@@ -4,6 +4,7 @@
 
 #### 20.01.2019
 
+* [General] Fixed SearchView behaviour with Navigation Component
 * [General] Migrated to Jetpack Navigation Component
 
 #### 19.01.2019

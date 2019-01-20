@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
+import android.view.View
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -55,6 +56,8 @@ class MainActivity : AppCompatActivity() {
         val searchView = menu?.findItem(R.id.search)?.actionView as SearchView
         searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
 
+        setupNavigation()
+
         return true
     }
 
@@ -81,16 +84,30 @@ class MainActivity : AppCompatActivity() {
     // Init
     ////////////////////////////////////////////////////////////////////////////////
 
-//                    searchView?.setQuery("", false)
-//                    searchView?.isIconified = true
-//                    searchView?.visibility = View.VISIBLE
-//
-//                    searchView?.queryHint = "Search in favourites"
-//                    searchView?.visibility = View.VISIBLE
+    private fun setupNavigation() {
+        findNavController(R.id.mainContainer).addOnDestinationChangedListener { _, destination, _ ->
+            val searchView = mMenu.findItem(R.id.search)?.actionView as SearchView?
 
-//                    searchView?.setQuery("", false)
-//                    searchView?.isIconified = true
-//                    searchView?.visibility = View.GONE
+            when (destination.id) {
+                R.id.start -> {
+                    searchView?.setQuery("", false)
+                    searchView?.isIconified = true
+                    searchView?.visibility = View.VISIBLE
+                }
+                R.id.favourites -> {
+                    searchView?.setQuery("", false)
+                    searchView?.isIconified = true
+                    searchView?.queryHint = "Search in favourites"
+                    searchView?.visibility = View.VISIBLE
+                }
+                R.id.others -> {
+                    searchView?.setQuery("", false)
+                    searchView?.isIconified = true
+                    searchView?.visibility = View.GONE
+                }
+            }
+        }
+    }
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
