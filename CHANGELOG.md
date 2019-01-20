@@ -2,6 +2,10 @@
 
 ---
 
+#### 20.01.2019
+
+* [General] Migrated to Jetpack Navigation Component
+
 #### 19.01.2019
 
 * [PlayerActivity] Fixed a bug with late ViewModel initialisation 

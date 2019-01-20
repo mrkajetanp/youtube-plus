@@ -9,13 +9,14 @@ import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
-import android.view.View
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
+import androidx.navigation.ui.setupWithNavController
 import com.cajetan.youtubeplus.fragments.FavouritesFragment
 import com.cajetan.youtubeplus.fragments.VideoListFragment
-import kotlinx.android.synthetic.main.activity_main.*
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
     private val TAG = this.javaClass.simpleName
@@ -32,13 +33,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        createNotificationChannel()
-        setupBottomBar()
-        handleIntent(intent)
+        findViewById<BottomNavigationView>(R.id.bottomBar)
+                .setupWithNavController(findNavController(R.id.mainContainer))
 
-        supportFragmentManager.beginTransaction()
-                .add(R.id.mainContainer, VideoListFragment())
-                .commit()
+        createNotificationChannel()
+        handleIntent(intent)
     }
 
     override fun onUserInteraction() {
@@ -67,7 +66,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        val fragment = supportFragmentManager.findFragmentById(R.id.mainContainer)
+
+        // TODO: find a better solution 1/2
+        val fragment = supportFragmentManager.findFragmentById(R.id.mainContainer)!!
+                .childFragmentManager.fragments[0]
         when (fragment) {
             is Fragment -> fragment.onActivityResult(requestCode, resultCode, data)
             else -> Toast.makeText(this, "No fragment found", Toast.LENGTH_SHORT)
@@ -79,71 +81,16 @@ class MainActivity : AppCompatActivity() {
     // Init
     ////////////////////////////////////////////////////////////////////////////////
 
-    private fun setupBottomBar() {
-        bottomBar.selectedItemId = R.id.action_start
-        bottomBar.setOnNavigationItemSelectedListener {
-            val searchView  = if (this::mMenu.isInitialized) {
-                mMenu.findItem(R.id.search)?.actionView as SearchView
-            } else {
-                null
-            }
+//                    searchView?.setQuery("", false)
+//                    searchView?.isIconified = true
+//                    searchView?.visibility = View.VISIBLE
+//
+//                    searchView?.queryHint = "Search in favourites"
+//                    searchView?.visibility = View.VISIBLE
 
-            when (it.itemId) {
-                R.id.action_start -> {
-                    if (userIsInteracting) {
-                        supportFragmentManager.beginTransaction()
-                                .replace(R.id.mainContainer, VideoListFragment())
-                                .commit()
-                    }
-
-                    searchView?.setQuery("", false)
-                    searchView?.isIconified = true
-                    searchView?.visibility = View.VISIBLE
-
-                    it.setChecked(true)
-                    true
-                }
-
-                R.id.action_favourites -> {
-                    if (userIsInteracting) {
-                        supportFragmentManager.beginTransaction()
-                                .replace(R.id.mainContainer, FavouritesFragment())
-                                .commit()
-                    }
-
-                    searchView?.queryHint = "Search in favourites"
-                    searchView?.visibility = View.VISIBLE
-
-                    it.setChecked(true)
-                    true
-                }
-
-                R.id.action_others -> {
-                    if (userIsInteracting) {
-                        val fragment = supportFragmentManager.findFragmentById(R.id.mainContainer)
-
-                        if (fragment != null) {
-                            supportFragmentManager.beginTransaction()
-                                    .remove(fragment)
-                                    .commit()
-                        }
-
-                        // Reset the search menu
-                        searchView?.setQuery("", false)
-                        searchView?.isIconified = true
-                        searchView?.visibility = View.GONE
-                    }
-
-                    it.setChecked(true)
-                    true
-                }
-
-                else -> {
-                    false
-                }
-            }
-        }
-    }
+//                    searchView?.setQuery("", false)
+//                    searchView?.isIconified = true
+//                    searchView?.visibility = View.GONE
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
@@ -164,7 +111,9 @@ class MainActivity : AppCompatActivity() {
         if (intent.action == Intent.ACTION_SEARCH) {
             val query = intent.getStringExtra(SearchManager.QUERY)
 
-            val fragment = supportFragmentManager.findFragmentById(R.id.mainContainer)
+            // TODO: find a better solution 2/2
+            val fragment = supportFragmentManager.findFragmentById(R.id.mainContainer)!!
+                    .childFragmentManager.fragments[0]
             when (fragment) {
                 is VideoListFragment -> fragment.searchVideos(query)
                 is FavouritesFragment -> fragment.filterVideos(query)

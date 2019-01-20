@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/action_start"
+        android:id="@+id/start"
         android:icon="@drawable/ic_youtube_24dp"
         android:checked="false"
         android:title="Start" />
 
     <item
-        android:id="@+id/action_favourites"
+        android:id="@+id/favourites"
         android:icon="@drawable/ic_star_border_black_24dp"
         android:checked="false"
         android:title="Favourites" />
 
     <item
-        android:id="@+id/action_others"
+        android:id="@+id/others"
         android:icon="@drawable/ic_menu_24dp"
         android:checked="false"
         android:title="Others" />

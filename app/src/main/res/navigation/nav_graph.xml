@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/start">
+
+    <fragment
+        android:id="@+id/start"
+        android:name="com.cajetan.youtubeplus.fragments.VideoListFragment"
+        android:label="Start"
+        tools:layout="@layout/video_list_fragment" />
+
+    <fragment
+        android:id="@+id/favourites"
+        android:name="com.cajetan.youtubeplus.fragments.FavouritesFragment"
+        android:label="Favourites"
+        tools:layout="@layout/favourites_fragment" />
+
+    <fragment
+        android:id="@+id/others"
+        android:name="com.cajetan.youtubeplus.fragments.OthersFragment"
+        android:label="Others"
+        tools:layout="@layout/fragment_others" />
+</navigation>
