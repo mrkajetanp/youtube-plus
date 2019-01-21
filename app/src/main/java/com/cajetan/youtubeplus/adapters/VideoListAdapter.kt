@@ -1,19 +1,23 @@
-package com.cajetan.youtubeplus
+package com.cajetan.youtubeplus.adapters
 
 import android.content.Context
 import android.graphics.Color
 import androidx.recyclerview.widget.RecyclerView
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.cajetan.youtubeplus.R
 import com.google.api.services.youtube.model.Video
 import com.squareup.picasso.Picasso
 
-class PlaylistContentAdapter(videos: List<Video>, listener: ListItemClickListener, context: Context) :
-        RecyclerView.Adapter<PlaylistContentAdapter.VideoViewHolder>() {
+class VideoListAdapter(videos: List<Video>, listener: ListItemClickListener, context: Context) :
+        RecyclerView.Adapter<VideoListAdapter.VideoViewHolder>() {
+
+    lateinit var onBottomReached: () -> Unit
 
     private val mVideos: ArrayList<Video> = ArrayList(videos)
     private val mOnClickListener = listener
@@ -25,12 +29,21 @@ class PlaylistContentAdapter(videos: List<Video>, listener: ListItemClickListene
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val view = inflater.inflate(R.layout.video_list_item, parent, false)
+        val view = inflater.inflate(R.layout.item_video_list, parent, false)
         return VideoViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: VideoViewHolder, position: Int) {
         holder.bind(mVideos[position])
+
+        if (position != mVideos.size - 1)
+            return
+
+        try {
+            onBottomReached.invoke()
+        } catch (e: UninitializedPropertyAccessException) {
+            Log.e("VideoListAdapter", "onBottomReached not set!")
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////

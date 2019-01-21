@@ -2,7 +2,6 @@ package com.cajetan.youtubeplus.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cajetan.youtubeplus.PlayerActivity
 import com.cajetan.youtubeplus.R
-import com.cajetan.youtubeplus.VideoListAdapter
+import com.cajetan.youtubeplus.adapters.VideoListAdapter
 import com.cajetan.youtubeplus.data.VideoData
 import com.cajetan.youtubeplus.data.VideoDataViewModel
 import com.cajetan.youtubeplus.utils.YouTubeData
@@ -60,7 +59,7 @@ class VideoListFragment : Fragment(), VideoListAdapter.ListItemClickListener,
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.video_list_fragment, container, false)
+        val view = inflater.inflate(R.layout.fragment_video_list, container, false)
 
         videoList = view.findViewById(R.id.videoList)
         searchProgressBarCentre = view.findViewById(R.id.searchProgressBarCentre)

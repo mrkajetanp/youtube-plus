@@ -9,13 +9,13 @@
         android:id="@+id/start"
         android:name="com.cajetan.youtubeplus.fragments.VideoListFragment"
         android:label="Start"
-        tools:layout="@layout/video_list_fragment" />
+        tools:layout="@layout/fragment_video_list" />
 
     <fragment
         android:id="@+id/favourites"
         android:name="com.cajetan.youtubeplus.fragments.FavouritesFragment"
         android:label="Favourites"
-        tools:layout="@layout/favourites_fragment" />
+        tools:layout="@layout/fragment_favourites" />
 
     <fragment
         android:id="@+id/others"

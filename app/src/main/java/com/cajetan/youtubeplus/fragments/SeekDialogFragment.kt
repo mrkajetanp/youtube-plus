@@ -1,4 +1,4 @@
-package com.cajetan.youtubeplus
+package com.cajetan.youtubeplus.fragments
 
 import android.app.AlertDialog
 import android.app.Dialog
@@ -8,9 +8,10 @@ import androidx.fragment.app.DialogFragment
 import android.view.View
 import android.widget.Button
 import android.widget.NumberPicker
+import com.cajetan.youtubeplus.R
 import java.lang.ClassCastException
 
-class SeekDialog : DialogFragment() {
+class SeekDialogFragment : DialogFragment() {
 
     private lateinit var mListener: SeekDialogListener
 

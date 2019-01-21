@@ -20,8 +20,10 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.cajetan.youtubeplus.adapters.PlaylistContentAdapter
 import com.cajetan.youtubeplus.data.VideoData
 import com.cajetan.youtubeplus.data.VideoDataViewModel
+import com.cajetan.youtubeplus.fragments.SeekDialogFragment
 import com.cajetan.youtubeplus.utils.FullScreenHelper
 import com.cajetan.youtubeplus.utils.YouTubeData
 import com.google.api.services.youtube.model.PlaylistItem
@@ -41,7 +43,7 @@ import java.net.URL
 
 class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         YouTubeData.VideoListDataListener, PlaylistContentAdapter.ListItemClickListener,
-        SeekDialog.SeekDialogListener, YouTubeData.PlaylistDataListener {
+        SeekDialogFragment.SeekDialogListener, YouTubeData.PlaylistDataListener {
 
     private val TAG: String = this.javaClass.simpleName
 
@@ -197,7 +199,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
                         Math.round(mTracker.currentSecond))
             }
 
-            SeekDialog().apply {
+            SeekDialogFragment().apply {
                 arguments = bundle
             }.show(supportFragmentManager, getString(R.string.seeker_dialog_id))
 

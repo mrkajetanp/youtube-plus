@@ -12,7 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.cajetan.youtubeplus.PlaylistContentAdapter
+import com.cajetan.youtubeplus.adapters.PlaylistContentAdapter
 import com.cajetan.youtubeplus.PlayerActivity
 import com.cajetan.youtubeplus.R
 import com.cajetan.youtubeplus.data.VideoData
@@ -56,7 +56,7 @@ class FavouritesFragment : Fragment(), PlaylistContentAdapter.ListItemClickListe
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.favourites_fragment, container, false)
+        val view = inflater.inflate(R.layout.fragment_favourites, container, false)
 
         videoList = view.findViewById(R.id.videoList)
         progressBarCentre = view.findViewById(R.id.progressBarCentre)

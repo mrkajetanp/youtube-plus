@@ -4,6 +4,7 @@
 
 #### 21.01.2019
 
+* [General] Reorganised the general code structure
 * [OthersFragment] Removed unnecessary code, added Where do We Go From Here button
 
 #### 20.01.2019
