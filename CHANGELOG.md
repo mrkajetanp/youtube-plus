@@ -2,6 +2,10 @@
 
 ---
 
+#### 21.01.2019
+
+* [OthersFragment] Removed unnecessary code, added Where do We Go From Here button
+
 #### 20.01.2019
 
 * [General] Fixed SearchView behaviour with Navigation Component
