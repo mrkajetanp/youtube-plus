@@ -110,8 +110,8 @@ class FavouritesFragment : Fragment(), PlaylistContentAdapter.ListItemClickListe
     // Callbacks
     ////////////////////////////////////////////////////////////////////////////////
 
-    override fun onFavouritesReceived(results: List<Video>,
-                                      block: ((List<Video>) -> List<Video>)?) {
+    override fun onVideoListReceived(results: List<Video>,
+                                     block: ((List<Video>) -> List<Video>)?) {
         mAdapter.clearItems()
 
         // If an additional function was passed, apply it to the results

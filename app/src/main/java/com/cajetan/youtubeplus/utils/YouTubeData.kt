@@ -65,6 +65,8 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
     private var mPlaylistId = ""
     private var searchQuery = ""
     private var searchPageToken = ""
+    // TODO: possibly merge into one
+    private var playlistPageToken = ""
     private lateinit var mVideoData: List<VideoData>
     private lateinit var mRequestType: RequestType
 
@@ -101,8 +103,9 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
         getResultsFromApi()
     }
 
-    fun receivePlaylistResults(playlistId: String) {
+    fun receivePlaylistResults(playlistId: String, pageToken: String) {
         mPlaylistId = playlistId
+        playlistPageToken = pageToken
         mRequestType = RequestType.PLAYLIST_DATA_REQUEST
 
         getResultsFromApi()
@@ -119,7 +122,7 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
                 RequestType.SEARCH_REQUEST -> videoSearchTask(searchQuery, searchPageToken)
                 RequestType.VIDEO_LIST_REQUEST -> videoListTask(mVideoData)
                 RequestType.MOST_POPULAR_REQUEST -> mostPopularTask(searchPageToken)
-                RequestType.PLAYLIST_DATA_REQUEST -> playlistDataTask(mPlaylistId)
+                RequestType.PLAYLIST_DATA_REQUEST -> playlistDataTask(mPlaylistId, playlistPageToken)
             }
         }
     }
@@ -175,6 +178,8 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
         }
     }
 
+    // TODO: consider merging videoListTask with videoDataTask
+
     private fun videoDataTask(videoId: String) {
         doAsync {
             val result: Video
@@ -229,7 +234,7 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
                     else -> null
                 }
 
-                listener?.onFavouritesReceived(result.toList(), favouritesCallback)
+                listener?.onVideoListReceived(result.toList(), favouritesCallback)
                         ?: throw UnsupportedOperationException("Activity must implement VideoListDataListener")
             }
         }
@@ -276,12 +281,25 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
         }
     }
 
-    private fun playlistDataTask(playlistId: String) {
+    private fun playlistDataTask(playlistId: String, pageToken: String) {
         doAsync {
             val result: List<PlaylistItem>
+            val nextPageToken: String
+            val prevPageToken: String
+
             try {
-                result = service.playlistItems().list("snippet,contentDetails")
-                        .setMaxResults(20).setPlaylistId(playlistId).execute().items
+                val list = service.playlistItems().list("snippet,contentDetails")
+                        .setMaxResults(20).setPlaylistId(playlistId)
+
+                if (pageToken.isNotEmpty())
+                    list.pageToken = pageToken
+
+                val response = list.execute()
+
+                nextPageToken = response.nextPageToken ?: ""
+                prevPageToken = response.prevPageToken ?: ""
+
+                result = response.items
             } catch (e: java.lang.Exception) {
                 onTaskCancelled(e)
                 throw CancellationException()
@@ -294,7 +312,7 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
                     else -> null
                 }
 
-                listener?.onPlaylistDataReceived(result.toList())
+                listener?.onPlaylistDataReceived(result.toList(), nextPageToken, prevPageToken)
                         ?: throw UnsupportedOperationException("Activity must implement PlaylistDataListener")
             }
         }
@@ -425,12 +443,13 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
     }
 
     interface VideoListDataListener {
-        fun onFavouritesReceived(results: List<Video>,
-                                 block: ((List<Video>) -> List<Video>)? = null)
+        fun onVideoListReceived(results: List<Video>,
+                                block: ((List<Video>) -> List<Video>)? = null)
     }
 
     interface PlaylistDataListener {
-        fun onPlaylistDataReceived(results: List<PlaylistItem>)
+        fun onPlaylistDataReceived(results: List<PlaylistItem>,
+                                   nextPageToken: String, previousPageToken: String)
     }
 
     interface MostPopularListener {

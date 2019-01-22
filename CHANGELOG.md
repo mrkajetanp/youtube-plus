@@ -2,6 +2,10 @@
 
 ---
 
+#### 22.01.2019
+
+* [PlayerActivity] Loading more playlist videos on scrolling down
+
 #### 21.01.2019
 
 * [General] Reorganised the general code structure

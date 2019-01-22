@@ -21,6 +21,7 @@ import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cajetan.youtubeplus.adapters.PlaylistContentAdapter
+import com.cajetan.youtubeplus.adapters.VideoListAdapter
 import com.cajetan.youtubeplus.data.VideoData
 import com.cajetan.youtubeplus.data.VideoDataViewModel
 import com.cajetan.youtubeplus.fragments.SeekDialogFragment
@@ -42,14 +43,12 @@ import java.lang.IllegalArgumentException
 import java.net.URL
 
 class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
-        YouTubeData.VideoListDataListener, PlaylistContentAdapter.ListItemClickListener,
+        YouTubeData.VideoListDataListener, VideoListAdapter.ListItemClickListener,
         SeekDialogFragment.SeekDialogListener, YouTubeData.PlaylistDataListener {
 
     private val TAG: String = this.javaClass.simpleName
 
     private val mFullScreenHelper: FullScreenHelper = FullScreenHelper(this)
-
-    private lateinit var mAdapter: PlaylistContentAdapter
 
     private lateinit var mMediaSession: MediaSessionCompat
     private lateinit var mStateBuilder: PlaybackStateCompat.Builder
@@ -75,6 +74,10 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         }
     }
 
+    private lateinit var mAdapter: VideoListAdapter
+    private var mPrevPageToken: String = ""
+    private var mNextPageToken: String = ""
+
     ////////////////////////////////////////////////////////////////////////////////
     // Lifecycle
     ////////////////////////////////////////////////////////////////////////////////
@@ -95,7 +98,20 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
             setupMediaSession()
         } else {
             // A playlist, setup player after receiving the data
-            mYouTubeData.receivePlaylistResults(playlistId)
+            // TODO: move those out to a separate setup method
+            mAdapter = VideoListAdapter(emptyList(), this, this)
+            mAdapter.onBottomReached = {
+                if (mNextPageToken.isNotEmpty()) {
+                    progressBarBottom.visibility = View.VISIBLE
+                    mYouTubeData.receivePlaylistResults(playlistId, mNextPageToken)
+                }
+            }
+
+            videoList.layoutManager = LinearLayoutManager(this)
+            videoList.setHasFixedSize(false)
+            videoList.adapter = mAdapter
+
+            mYouTubeData.receivePlaylistResults(playlistId, mNextPageToken)
         }
     }
 
@@ -107,7 +123,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
             mVideoId = getIntentVideoId(intent)
         } else {
             mVideoId = playlistId
-            mYouTubeData.receivePlaylistResults(playlistId)
+            mYouTubeData.receivePlaylistResults(playlistId, mNextPageToken)
         }
 
         mainPlayerView.player.loadVideo(mVideoId, 0f)
@@ -385,28 +401,29 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
             mainPlayerView.playerUIController.enableLiveVideoUI(true)
     }
 
-    override fun onPlaylistDataReceived(results: List<PlaylistItem>) {
-        mVideoId = results[0].contentDetails.videoId
-        mYouTubeData.receiveVideoData(mVideoId)
-
-        setupPlayer(mVideoId)
-        setupMediaSession()
+    override fun onPlaylistDataReceived(results: List<PlaylistItem>,
+                                        nextPageToken: String, previousPageToken: String) {
+        // First call
+        if (previousPageToken.isEmpty()) {
+            mVideoId = results[0].contentDetails.videoId
+            mYouTubeData.receiveVideoData(mVideoId)
+            setupPlayer(mVideoId)
+            setupMediaSession()
+        }
 
         val playlistItems: List<VideoData> = results.map { VideoData(it.contentDetails.videoId) }
-        videoList.visibility = View.INVISIBLE
 
-        // TODO: convert to a general request for a list of videos
+        mPrevPageToken = previousPageToken
+        mNextPageToken = nextPageToken
         mYouTubeData.receiveVideoListResults(playlistItems)
     }
 
-    override fun onFavouritesReceived(results: List<Video>, block: ((List<Video>) -> List<Video>)?) {
+    override fun onVideoListReceived(results: List<Video>, block: ((List<Video>) -> List<Video>)?) {
         val result = block?.invoke(results)?.toList() ?: results.toList()
-        mAdapter = PlaylistContentAdapter(result, this, this)
-        videoList.layoutManager = LinearLayoutManager(this)
-        videoList.setHasFixedSize(false)
-        videoList.adapter = mAdapter
+        mAdapter.addItems(result)
 
         videoList.visibility = View.VISIBLE
+        progressBarBottom.visibility = View.GONE
     }
 
     override fun onListItemClick(clickedVideoId: String) {
