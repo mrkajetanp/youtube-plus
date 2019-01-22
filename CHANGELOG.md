@@ -4,6 +4,7 @@
 
 #### 22.01.2019
 
+* [General] Removed the now unnecessary PlaylistContentAdapter 
 * [PlayerActivity] Loading more playlist videos on scrolling down
 
 #### 21.01.2019
