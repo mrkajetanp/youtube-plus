@@ -125,7 +125,7 @@ class FavouritesFragment : Fragment(), VideoListAdapter.ListItemClickListener,
         videoList.visibility = View.VISIBLE
     }
 
-    override fun onListItemClick(clickedVideoId: String) {
+    override fun onListItemClick(clickedVideoId: String, position: Int) {
         startActivity(activity!!.intentFor<PlayerActivity>(
                 getString(R.string.video_id_key) to clickedVideoId
         ))

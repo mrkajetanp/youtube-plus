@@ -102,6 +102,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
             // TODO: move those out to a separate setup method
             playlistMode = true
             mAdapter = VideoListAdapter(emptyList(), this, this)
+            mAdapter.switchNowPlaying(mCurrentVideoIndex)
             mAdapter.onBottomReached = {
                 if (mNextPageToken.isNotEmpty()) {
                     progressBarBottom.visibility = View.VISIBLE
@@ -173,6 +174,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
                     if (playlistMode && state == PlayerConstants.PlayerState.ENDED) {
                         mCurrentVideoIndex++
                         mVideoId = mAdapter.getItem(mCurrentVideoIndex).id
+                        mAdapter.switchNowPlaying(mCurrentVideoIndex)
                         // TODO: extract this into a helper method, often used
                         mYouTubeData.receiveVideoData(mVideoId)
                         initialisedYouTubePlayer.loadVideo(mVideoId, 0F)
@@ -438,9 +440,10 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         progressBarBottom.visibility = View.GONE
     }
 
-    override fun onListItemClick(clickedVideoId: String) {
+    override fun onListItemClick(clickedVideoId: String, position: Int) {
         mVideoId = clickedVideoId
         mainPlayerView.player.loadVideo(mVideoId, 0f)
+        mAdapter.switchNowPlaying(position)
         mVideoData = null
         mYouTubeData.receiveVideoData(mVideoId)
     }

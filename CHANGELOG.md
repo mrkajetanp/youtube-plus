@@ -4,6 +4,7 @@
 
 #### 23.01.2019
 
+* [PlayerActivity] Playlist: Original YouTube-like playlist appearance
 * [PlayerActivity] Playlist: Playing the next video automatically
 
 #### 22.01.2019

@@ -166,7 +166,7 @@ class VideoListFragment : Fragment(), VideoListAdapter.ListItemClickListener,
         mNextPageToken = nextPageToken
     }
 
-    override fun onListItemClick(clickedVideoId: String) {
+    override fun onListItemClick(clickedVideoId: String, position: Int) {
         startActivity(activity!!.intentFor<PlayerActivity>(
                 getString(R.string.video_id_key) to clickedVideoId
         ))

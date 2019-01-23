@@ -22,6 +22,8 @@ class VideoListAdapter(videos: List<Video>, listener: ListItemClickListener, con
     private val mVideos: ArrayList<Video> = ArrayList(videos)
     private val mOnClickListener = listener
     private val mContext = context
+    // Non-negative value means the adapter is showing a playlist
+    private var mNowPlaying: Int = -1
 
     ////////////////////////////////////////////////////////////////////////////////
     // Lifecycle
@@ -35,6 +37,15 @@ class VideoListAdapter(videos: List<Video>, listener: ListItemClickListener, con
 
     override fun onBindViewHolder(holder: VideoViewHolder, position: Int) {
         holder.bind(mVideos[position])
+
+        // TODO: investigate if unnecessary calls occur
+        // Only switch those in "playlist mode
+        if (mNowPlaying != -1) {
+            if (mNowPlaying == position)
+                holder.enableNowPlaying()
+            else
+                holder.disableNowPlaying()
+        }
 
         if (position != mVideos.size - 1)
             return
@@ -66,6 +77,22 @@ class VideoListAdapter(videos: List<Video>, listener: ListItemClickListener, con
     fun clearItems() {
         mVideos.clear()
         notifyDataSetChanged()
+    }
+
+    fun switchNowPlaying(index: Int) {
+        // TODO: ensure the index is positive
+        if (index == 0) {
+            // Going into playlist mode, refresh all items
+            notifyDataSetChanged()
+        } else {
+            // Already in playlist mode, refresh only relevant items
+            // Refresh the new item
+            notifyItemChanged(index)
+            // Refresh the previously played item
+            notifyItemChanged(mNowPlaying)
+        }
+
+        mNowPlaying = index
     }
 
     private fun dpToPixel(dp: Float, context: Context): Int {
@@ -131,7 +158,27 @@ class VideoListAdapter(videos: List<Video>, listener: ListItemClickListener, con
             itemView.setOnLongClickListener(this)
         }
 
+        // TODO: add a frame around the thumbnail and make text bold
+        fun enableNowPlaying() {
+            itemView.setBackgroundResource(R.color.lighterDarkGrey)
+            videoTitleView.setTextColor(Color.WHITE)
+            videoChannelView.setTextColor(Color.WHITE)
+        }
+
+        fun disableNowPlaying() {
+            itemView.setBackgroundResource(R.color.darkGrey)
+            videoTitleView.setTextColor(Color.WHITE)
+            videoChannelView.setTextColor(Color.WHITE)
+        }
+
         fun bind(video: Video) {
+            Log.d("VideoListAdapter", "Now playing $mNowPlaying")
+            if (mNowPlaying != -1) {
+                itemView.setBackgroundResource(R.color.darkGrey)
+                videoTitleView.setTextColor(Color.WHITE)
+                videoChannelView.setTextColor(Color.WHITE)
+            }
+
             videoTitleView.text = video.snippet.title
             videoChannelView.text = video.snippet.channelTitle
             videoThumbnailView.setBackgroundResource(R.color.darkerLightGrey)
@@ -163,7 +210,7 @@ class VideoListAdapter(videos: List<Video>, listener: ListItemClickListener, con
         }
 
         override fun onClick(v: View?) {
-            mOnClickListener.onListItemClick(mVideos[adapterPosition].id)
+            mOnClickListener.onListItemClick(mVideos[adapterPosition].id, adapterPosition)
         }
 
         override fun onLongClick(v: View?): Boolean {
@@ -173,7 +220,7 @@ class VideoListAdapter(videos: List<Video>, listener: ListItemClickListener, con
     }
 
     interface ListItemClickListener {
-        fun onListItemClick(clickedVideoId: String)
+        fun onListItemClick(clickedVideoId: String, position: Int)
         fun onListItemLongClick(clickedVideoId: String)
     }
 }
