@@ -54,6 +54,10 @@ class VideoListAdapter(videos: List<Video>, listener: ListItemClickListener, con
         return mVideos.size
     }
 
+    fun getItem(index: Int): Video {
+        return mVideos[index]
+    }
+
     fun addItems(items: List<Video>) {
         mVideos.addAll(items)
         notifyDataSetChanged()

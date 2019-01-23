@@ -20,7 +20,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.cajetan.youtubeplus.adapters.PlaylistContentAdapter
 import com.cajetan.youtubeplus.adapters.VideoListAdapter
 import com.cajetan.youtubeplus.data.VideoData
 import com.cajetan.youtubeplus.data.VideoDataViewModel
@@ -74,9 +73,11 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         }
     }
 
+    private var playlistMode = false
     private lateinit var mAdapter: VideoListAdapter
     private var mPrevPageToken: String = ""
     private var mNextPageToken: String = ""
+    private var mCurrentVideoIndex = 0
 
     ////////////////////////////////////////////////////////////////////////////////
     // Lifecycle
@@ -99,6 +100,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         } else {
             // A playlist, setup player after receiving the data
             // TODO: move those out to a separate setup method
+            playlistMode = true
             mAdapter = VideoListAdapter(emptyList(), this, this)
             mAdapter.onBottomReached = {
                 if (mNextPageToken.isNotEmpty()) {
@@ -120,8 +122,10 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
 
         val playlistId = getPlaylistId(intent)
         if (playlistId == null) {
+            playlistMode = false
             mVideoId = getIntentVideoId(intent)
         } else {
+            playlistMode = true
             mVideoId = playlistId
             mYouTubeData.receivePlaylistResults(playlistId, mNextPageToken)
         }
@@ -166,6 +170,14 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
                 }
 
                 override fun onStateChange(state: PlayerConstants.PlayerState) {
+                    if (playlistMode && state == PlayerConstants.PlayerState.ENDED) {
+                        mCurrentVideoIndex++
+                        mVideoId = mAdapter.getItem(mCurrentVideoIndex).id
+                        // TODO: extract this into a helper method, often used
+                        mYouTubeData.receiveVideoData(mVideoId)
+                        initialisedYouTubePlayer.loadVideo(mVideoId, 0F)
+                    }
+
                     val playerState: Int? = when (state) {
                         PlayerConstants.PlayerState.PLAYING -> PlaybackStateCompat.STATE_PLAYING
                         PlayerConstants.PlayerState.PAUSED -> PlaybackStateCompat.STATE_PAUSED

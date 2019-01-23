@@ -2,6 +2,10 @@
 
 ---
 
+#### 23.01.2019
+
+* [PlayerActivity] Playlist: Playing the next video automatically
+
 #### 22.01.2019
 
 * [General] Removed the now unnecessary PlaylistContentAdapter 
