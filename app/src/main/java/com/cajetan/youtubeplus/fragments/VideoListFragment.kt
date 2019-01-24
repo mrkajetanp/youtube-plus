@@ -174,7 +174,6 @@ class VideoListFragment : Fragment(), VideoListAdapter.ListItemClickListener,
 
     override fun onListItemLongClick(clickedVideoId: String) {
         activity!!.alert(getString(R.string.favourite_add_confirmation)) {
-            // TODO: possibly delegate to the activity
             yesButton { mVideoDataViewModel.insert(VideoData(clickedVideoId)) }
             noButton { }
         }.show()

@@ -103,7 +103,7 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
         getResultsFromApi()
     }
 
-    fun receivePlaylistResults(playlistId: String, pageToken: String) {
+    fun receivePlaylistResults(playlistId: String, pageToken: String = "") {
         mPlaylistId = playlistId
         playlistPageToken = pageToken
         mRequestType = RequestType.PLAYLIST_DATA_REQUEST

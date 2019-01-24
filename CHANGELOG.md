@@ -4,6 +4,7 @@
 
 #### 24.01.2019
 
+* [PlayerActivity] Fixed bugs on share intent edge cases 
 * [PlayerActivity] Fixed minor bugs related to onNewIntent
 
 #### 23.01.2019

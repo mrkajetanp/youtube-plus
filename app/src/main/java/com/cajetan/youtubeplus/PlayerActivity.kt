@@ -11,6 +11,7 @@ import android.content.IntentFilter
 import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.opengl.Visibility
 import android.os.Bundle
 import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
@@ -36,8 +37,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.ui.menu.MenuItem
 import com.pierfrancescosoffritti.androidyoutubeplayer.ui.menu.YouTubePlayerMenu
 import com.pierfrancescosoffritti.androidyoutubeplayer.utils.YouTubePlayerTracker
 import kotlinx.android.synthetic.main.activity_player.*
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
+import org.jetbrains.anko.*
 import java.lang.IllegalArgumentException
 import java.net.URL
 
@@ -93,15 +93,18 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         mVideoDataViewModel = ViewModelProviders.of(this).get(VideoDataViewModel::class.java)
 
         val playlistId = getPlaylistId(intent)
-        if (playlistId == null) {
-            // A single video
-            mVideoId = getIntentVideoId(intent!!)
-            mYouTubeData.receiveVideoData(mVideoId)
-            setupPlayer()
-        } else {
-            // A playlist, setup player after receiving the data
-            setupPlayer()
-            setupPlaylist(playlistId)
+        when (playlistId) {
+            null -> {
+                // A single video
+                mVideoId = getIntentVideoId(intent!!)
+                mYouTubeData.receiveVideoData(mVideoId)
+                setupPlayer()
+            }
+            else -> {
+                // A playlist, setup player after receiving the data
+                setupPlayer()
+                setupPlaylist(playlistId)
+            }
         }
 
         setupMediaSession()
@@ -114,14 +117,26 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         mCurrentVideoIndex = 0
 
         val playlistId = getPlaylistId(intent)
-        if (playlistId == null) {
-            playlistMode = false
-            mVideoId = getIntentVideoId(intent)
-            mainPlayerView.player.loadVideo(mVideoId, 0f)
-        } else {
-            mAdapter.switchNowPlaying(0)
-            mAdapter.clearItems()
-            mYouTubeData.receivePlaylistResults(playlistId, "")
+        when (playlistId) {
+            null -> {
+                playlistMode = false
+                // TODO: possible improvements
+                if (this::mAdapter.isInitialized) {
+                    mAdapter.clearItems()
+                    videoList.visibility = View.GONE
+                }
+                switchVideo(getIntentVideoId(intent))
+            }
+            else -> {
+                playlistMode = true
+                if (!this::mAdapter.isInitialized) {
+                    setupPlaylist(playlistId)
+                } else {
+                    mAdapter.switchNowPlaying(0)
+                    mAdapter.clearItems()
+                    mYouTubeData.receivePlaylistResults(playlistId)
+                }
+            }
         }
     }
 
@@ -165,11 +180,8 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
                 override fun onStateChange(state: PlayerConstants.PlayerState) {
                     if (playlistMode && state == PlayerConstants.PlayerState.ENDED) {
                         mCurrentVideoIndex++
-                        mVideoId = mAdapter.getItem(mCurrentVideoIndex).id
+                        switchVideo(mAdapter.getItem(mCurrentVideoIndex).id)
                         mAdapter.switchNowPlaying(mCurrentVideoIndex)
-                        // TODO: extract this into a helper method, often used
-                        mYouTubeData.receiveVideoData(mVideoId)
-                        initialisedYouTubePlayer.loadVideo(mVideoId, 0F)
                     }
 
                     val playerState: Int? = when (state) {
@@ -225,7 +237,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         videoList.setHasFixedSize(false)
         videoList.adapter = mAdapter
 
-        mYouTubeData.receivePlaylistResults(playlistId, "")
+        mYouTubeData.receivePlaylistResults(playlistId)
     }
 
     private fun addMenuItems(menu: YouTubePlayerMenu) {
@@ -374,6 +386,13 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         return videoUrl.substring(videoUrl.indexOf("playlist?list=", 0) + 14)
     }
 
+    private fun switchVideo(videoId: String) {
+        mVideoId = videoId
+        mVideoData = null
+        mYouTubeData.receiveVideoData(videoId)
+        mainPlayerView.player.loadVideo(videoId, 0f)
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // Callbacks & others
     ////////////////////////////////////////////////////////////////////////////////
@@ -428,11 +447,8 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
     override fun onPlaylistDataReceived(results: List<PlaylistItem>,
                                         nextPageToken: String, previousPageToken: String) {
         // First call
-        if (previousPageToken.isEmpty()) {
-            mVideoId = results[0].contentDetails.videoId
-            mYouTubeData.receiveVideoData(mVideoId)
-            mainPlayerView.player.loadVideo(mVideoId, 0f)
-        }
+        if (previousPageToken.isEmpty())
+            switchVideo(results[0].contentDetails.videoId)
 
         val playlistItems: List<VideoData> = results.map { VideoData(it.contentDetails.videoId) }
 
@@ -450,14 +466,16 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
     }
 
     override fun onListItemClick(clickedVideoId: String, position: Int) {
-        mVideoId = clickedVideoId
-        mainPlayerView.player.loadVideo(mVideoId, 0f)
+        switchVideo(clickedVideoId)
         mAdapter.switchNowPlaying(position)
-        mVideoData = null
-        mYouTubeData.receiveVideoData(mVideoId)
     }
 
-    override fun onListItemLongClick(clickedVideoId: String) { }
+    override fun onListItemLongClick(clickedVideoId: String) {
+        this.alert(getString(R.string.favourite_add_confirmation)) {
+            yesButton { mVideoDataViewModel.insert(VideoData(clickedVideoId)) }
+            noButton { }
+        }.show()
+    }
 
     override fun onSeekButtonClicked(duration: Float) {
         mainPlayerView.player.seekTo(duration)
