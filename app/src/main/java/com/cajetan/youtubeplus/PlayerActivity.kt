@@ -73,6 +73,8 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         }
     }
 
+    // TODO: refactor some methods with default arguments
+
     private var playlistMode = false
     private lateinit var mAdapter: VideoListAdapter
     private var mPrevPageToken: String = ""
@@ -95,43 +97,32 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
             // A single video
             mVideoId = getIntentVideoId(intent!!)
             mYouTubeData.receiveVideoData(mVideoId)
-            setupPlayer(mVideoId)
-            setupMediaSession()
+            setupPlayer()
         } else {
             // A playlist, setup player after receiving the data
-            // TODO: move those out to a separate setup method
-            playlistMode = true
-            mAdapter = VideoListAdapter(emptyList(), this, this)
-            mAdapter.switchNowPlaying(mCurrentVideoIndex)
-            mAdapter.onBottomReached = {
-                if (mNextPageToken.isNotEmpty()) {
-                    progressBarBottom.visibility = View.VISIBLE
-                    mYouTubeData.receivePlaylistResults(playlistId, mNextPageToken)
-                }
-            }
-
-            videoList.layoutManager = LinearLayoutManager(this)
-            videoList.setHasFixedSize(false)
-            videoList.adapter = mAdapter
-
-            mYouTubeData.receivePlaylistResults(playlistId, mNextPageToken)
+            setupPlayer()
+            setupPlaylist(playlistId)
         }
+
+        setupMediaSession()
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        mPrevPageToken = ""
+        mNextPageToken = ""
+        mCurrentVideoIndex = 0
 
         val playlistId = getPlaylistId(intent)
         if (playlistId == null) {
             playlistMode = false
             mVideoId = getIntentVideoId(intent)
+            mainPlayerView.player.loadVideo(mVideoId, 0f)
         } else {
-            playlistMode = true
-            mVideoId = playlistId
-            mYouTubeData.receivePlaylistResults(playlistId, mNextPageToken)
+            mAdapter.switchNowPlaying(0)
+            mAdapter.clearItems()
+            mYouTubeData.receivePlaylistResults(playlistId, "")
         }
-
-        mainPlayerView.player.loadVideo(mVideoId, 0f)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -155,7 +146,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
     // Init
     ////////////////////////////////////////////////////////////////////////////////
 
-    private fun setupPlayer(videoId: String) {
+    private fun setupPlayer() {
         registerReceiver(mBroadcastReceiver,
                 IntentFilter().apply { addAction(Intent.ACTION_MEDIA_BUTTON) }
         )
@@ -167,7 +158,8 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
             initialisedYouTubePlayer.addListener(mTracker)
             initialisedYouTubePlayer.addListener(object: AbstractYouTubePlayerListener() {
                 override fun onReady() {
-                    initialisedYouTubePlayer.loadVideo(videoId, 0F)
+                    if (mVideoId.isNotEmpty())
+                        initialisedYouTubePlayer.loadVideo(mVideoId, 0F)
                 }
 
                 override fun onStateChange(state: PlayerConstants.PlayerState) {
@@ -216,6 +208,24 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
 
         mUIController.showMenuButton(true)
         addMenuItems(mUIController.menu as YouTubePlayerMenu)
+    }
+
+    private fun setupPlaylist(playlistId: String) {
+        playlistMode = true
+        mAdapter = VideoListAdapter(emptyList(), this, this)
+        mAdapter.switchNowPlaying(mCurrentVideoIndex)
+        mAdapter.onBottomReached = {
+            if (mNextPageToken.isNotEmpty()) {
+                progressBarBottom.visibility = View.VISIBLE
+                mYouTubeData.receivePlaylistResults(playlistId, mNextPageToken)
+            }
+        }
+
+        videoList.layoutManager = LinearLayoutManager(this)
+        videoList.setHasFixedSize(false)
+        videoList.adapter = mAdapter
+
+        mYouTubeData.receivePlaylistResults(playlistId, "")
     }
 
     private fun addMenuItems(menu: YouTubePlayerMenu) {
@@ -421,8 +431,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         if (previousPageToken.isEmpty()) {
             mVideoId = results[0].contentDetails.videoId
             mYouTubeData.receiveVideoData(mVideoId)
-            setupPlayer(mVideoId)
-            setupMediaSession()
+            mainPlayerView.player.loadVideo(mVideoId, 0f)
         }
 
         val playlistItems: List<VideoData> = results.map { VideoData(it.contentDetails.videoId) }

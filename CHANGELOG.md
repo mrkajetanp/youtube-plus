@@ -2,6 +2,10 @@
 
 ---
 
+#### 24.01.2019
+
+* [PlayerActivity] Fixed minor bugs related to onNewIntent
+
 #### 23.01.2019
 
 * [PlayerActivity] Playlist: Original YouTube-like playlist appearance
