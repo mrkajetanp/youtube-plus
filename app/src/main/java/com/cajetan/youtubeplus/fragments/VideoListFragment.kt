@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.cajetan.youtubeplus.PlayerActivity
 import com.cajetan.youtubeplus.R
 import com.cajetan.youtubeplus.adapters.VideoListAdapter
 import com.cajetan.youtubeplus.data.VideoData
@@ -20,7 +19,6 @@ import com.cajetan.youtubeplus.data.VideoDataViewModel
 import com.cajetan.youtubeplus.utils.YouTubeData
 import com.google.api.services.youtube.model.Video
 import org.jetbrains.anko.alert
-import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.noButton
 import org.jetbrains.anko.yesButton
 

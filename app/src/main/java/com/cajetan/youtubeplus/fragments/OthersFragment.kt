@@ -8,10 +8,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
-import com.cajetan.youtubeplus.PlayerActivity
 
 import com.cajetan.youtubeplus.R
-import org.jetbrains.anko.intentFor
 
 class OthersFragment : Fragment() {
 

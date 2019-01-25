@@ -4,6 +4,7 @@
 
 #### 25.01.2019
 
+* [General] Code improvements and cleanup
 * [General] Replaced startActivity calls with Navigation Component
 
 #### 24.01.2019

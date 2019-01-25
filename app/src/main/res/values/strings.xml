@@ -2,6 +2,10 @@
     <!--General-->
     <string name="app_name" translatable="false">YouTube Plus</string>
 
+    <!--Main Activity-->
+    <string name="no_fragment_found" translatable="false">No fragment found</string>
+    <string name="search_favourites" translatable="true">Search in favourites</string>
+
     <!--Player Activity-->
     <string name="video_id_key" translatable="false">video_id</string>
     <string name="seek" translatable="true">Seek</string>

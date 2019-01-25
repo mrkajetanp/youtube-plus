@@ -75,7 +75,8 @@ class MainActivity : AppCompatActivity() {
                 .childFragmentManager.fragments[0]
         when (fragment) {
             is Fragment -> fragment.onActivityResult(requestCode, resultCode, data)
-            else -> Toast.makeText(this, "No fragment found", Toast.LENGTH_SHORT)
+            else -> Toast.makeText(this,
+                    getString(R.string.no_fragment_found), Toast.LENGTH_SHORT)
                     .show()
         }
     }
@@ -97,7 +98,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.favourites -> {
                     searchView?.setQuery("", false)
                     searchView?.isIconified = true
-                    searchView?.queryHint = "Search in favourites"
+                    searchView?.queryHint = getString(R.string.search_favourites)
                     searchView?.visibility = View.VISIBLE
                 }
                 R.id.others -> {
@@ -134,7 +135,8 @@ class MainActivity : AppCompatActivity() {
             when (fragment) {
                 is VideoListFragment -> fragment.searchVideos(query)
                 is FavouritesFragment -> fragment.filterVideos(query)
-                else -> Toast.makeText(this, "No fragment found", Toast.LENGTH_SHORT)
+                else -> Toast.makeText(this,
+                        getString(R.string.no_fragment_found), Toast.LENGTH_SHORT)
                         .show()
             }
         }
