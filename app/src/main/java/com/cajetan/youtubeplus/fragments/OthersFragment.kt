@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.core.os.bundleOf
+import androidx.navigation.fragment.findNavController
 import com.cajetan.youtubeplus.PlayerActivity
 
 import com.cajetan.youtubeplus.R
@@ -21,9 +23,8 @@ class OthersFragment : Fragment() {
 
         mWhereDoWeButton = view.findViewById(R.id.whereDoWeButton)
         mWhereDoWeButton.setOnClickListener {
-            startActivity(activity!!.intentFor<PlayerActivity>(
-                    getString(R.string.video_id_key) to "Bcqb7kzekoc"
-            ))
+            findNavController().navigate(R.id.action_others_to_playerActivity,
+                    bundleOf(getString(R.string.video_id_key) to "Bcqb7kzekoc"))
         }
 
         return view

@@ -9,17 +9,38 @@
         android:id="@+id/start"
         android:name="com.cajetan.youtubeplus.fragments.VideoListFragment"
         android:label="Start"
-        tools:layout="@layout/fragment_video_list" />
+        tools:layout="@layout/fragment_video_list" >
+        <action
+            android:id="@+id/action_start_to_playerActivity"
+            app:destination="@id/playerActivity" />
+    </fragment>
 
     <fragment
         android:id="@+id/favourites"
         android:name="com.cajetan.youtubeplus.fragments.FavouritesFragment"
         android:label="Favourites"
-        tools:layout="@layout/fragment_favourites" />
+        tools:layout="@layout/fragment_favourites" >
+        <action
+            android:id="@+id/action_favourites_to_playerActivity"
+            app:destination="@id/playerActivity" />
+    </fragment>
 
     <fragment
         android:id="@+id/others"
         android:name="com.cajetan.youtubeplus.fragments.OthersFragment"
         android:label="Others"
-        tools:layout="@layout/fragment_others" />
+        tools:layout="@layout/fragment_others" >
+        <action
+            android:id="@+id/action_others_to_playerActivity"
+            app:destination="@id/playerActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/playerActivity"
+        android:name="com.cajetan.youtubeplus.PlayerActivity"
+        android:label="activity_player"
+        tools:layout="@layout/activity_player" >
+        <argument
+            android:name="video_id"
+            app:argType="string" />
+    </activity>
 </navigation>

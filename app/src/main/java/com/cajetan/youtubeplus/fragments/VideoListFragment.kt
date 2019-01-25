@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cajetan.youtubeplus.PlayerActivity
@@ -167,9 +169,8 @@ class VideoListFragment : Fragment(), VideoListAdapter.ListItemClickListener,
     }
 
     override fun onListItemClick(clickedVideoId: String, position: Int) {
-        startActivity(activity!!.intentFor<PlayerActivity>(
-                getString(R.string.video_id_key) to clickedVideoId
-        ))
+        findNavController().navigate(R.id.action_start_to_playerActivity,
+                bundleOf(getString(R.string.video_id_key) to clickedVideoId))
     }
 
     override fun onListItemLongClick(clickedVideoId: String) {

@@ -2,6 +2,10 @@
 
 ---
 
+#### 25.01.2019
+
+* [General] Replaced startActivity calls with Navigation Component
+
 #### 24.01.2019
 
 * [PlayerActivity] Fixed bugs on share intent edge cases 
