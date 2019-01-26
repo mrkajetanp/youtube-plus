@@ -33,6 +33,9 @@
         <action
             android:id="@+id/action_others_to_playerActivity"
             app:destination="@id/playerActivity" />
+        <action
+            android:id="@+id/action_others_to_settingsActivity"
+            app:destination="@id/settingsActivity" />
     </fragment>
     <activity
         android:id="@+id/playerActivity"
@@ -43,4 +46,9 @@
             android:name="video_id"
             app:argType="string" />
     </activity>
+    <activity
+        android:id="@+id/settingsActivity"
+        android:name="com.cajetan.youtubeplus.SettingsActivity"
+        android:label="activity_settings"
+        tools:layout="@layout/activity_settings" />
 </navigation>

@@ -13,16 +13,17 @@ import com.cajetan.youtubeplus.R
 
 class OthersFragment : Fragment() {
 
-    private lateinit var mWhereDoWeButton: Button
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_others, container, false)
 
-        mWhereDoWeButton = view.findViewById(R.id.whereDoWeButton)
-        mWhereDoWeButton.setOnClickListener {
+        view.findViewById<Button>(R.id.whereDoWeButton).setOnClickListener {
             findNavController().navigate(R.id.action_others_to_playerActivity,
                     bundleOf(getString(R.string.video_id_key) to "Bcqb7kzekoc"))
+        }
+
+        view.findViewById<Button>(R.id.settingsButton).setOnClickListener {
+            findNavController().navigate(R.id.action_others_to_settingsActivity)
         }
 
         return view

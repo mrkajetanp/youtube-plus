@@ -2,6 +2,10 @@
 
 ---
 
+#### 26.01.2019
+
+* [General] Added SettingsActivity with Dark Mode option
+
 #### 25.01.2019
 
 * [General] Code improvements and cleanup
