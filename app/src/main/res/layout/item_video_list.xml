@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/selector_video_list"
+    android:background="?attr/listItemBackground"
     xmlns:tools="http://schemas.android.com/tools">
 
     <ImageView
@@ -13,6 +13,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        android:background="?attr/videoThumbnailPlaceholder"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -23,7 +24,8 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="16dp"
-        android:textColor="@android:color/black"
+        android:textColor="?attr/primaryTextColour"
+        android:background="@android:color/transparent"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/video_thumbnail"
@@ -36,6 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:background="@android:color/transparent"
         tools:text="Test Video Author"
         android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@+id/video_thumbnail"

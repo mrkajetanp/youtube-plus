@@ -45,6 +45,11 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+                            <entry key="action_others_to_settingsActivity">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                           </map>
                         </option>
                       </LayoutPositions>

@@ -4,6 +4,7 @@
 
 #### 26.01.2019
 
+* [General] Mostly functional Dark Theme by default 
 * [General] Added SettingsActivity with Dark Mode option
 
 #### 25.01.2019

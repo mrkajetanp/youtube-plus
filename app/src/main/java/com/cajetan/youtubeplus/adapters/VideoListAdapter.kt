@@ -181,7 +181,6 @@ class VideoListAdapter(videos: List<Video>, listener: ListItemClickListener, con
 
             videoTitleView.text = video.snippet.title
             videoChannelView.text = video.snippet.channelTitle
-            videoThumbnailView.setBackgroundResource(R.color.darkerLightGrey)
 
             val duration = video.contentDetails.duration
             videoDurationView.text = when (duration) {

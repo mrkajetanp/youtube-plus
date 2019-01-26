@@ -34,7 +34,7 @@
             android:name=".PlayerActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
             android:launchMode="singleTop"
-            android:theme="@style/PlayerActivityTheme">
+            android:theme="@style/PlayerActivityThemeDark">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
 
@@ -58,7 +58,7 @@
 
         <activity
             android:name=".SettingsActivity"
-            android:theme="@style/AppThemeLight"/>
+            android:theme="@style/AppThemeDark"/>
     </application>
 
 </manifest>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MainAppThemes">
+        <attr name="primaryTextColour" format="color"/>
+        <attr name="secondaryTextColour" format="color"/>
+        <attr name="backgroundColour" format="color"/>
+        <attr name="listItemBackground" format="reference"/>
+        <attr name="videoThumbnailPlaceholder" format="color"/>
+        <attr name="bottomBarColours" format="reference"/>
+    </declare-styleable>
+</resources>
