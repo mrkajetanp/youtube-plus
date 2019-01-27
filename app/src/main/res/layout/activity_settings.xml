@@ -8,6 +8,7 @@
 
     <FrameLayout
         android:id="@+id/settings_container"
+        android:theme="@style/PreferenceThemeOverlay.v14.Material"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

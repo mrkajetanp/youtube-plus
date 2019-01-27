@@ -21,6 +21,7 @@
         <item name="listItemBackground">@drawable/selector_video_list_dark</item>
         <item name="videoThumbnailPlaceholder">@color/backgroundDarkerDark</item>
         <item name="bottomBarColours">@drawable/bottom_bar_colour_state_dark</item>
+        <item name="android:preferenceStyle">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>
 
     <style name="PlayerActivityThemeLight" parent="Theme.AppCompat.Light.NoActionBar">

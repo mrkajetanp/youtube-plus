@@ -2,6 +2,10 @@
 
 ---
 
+#### 27.01.2019
+
+* [MainAcivity] Added a BottomBar separator
+
 #### 26.01.2019
 
 * [General] Mostly functional Dark Theme by default 
