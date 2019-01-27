@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.preference.PreferenceManager
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.View
@@ -31,6 +32,10 @@ class MainActivity : AppCompatActivity() {
     ////////////////////////////////////////////////////////////////////////////////
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val darkMode = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean("dark_mode", false)
+        setTheme(if (darkMode) R.style.AppThemeDark else R.style.AppThemeLight)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 

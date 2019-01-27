@@ -14,6 +14,7 @@ import android.graphics.BitmapFactory
 import android.opengl.Visibility
 import android.os.Bundle
 import android.os.IBinder
+import android.preference.PreferenceManager
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.appcompat.app.AppCompatActivity
@@ -86,6 +87,10 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
     ////////////////////////////////////////////////////////////////////////////////
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val darkMode = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean("dark_mode", false)
+        setTheme(if (darkMode) R.style.PlayerActivityThemeDark else R.style.PlayerActivityThemeLight)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
 

@@ -4,6 +4,7 @@
 
 #### 27.01.2019
 
+* [General] Updating the theme accordingly 
 * [MainAcivity] Added a BottomBar separator
 
 #### 26.01.2019

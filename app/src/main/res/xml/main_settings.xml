@@ -4,6 +4,7 @@
 
     <SwitchPreference
         app:key="dark_mode"
+        android:defaultValue="false"
         android:title="Dark Mode" />
 
 </PreferenceScreen>

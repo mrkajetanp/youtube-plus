@@ -126,7 +126,7 @@ class FavouritesFragment : Fragment(), VideoListAdapter.ListItemClickListener,
     }
 
     override fun onListItemClick(clickedVideoId: String, position: Int) {
-        findNavController().navigate(R.id.action_start_to_playerActivity,
+        findNavController().navigate(R.id.action_favourites_to_playerActivity,
                 bundleOf(getString(R.string.video_id_key) to clickedVideoId))
     }
 
