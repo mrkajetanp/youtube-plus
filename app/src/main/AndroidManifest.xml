@@ -21,7 +21,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
                 <action android:name="android.intent.action.MAIN" />
-
+                <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
@@ -46,6 +46,10 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".SettingsActivity"
+            android:theme="@style/AppThemeLight"/>
+
         <receiver android:name="androidx.media.session.MediaButtonReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
@@ -55,10 +59,6 @@
         <service
             android:name=".PlayerActivity$PlayerLifecycleService"
             android:exported="false" />
-
-        <activity
-            android:name=".SettingsActivity"
-            android:theme="@style/AppThemeLight"/>
     </application>
 
 </manifest>

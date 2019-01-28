@@ -2,6 +2,10 @@
 
 ---
 
+#### 28.01.2019
+
+* [General] Fixed a minor Manifest bug
+
 #### 27.01.2019
 
 * [General] Updating the theme accordingly 
