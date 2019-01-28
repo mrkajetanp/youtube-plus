@@ -27,13 +27,19 @@
     <style name="PlayerActivityThemeLight" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimaryDark">@android:color/black</item>
         <item name="colorAccent">@color/colorAccentLight</item>
+        <item name="primaryTextColour">@android:color/black</item>
         <item name="backgroundColour">@android:color/white</item>
+        <item name="listItemBackground">@drawable/selector_video_list_dark</item>
+        <item name="videoThumbnailPlaceholder">@color/backgroundDarkerDark</item>
     </style>
 
     <style name="PlayerActivityThemeDark" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimaryDark">@android:color/black</item>
         <item name="colorAccent">@color/colorAccentDark</item>
+        <item name="primaryTextColour">@android:color/white</item>
         <item name="backgroundColour">@color/backgroundDark</item>
-    </style>
+        <item name="listItemBackground">@drawable/selector_video_list_dark</item>
+        <item name="videoThumbnailPlaceholder">@color/backgroundDarkerDark</item>
+     </style>
 
 </resources>

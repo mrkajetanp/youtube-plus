@@ -4,6 +4,7 @@
 
 #### 28.01.2019
 
+* [General] Fixed a layout bug in Player's playlist 
 * [General] Fixed a minor Manifest bug
 
 #### 27.01.2019
