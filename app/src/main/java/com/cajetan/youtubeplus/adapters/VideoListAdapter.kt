@@ -2,6 +2,7 @@ package com.cajetan.youtubeplus.adapters
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import androidx.recyclerview.widget.RecyclerView
 import android.util.DisplayMetrics
 import android.util.Log
@@ -80,7 +81,9 @@ class VideoListAdapter(videos: List<Video>, listener: ListItemClickListener, con
     }
 
     fun switchNowPlaying(index: Int) {
-        // TODO: ensure the index is positive
+        if (index < 0)
+            throw IllegalArgumentException("List index cannot be negative")
+
         if (index == 0) {
             // Going into playlist mode, refresh all items
             notifyDataSetChanged()
@@ -158,17 +161,21 @@ class VideoListAdapter(videos: List<Video>, listener: ListItemClickListener, con
             itemView.setOnLongClickListener(this)
         }
 
-        // TODO: add a frame around the thumbnail and make text bold
+        // TODO: add a frame around the thumbnail
         fun enableNowPlaying() {
             itemView.setBackgroundResource(R.color.lighterDarkGrey)
             videoTitleView.setTextColor(Color.WHITE)
             videoChannelView.setTextColor(Color.WHITE)
+            videoTitleView.setTypeface(null, Typeface.BOLD)
+            videoChannelView.setTypeface(null, Typeface.BOLD)
         }
 
         fun disableNowPlaying() {
             itemView.setBackgroundResource(R.color.darkGrey)
             videoTitleView.setTextColor(Color.WHITE)
             videoChannelView.setTextColor(Color.WHITE)
+            videoTitleView.setTypeface(null, Typeface.NORMAL)
+            videoChannelView.setTypeface(null, Typeface.NORMAL)
         }
 
         fun bind(video: Video) {

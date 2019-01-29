@@ -4,6 +4,7 @@
 
 #### 29.01.2019
 
+* [VideoListAdapter] Playlist bold now playing, TODOs 
 * [General] Changed the icon to the final one
 
 #### 28.01.2019
