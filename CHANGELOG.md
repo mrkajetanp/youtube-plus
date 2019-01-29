@@ -2,6 +2,10 @@
 
 ---
 
+#### 29.01.2019
+
+* [General] Changed the icon to the final one
+
 #### 28.01.2019
 
 * [General] Fixed a layout bug in Player's playlist 
