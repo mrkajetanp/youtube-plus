@@ -212,19 +212,11 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
                 finalId.append(',')
             }
 
-            val result: List<Video>
-
-            // TODO: refactor
-            if (finalId.isEmpty()) {
-                result = emptyList()
+            val result: List<Video> = if (finalId.isEmpty()) {
+                emptyList()
             } else {
-                try {
-                    result = service.videos().list("snippet,contentDetails")
-                            .setId(finalId.toString()).execute().items
-                } catch (e: java.lang.Exception) {
-                    onTaskCancelled(e)
-                    throw CancellationException()
-                }
+                service.videos().list("snippet,contentDetails")
+                        .setId(finalId.toString()).execute().items
             }
 
             uiThread {

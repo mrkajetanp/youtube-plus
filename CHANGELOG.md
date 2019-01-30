@@ -2,6 +2,10 @@
 
 ---
 
+#### 30.01.2019
+
+* [General] Minor improvements
+
 #### 29.01.2019
 
 * [VideoListAdapter] Playlist bold now playing, TODOs 
