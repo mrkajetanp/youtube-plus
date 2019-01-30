@@ -48,7 +48,6 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
         private val SCOPES: Array<String> = arrayOf(YouTubeScopes.YOUTUBE_READONLY)
     }
 
-
     private val mActivity = parentActivity
     private val mFragment = fragment
 
@@ -64,9 +63,7 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
     private var mVideoId = ""
     private var mPlaylistId = ""
     private var searchQuery = ""
-    private var searchPageToken = ""
-    // TODO: possibly merge into one
-    private var playlistPageToken = ""
+    private var pageToken = ""
     private lateinit var mVideoData: List<VideoData>
     private lateinit var mRequestType: RequestType
 
@@ -81,7 +78,7 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
 
     fun receiveSearchResults(search: String, pageToken: String) {
         searchQuery = search
-        searchPageToken = pageToken
+        this.pageToken = pageToken
         mRequestType = RequestType.SEARCH_REQUEST
 
         getResultsFromApi()
@@ -97,7 +94,7 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
     }
 
     fun receiveMostPopularResults(pageToken: String) {
-        searchPageToken = pageToken
+        this.pageToken = pageToken
         mRequestType = RequestType.MOST_POPULAR_REQUEST
 
         getResultsFromApi()
@@ -105,7 +102,7 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
 
     fun receivePlaylistResults(playlistId: String, pageToken: String = "") {
         mPlaylistId = playlistId
-        playlistPageToken = pageToken
+        this.pageToken = pageToken
         mRequestType = RequestType.PLAYLIST_DATA_REQUEST
 
         getResultsFromApi()
@@ -119,10 +116,10 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
                     Toast.LENGTH_SHORT).show()
             else -> when (mRequestType) {
                 RequestType.DATA_REQUEST -> videoDataTask(mVideoId)
-                RequestType.SEARCH_REQUEST -> videoSearchTask(searchQuery, searchPageToken)
+                RequestType.SEARCH_REQUEST -> videoSearchTask(searchQuery, pageToken)
                 RequestType.VIDEO_LIST_REQUEST -> videoListTask(mVideoData)
-                RequestType.MOST_POPULAR_REQUEST -> mostPopularTask(searchPageToken)
-                RequestType.PLAYLIST_DATA_REQUEST -> playlistDataTask(mPlaylistId, playlistPageToken)
+                RequestType.MOST_POPULAR_REQUEST -> mostPopularTask(pageToken)
+                RequestType.PLAYLIST_DATA_REQUEST -> playlistDataTask(mPlaylistId, pageToken)
             }
         }
     }

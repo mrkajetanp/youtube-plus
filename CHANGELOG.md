@@ -4,6 +4,7 @@
 
 #### 30.01.2019
 
+* [YouTubeData] Removed unnecessary class field 
 * [General] Minor improvements
 
 #### 29.01.2019
