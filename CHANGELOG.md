@@ -2,6 +2,10 @@
 
 ---
 
+#### 31.01.2019
+
+* [YouTubeData] Distinguishing between search response item types
+
 #### 30.01.2019
 
 * [YouTubeData] Removed unnecessary class field 

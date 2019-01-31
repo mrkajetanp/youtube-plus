@@ -135,7 +135,6 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
                         .list("id")
                         .setMaxResults(SEARCH_PAGE_SIZE.toLong())
                         .setQ(videoId)
-                        .setType("")
 
                 if (pageToken != "")
                     searchList.pageToken = pageToken
@@ -145,10 +144,26 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
                 nextPageToken = response.nextPageToken ?: ""
                 prevPageToken = response.prevPageToken ?: ""
 
+                // TODO: include channels and playlist in search results
                 val finalId = StringBuilder()
                 for (r in response.items) {
-                    // TODO: something with this if id is null
-                    val id = r.id.videoId ?: continue
+                    val id: String = when (r.id.kind) {
+                        "youtube#video" -> {
+                            r.id.videoId
+                        }
+                        "youtube#playlist" -> {
+                            Log.d("YouTubeData", "Playlist with id ${r.id.playlistId}")
+                            ""
+                        }
+                        "youtube#channel" -> {
+                            Log.d("YouTubeData", "Channel with id ${r.id.channelId}")
+                            ""
+                        }
+                        else -> ""
+                    }
+
+                    if (id.isEmpty())
+                        continue
 
                     finalId.append(id)
                     finalId.append(',')
