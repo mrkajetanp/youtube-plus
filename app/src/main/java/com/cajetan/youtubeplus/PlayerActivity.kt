@@ -11,7 +11,6 @@ import android.content.IntentFilter
 import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.opengl.Visibility
 import android.os.Bundle
 import android.os.IBinder
 import android.preference.PreferenceManager
@@ -22,7 +21,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.cajetan.youtubeplus.adapters.VideoListAdapter
+import com.cajetan.youtubeplus.adapters.ContentListAdapter
 import com.cajetan.youtubeplus.data.VideoData
 import com.cajetan.youtubeplus.data.VideoDataViewModel
 import com.cajetan.youtubeplus.fragments.SeekDialogFragment
@@ -43,7 +42,7 @@ import java.lang.IllegalArgumentException
 import java.net.URL
 
 class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
-        YouTubeData.VideoListDataListener, VideoListAdapter.ListItemClickListener,
+        YouTubeData.VideoListDataListener, ContentListAdapter.ListItemClickListener,
         SeekDialogFragment.SeekDialogListener, YouTubeData.PlaylistDataListener {
 
     private val TAG: String = this.javaClass.simpleName
@@ -77,7 +76,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
     // TODO: refactor some methods with default arguments
 
     private var playlistMode = false
-    private lateinit var mAdapter: VideoListAdapter
+    private lateinit var mAdapter: ContentListAdapter
     private var mPrevPageToken: String = ""
     private var mNextPageToken: String = ""
     private var mCurrentVideoIndex = 0
@@ -229,7 +228,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
 
     private fun setupPlaylist(playlistId: String) {
         playlistMode = true
-        mAdapter = VideoListAdapter(emptyList(), this, this)
+        mAdapter = ContentListAdapter(emptyList(), this, this)
         mAdapter.switchNowPlaying(mCurrentVideoIndex)
         mAdapter.onBottomReached = {
             if (mNextPageToken.isNotEmpty()) {

@@ -4,6 +4,7 @@
 
 #### 31.01.2019
 
+* [General] Renamed the adapter; planning
 * [YouTubeData] Distinguishing between search response item types
 
 #### 30.01.2019

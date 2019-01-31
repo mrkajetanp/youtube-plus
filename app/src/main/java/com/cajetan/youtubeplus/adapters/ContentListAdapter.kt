@@ -15,8 +15,10 @@ import com.cajetan.youtubeplus.R
 import com.google.api.services.youtube.model.Video
 import com.squareup.picasso.Picasso
 
-class VideoListAdapter(videos: List<Video>, listener: ListItemClickListener, context: Context) :
-        RecyclerView.Adapter<VideoListAdapter.VideoViewHolder>() {
+class ContentListAdapter(videos: List<Video>, listener: ListItemClickListener, context: Context) :
+        RecyclerView.Adapter<ContentListAdapter.VideoViewHolder>() {
+
+    // TODO: enum specifying the item type with Video, Channel, Playlist
 
     lateinit var onBottomReached: () -> Unit
 
@@ -54,7 +56,7 @@ class VideoListAdapter(videos: List<Video>, listener: ListItemClickListener, con
         try {
             onBottomReached.invoke()
         } catch (e: UninitializedPropertyAccessException) {
-            Log.e("VideoListAdapter", "onBottomReached not set!")
+            Log.e("ContentListAdapter", "onBottomReached not set!")
         }
     }
 
@@ -179,7 +181,7 @@ class VideoListAdapter(videos: List<Video>, listener: ListItemClickListener, con
         }
 
         fun bind(video: Video) {
-            Log.d("VideoListAdapter", "Now playing $mNowPlaying")
+            Log.d("ContentListAdapter", "Now playing $mNowPlaying")
             if (mNowPlaying != -1) {
                 itemView.setBackgroundResource(R.color.darkGrey)
                 videoTitleView.setTextColor(Color.WHITE)

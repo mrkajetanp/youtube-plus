@@ -15,7 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cajetan.youtubeplus.R
-import com.cajetan.youtubeplus.adapters.VideoListAdapter
+import com.cajetan.youtubeplus.adapters.ContentListAdapter
 import com.cajetan.youtubeplus.data.VideoData
 import com.cajetan.youtubeplus.data.VideoDataViewModel
 import com.cajetan.youtubeplus.utils.YouTubeData
@@ -24,10 +24,10 @@ import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
 import org.jetbrains.anko.yesButton
 
-class FavouritesFragment : Fragment(), VideoListAdapter.ListItemClickListener,
+class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         YouTubeData.VideoListDataListener {
 
-    private lateinit var mAdapter: VideoListAdapter
+    private lateinit var mAdapter: ContentListAdapter
     private lateinit var mYouTubeData: YouTubeData
     private lateinit var mVideoDataViewModel: VideoDataViewModel
 
@@ -49,7 +49,7 @@ class FavouritesFragment : Fragment(), VideoListAdapter.ListItemClickListener,
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        mAdapter = VideoListAdapter(emptyList(), this, activity!!)
+        mAdapter = ContentListAdapter(emptyList(), this, activity!!)
         mAdapter.onBottomReached = { }
         mYouTubeData = YouTubeData(activity!!, this)
 
