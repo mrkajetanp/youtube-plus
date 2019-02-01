@@ -18,6 +18,7 @@ import com.cajetan.youtubeplus.R
 import com.cajetan.youtubeplus.adapters.ContentListAdapter
 import com.cajetan.youtubeplus.data.VideoData
 import com.cajetan.youtubeplus.data.VideoDataViewModel
+import com.cajetan.youtubeplus.utils.FeedItem
 import com.cajetan.youtubeplus.utils.YouTubeData
 import com.google.api.services.youtube.model.Video
 import org.jetbrains.anko.alert
@@ -118,7 +119,7 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         // If an additional function was passed, apply it to the results
         val result = block?.invoke(results)?.toList() ?: results.toList()
 
-        mAdapter.addItems(result)
+        mAdapter.addItems(result.map { FeedItem(it.id, video = it) })
 
         noFavouritesView.visibility = if (mAdapter.itemCount == 0) View.VISIBLE else View.GONE
         progressBarCentre.visibility = View.INVISIBLE

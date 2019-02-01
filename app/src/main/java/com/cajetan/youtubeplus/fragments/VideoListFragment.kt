@@ -16,6 +16,7 @@ import com.cajetan.youtubeplus.R
 import com.cajetan.youtubeplus.adapters.ContentListAdapter
 import com.cajetan.youtubeplus.data.VideoData
 import com.cajetan.youtubeplus.data.VideoDataViewModel
+import com.cajetan.youtubeplus.utils.FeedItem
 import com.cajetan.youtubeplus.utils.YouTubeData
 import com.google.api.services.youtube.model.Video
 import org.jetbrains.anko.alert
@@ -134,7 +135,7 @@ class VideoListFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     // Callbacks
     ////////////////////////////////////////////////////////////////////////////////
 
-    override fun onSearchResultsReceived(results: List<Video>,
+    override fun onSearchResultsReceived(results: List<FeedItem>,
                                          nextPageToken: String, previousPageToken: String) {
         if (previousPageToken.isEmpty()) {
             mAdapter.clearItems()
@@ -162,7 +163,7 @@ class VideoListFragment : Fragment(), ContentListAdapter.ListItemClickListener,
             searchProgressBarBottom.visibility = View.GONE
         }
 
-        mAdapter.addItems(results)
+        mAdapter.addItems(results.map { FeedItem(it.id, video = it) })
         mNextPageToken = nextPageToken
     }
 

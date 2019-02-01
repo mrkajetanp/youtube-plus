@@ -12,17 +12,18 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.cajetan.youtubeplus.R
+import com.cajetan.youtubeplus.utils.FeedItem
 import com.google.api.services.youtube.model.Video
 import com.squareup.picasso.Picasso
 
-class ContentListAdapter(videos: List<Video>, listener: ListItemClickListener, context: Context) :
+class ContentListAdapter(items: List<FeedItem>, listener: ListItemClickListener, context: Context) :
         RecyclerView.Adapter<ContentListAdapter.VideoViewHolder>() {
 
     // TODO: enum specifying the item type with Video, Channel, Playlist
 
     lateinit var onBottomReached: () -> Unit
 
-    private val mVideos: ArrayList<Video> = ArrayList(videos)
+    private val mItems: ArrayList<FeedItem> = ArrayList(items)
     private val mOnClickListener = listener
     private val mContext = context
     // Non-negative value means the adapter is showing a playlist
@@ -39,7 +40,8 @@ class ContentListAdapter(videos: List<Video>, listener: ListItemClickListener, c
     }
 
     override fun onBindViewHolder(holder: VideoViewHolder, position: Int) {
-        holder.bind(mVideos[position])
+        // TODO: switch for different kinds of FeedItems
+        holder.bind(mItems[position].video!!)
 
         // TODO: investigate if unnecessary calls occur
         // Only switch those in "playlist mode
@@ -50,7 +52,7 @@ class ContentListAdapter(videos: List<Video>, listener: ListItemClickListener, c
                 holder.disableNowPlaying()
         }
 
-        if (position != mVideos.size - 1)
+        if (position != mItems.size - 1)
             return
 
         try {
@@ -65,20 +67,20 @@ class ContentListAdapter(videos: List<Video>, listener: ListItemClickListener, c
     ////////////////////////////////////////////////////////////////////////////////
 
     override fun getItemCount(): Int {
-        return mVideos.size
+        return mItems.size
     }
 
-    fun getItem(index: Int): Video {
-        return mVideos[index]
+    fun getItem(index: Int): FeedItem {
+        return mItems[index]
     }
 
-    fun addItems(items: List<Video>) {
-        mVideos.addAll(items)
+    fun addItems(items: List<FeedItem>) {
+        mItems.addAll(items)
         notifyDataSetChanged()
     }
 
     fun clearItems() {
-        mVideos.clear()
+        mItems.clear()
         notifyDataSetChanged()
     }
 
@@ -218,11 +220,11 @@ class ContentListAdapter(videos: List<Video>, listener: ListItemClickListener, c
         }
 
         override fun onClick(v: View?) {
-            mOnClickListener.onListItemClick(mVideos[adapterPosition].id, adapterPosition)
+            mOnClickListener.onListItemClick(mItems[adapterPosition].id, adapterPosition)
         }
 
         override fun onLongClick(v: View?): Boolean {
-            mOnClickListener.onListItemLongClick(mVideos[adapterPosition].id)
+            mOnClickListener.onListItemLongClick(mItems[adapterPosition].id)
             return true
         }
     }

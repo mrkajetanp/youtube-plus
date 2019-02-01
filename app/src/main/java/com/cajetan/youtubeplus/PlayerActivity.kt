@@ -25,6 +25,7 @@ import com.cajetan.youtubeplus.adapters.ContentListAdapter
 import com.cajetan.youtubeplus.data.VideoData
 import com.cajetan.youtubeplus.data.VideoDataViewModel
 import com.cajetan.youtubeplus.fragments.SeekDialogFragment
+import com.cajetan.youtubeplus.utils.FeedItem
 import com.cajetan.youtubeplus.utils.FullScreenHelper
 import com.cajetan.youtubeplus.utils.YouTubeData
 import com.google.api.services.youtube.model.PlaylistItem
@@ -463,7 +464,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
 
     override fun onVideoListReceived(results: List<Video>, block: ((List<Video>) -> List<Video>)?) {
         val result = block?.invoke(results)?.toList() ?: results.toList()
-        mAdapter.addItems(result)
+        mAdapter.addItems(result.map { FeedItem(it.id, video = it) })
 
         videoList.visibility = View.VISIBLE
         progressBarBottom.visibility = View.GONE

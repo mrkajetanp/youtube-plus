@@ -4,6 +4,7 @@
 
 #### 1.02.2019
 
+* [ContentListAdapter] Switched the Adapter to use FeedItem 
 * [YouTubeData] Getting different type data into a list of FeedItems
 
 #### 31.01.2019

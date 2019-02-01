@@ -4,8 +4,9 @@ import com.google.api.services.youtube.model.Channel
 import com.google.api.services.youtube.model.Playlist
 import com.google.api.services.youtube.model.Video
 
-class FeedItem(id: String, video: Video? = null,
-               playlist: Playlist? = null, channel: Channel? = null) {
+class FeedItem(val id: String, val video: Video? = null,
+               val playlist: Playlist? = null, val channel: Channel? = null) {
+
     val itemType = when {
         video != null -> ItemType.Video
         playlist != null -> ItemType.Playlist
