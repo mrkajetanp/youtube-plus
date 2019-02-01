@@ -127,6 +127,7 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
     private fun videoSearchTask(videoId: String, pageToken: String) {
         doAsync {
             val result: List<Video>
+            val result2: MutableList<FeedItem> = emptyList()
             val nextPageToken: String
             val prevPageToken: String
 
@@ -145,33 +146,49 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
                 prevPageToken = response.prevPageToken ?: ""
 
                 // TODO: include channels and playlist in search results
-                val finalId = StringBuilder()
+                val finalVideoIds = StringBuilder()
+                val finalPlaylistIds = StringBuilder()
+                val finalChannelIds = StringBuilder()
+
                 for (r in response.items) {
-                    val id: String = when (r.id.kind) {
+                    when (r.id.kind) {
                         "youtube#video" -> {
-                            r.id.videoId
+                            finalVideoIds.append(r.id.videoId)
+                            finalVideoIds.append(',')
                         }
                         "youtube#playlist" -> {
-                            Log.d("YouTubeData", "Playlist with id ${r.id.playlistId}")
-                            ""
+                            finalPlaylistIds.append(r.id.playlistId)
+                            finalPlaylistIds.append(',')
                         }
                         "youtube#channel" -> {
-                            Log.d("YouTubeData", "Channel with id ${r.id.channelId}")
-                            ""
+                            finalChannelIds.append(r.id.channelId)
+                            finalChannelIds.append(',')
                         }
-                        else -> ""
                     }
-
-                    if (id.isEmpty())
-                        continue
-
-                    finalId.append(id)
-                    finalId.append(',')
                 }
-                finalId.setLength(finalId.length - 1)
+
+                if (finalVideoIds.isNotEmpty())
+                    finalVideoIds.setLength(finalVideoIds.length - 1)
+
+                if (finalPlaylistIds.isNotEmpty())
+                    finalPlaylistIds.setLength(finalPlaylistIds.length - 1)
+
+                if (finalChannelIds.isNotEmpty())
+                    finalChannelIds.setLength(finalChannelIds.length - 1)
 
                 result = service.videos().list("snippet,contentDetails")
-                        .setId(finalId.toString()).execute().items
+                        .setId(finalVideoIds.toString()).execute().items
+
+                result2.addAll(service.channels().list("snippet,contentDetails")
+                        .setId(finalChannelIds.toString()).execute().items
+                        .map { FeedItem(it.id, channel = it) })
+
+                result2.addAll(service.playlists().list("snippet,contentDetails")
+                        .setId(finalPlaylistIds.toString()).execute().items
+                        .map { FeedItem(it.id, playlist = it) })
+
+                result2.addAll(result.map { FeedItem(it.id, video = it) })
+
             } catch (e: java.lang.Exception) {
                 onTaskCancelled(e)
                 throw CancellationException()
