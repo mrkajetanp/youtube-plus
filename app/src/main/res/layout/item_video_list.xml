@@ -41,10 +41,23 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:background="@android:color/transparent"
-        tools:text="Test Video Author"
         android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@+id/video_thumbnail"
-        app:layout_constraintTop_toBottomOf="@+id/video_title" />
+        app:layout_constraintTop_toBottomOf="@+id/video_title"
+        tools:text="Test Video Author" />
+
+    <TextView
+        android:id="@+id/playlist_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/transparent"
+        android:textSize="12sp"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@+id/video_thumbnail"
+        app:layout_constraintTop_toBottomOf="@+id/video_author"
+        tools:text="258 Videos" />
 
     <TextView
         android:id="@+id/video_duration"

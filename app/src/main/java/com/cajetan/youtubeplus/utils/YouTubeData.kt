@@ -175,17 +175,17 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
                 if (finalChannelIds.isNotEmpty())
                     finalChannelIds.setLength(finalChannelIds.length - 1)
 
+                result.addAll(service.channels().list("snippet,contentDetails")
+                        .setId(finalChannelIds.toString()).execute().items
+                        .map { FeedItem(it.id, channel = it) })
+
+                result.addAll(service.playlists().list("snippet,contentDetails")
+                        .setId(finalPlaylistIds.toString()).execute().items
+                        .map { FeedItem(it.id, playlist = it) })
+
                 result.addAll(service.videos().list("snippet,contentDetails")
                         .setId(finalVideoIds.toString()).execute().items
                         .map { FeedItem(it.id, video = it) })
-
-//                result.addAll(service.channels().list("snippet,contentDetails")
-//                        .setId(finalChannelIds.toString()).execute().items
-//                        .map { FeedItem(it.id, channel = it) })
-
-//                result.addAll(service.playlists().list("snippet,contentDetails")
-//                        .setId(finalPlaylistIds.toString()).execute().items
-//                        .map { FeedItem(it.id, playlist = it) })
 
             } catch (e: java.lang.Exception) {
                 onTaskCancelled(e)

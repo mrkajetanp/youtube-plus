@@ -2,6 +2,10 @@
 
 ---
 
+#### 2.02.2019
+
+* [ContentListAdapter] Different binding for different item types
+
 #### 1.02.2019
 
 * [ContentListAdapter] Switched the Adapter to use FeedItem 

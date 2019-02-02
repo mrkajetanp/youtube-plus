@@ -3,6 +3,7 @@ package com.cajetan.youtubeplus.adapters
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.ColorDrawable
 import androidx.recyclerview.widget.RecyclerView
 import android.util.DisplayMetrics
 import android.util.Log
@@ -13,6 +14,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.cajetan.youtubeplus.R
 import com.cajetan.youtubeplus.utils.FeedItem
+import com.cajetan.youtubeplus.utils.ItemType
+import com.google.api.services.youtube.model.Channel
+import com.google.api.services.youtube.model.Playlist
 import com.google.api.services.youtube.model.Video
 import com.squareup.picasso.Picasso
 
@@ -40,16 +44,22 @@ class ContentListAdapter(items: List<FeedItem>, listener: ListItemClickListener,
     }
 
     override fun onBindViewHolder(holder: VideoViewHolder, position: Int) {
-        // TODO: switch for different kinds of FeedItems
-        holder.bind(mItems[position].video!!)
+        when (mItems[position].itemType) {
+            ItemType.Video -> {
+                holder.bindVideo(mItems[position].video!!)
 
-        // TODO: investigate if unnecessary calls occur
-        // Only switch those in "playlist mode
-        if (mNowPlaying != -1) {
-            if (mNowPlaying == position)
-                holder.enableNowPlaying()
-            else
-                holder.disableNowPlaying()
+                // TODO: investigate if unnecessary calls occur
+                // Only switch those in "playlist mode
+                if (mNowPlaying != -1) {
+                    if (mNowPlaying == position)
+                        holder.enableNowPlaying()
+                    else
+                        holder.disableNowPlaying()
+                }
+            }
+
+            ItemType.Playlist -> holder.bindPlaylist(mItems[position].playlist!!)
+            ItemType.Channel -> holder.bindChannel(mItems[position].channel!!)
         }
 
         if (position != mItems.size - 1)
@@ -159,6 +169,7 @@ class ContentListAdapter(items: List<FeedItem>, listener: ListItemClickListener,
         private val videoChannelView: TextView = itemView.findViewById(R.id.video_author)
         private val videoDurationView: TextView = itemView.findViewById(R.id.video_duration)
         private val videoThumbnailView: ImageView = itemView.findViewById(R.id.video_thumbnail)
+        private val playlistSizeView: ImageView = itemView.findViewById(R.id.playlist_size)
 
         init {
             itemView.setOnClickListener(this)
@@ -182,8 +193,10 @@ class ContentListAdapter(items: List<FeedItem>, listener: ListItemClickListener,
             videoChannelView.setTypeface(null, Typeface.NORMAL)
         }
 
-        fun bind(video: Video) {
-            Log.d("ContentListAdapter", "Now playing $mNowPlaying")
+        fun bindVideo(video: Video) {
+            playlistSizeView.visibility = View.GONE
+            videoDurationView.visibility = View.VISIBLE
+
             if (mNowPlaying != -1) {
                 itemView.setBackgroundResource(R.color.darkGrey)
                 videoTitleView.setTextColor(Color.WHITE)
@@ -217,6 +230,22 @@ class ContentListAdapter(items: List<FeedItem>, listener: ListItemClickListener,
                         .resize(dpToPixel(160f, mContext), dpToPixel(90f, mContext))
                         .centerCrop().into(videoThumbnailView)
             }
+        }
+
+        fun bindPlaylist(playlist: Playlist) {
+            videoDurationView.visibility = View.GONE
+            playlistSizeView.visibility = View.VISIBLE
+
+            videoTitleView.text = playlist.snippet.title
+            videoChannelView.text = playlist.snippet.channelTitle
+        }
+
+        fun bindChannel(channel: Channel) {
+            videoDurationView.visibility = View.GONE
+            playlistSizeView.visibility = View.GONE
+
+            videoTitleView.text = channel.snippet.title
+            videoChannelView.text = "<< Channel >>"
         }
 
         override fun onClick(v: View?) {
