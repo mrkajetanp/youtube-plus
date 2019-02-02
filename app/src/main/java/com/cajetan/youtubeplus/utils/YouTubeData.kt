@@ -175,7 +175,7 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
                 if (finalChannelIds.isNotEmpty())
                     finalChannelIds.setLength(finalChannelIds.length - 1)
 
-                result.addAll(service.channels().list("snippet,contentDetails")
+                result.addAll(service.channels().list("snippet,statistics")
                         .setId(finalChannelIds.toString()).execute().items
                         .map { FeedItem(it.id, channel = it) })
 

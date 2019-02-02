@@ -4,6 +4,7 @@
 
 #### 2.02.2019
 
+* [VideoListFragment] Playlists and channels in search results 
 * [ContentListAdapter] Different binding for different item types
 
 #### 1.02.2019

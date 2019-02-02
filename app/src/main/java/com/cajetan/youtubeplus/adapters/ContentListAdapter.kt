@@ -3,7 +3,6 @@ package com.cajetan.youtubeplus.adapters
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
-import android.graphics.drawable.ColorDrawable
 import androidx.recyclerview.widget.RecyclerView
 import android.util.DisplayMetrics
 import android.util.Log
@@ -168,8 +167,8 @@ class ContentListAdapter(items: List<FeedItem>, listener: ListItemClickListener,
         private val videoTitleView: TextView = itemView.findViewById(R.id.video_title)
         private val videoChannelView: TextView = itemView.findViewById(R.id.video_author)
         private val videoDurationView: TextView = itemView.findViewById(R.id.video_duration)
-        private val videoThumbnailView: ImageView = itemView.findViewById(R.id.video_thumbnail)
-        private val playlistSizeView: ImageView = itemView.findViewById(R.id.playlist_size)
+        private val thumbnailView: ImageView = itemView.findViewById(R.id.video_thumbnail)
+        private val playlistSizeView: TextView = itemView.findViewById(R.id.playlist_size)
 
         init {
             itemView.setOnClickListener(this)
@@ -194,8 +193,8 @@ class ContentListAdapter(items: List<FeedItem>, listener: ListItemClickListener,
         }
 
         fun bindVideo(video: Video) {
-            playlistSizeView.visibility = View.GONE
             videoDurationView.visibility = View.VISIBLE
+            playlistSizeView.visibility = View.GONE
 
             if (mNowPlaying != -1) {
                 itemView.setBackgroundResource(R.color.darkGrey)
@@ -228,7 +227,7 @@ class ContentListAdapter(items: List<FeedItem>, listener: ListItemClickListener,
             if (thumbnailUrl.isNotEmpty()) {
                 Picasso.get().load(thumbnailUrl)
                         .resize(dpToPixel(160f, mContext), dpToPixel(90f, mContext))
-                        .centerCrop().into(videoThumbnailView)
+                        .centerCrop().into(thumbnailView)
             }
         }
 
@@ -238,16 +237,59 @@ class ContentListAdapter(items: List<FeedItem>, listener: ListItemClickListener,
 
             videoTitleView.text = playlist.snippet.title
             videoChannelView.text = playlist.snippet.channelTitle
+            playlistSizeView.text = "${playlist.contentDetails.itemCount} Videos"
+
+            val thumbnailUrl: String = when {
+                playlist.snippet.thumbnails.maxres != null ->
+                    playlist.snippet.thumbnails.maxres.url
+                playlist.snippet.thumbnails.high != null ->
+                    playlist.snippet.thumbnails.high.url
+                playlist.snippet.thumbnails.medium != null ->
+                    playlist.snippet.thumbnails.medium.url
+                playlist.snippet.thumbnails.standard != null ->
+                    playlist.snippet.thumbnails.standard.url
+                playlist.snippet.thumbnails.default != null ->
+                    playlist.snippet.thumbnails.default.url
+                else -> ""
+            }
+
+            if (thumbnailUrl.isNotEmpty()) {
+                Picasso.get().load(thumbnailUrl)
+                        .resize(dpToPixel(160f, mContext), dpToPixel(90f, mContext))
+                        .centerCrop().into(thumbnailView)
+            }
         }
 
         fun bindChannel(channel: Channel) {
             videoDurationView.visibility = View.GONE
-            playlistSizeView.visibility = View.GONE
+            playlistSizeView.visibility = View.VISIBLE
 
             videoTitleView.text = channel.snippet.title
-            videoChannelView.text = "<< Channel >>"
+            videoChannelView.text = "${channel.statistics.subscriberCount} Subscribers"
+            playlistSizeView.text = "${channel.statistics.videoCount} Videos"
+
+            val thumbnailUrl: String = when {
+                channel.snippet.thumbnails.maxres != null ->
+                    channel.snippet.thumbnails.maxres.url
+                channel.snippet.thumbnails.high != null ->
+                    channel.snippet.thumbnails.high.url
+                channel.snippet.thumbnails.medium != null ->
+                    channel.snippet.thumbnails.medium.url
+                channel.snippet.thumbnails.standard != null ->
+                    channel.snippet.thumbnails.standard.url
+                channel.snippet.thumbnails.default != null ->
+                    channel.snippet.thumbnails.default.url
+                else -> ""
+            }
+
+            if (thumbnailUrl.isNotEmpty()) {
+                Picasso.get().load(thumbnailUrl)
+                        .resize(dpToPixel(160f, mContext), dpToPixel(90f, mContext))
+                        .centerCrop().into(thumbnailView)
+            }
         }
 
+        // TODO: different onClick behaviour for different ItemTypes
         override fun onClick(v: View?) {
             mOnClickListener.onListItemClick(mItems[adapterPosition].id, adapterPosition)
         }
