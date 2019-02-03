@@ -17,6 +17,7 @@ import com.cajetan.youtubeplus.adapters.ContentListAdapter
 import com.cajetan.youtubeplus.data.VideoData
 import com.cajetan.youtubeplus.data.VideoDataViewModel
 import com.cajetan.youtubeplus.utils.FeedItem
+import com.cajetan.youtubeplus.utils.ItemType
 import com.cajetan.youtubeplus.utils.YouTubeData
 import com.google.api.services.youtube.model.Video
 import org.jetbrains.anko.alert
@@ -167,14 +168,19 @@ class VideoListFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         mNextPageToken = nextPageToken
     }
 
-    override fun onListItemClick(clickedVideoId: String, position: Int) {
-        findNavController().navigate(R.id.action_start_to_playerActivity,
-                bundleOf(getString(R.string.video_id_key) to clickedVideoId))
+    override fun onListItemClick(id: String, position: Int, type: ItemType) {
+        when (type) {
+            ItemType.Video -> findNavController().navigate(R.id.action_start_to_playerActivity,
+                    bundleOf(getString(R.string.video_id_key) to id))
+
+            ItemType.Playlist -> findNavController().navigate(R.id.action_start_to_playerActivity,
+                    bundleOf("playlist_id" to id))
+        }
     }
 
-    override fun onListItemLongClick(clickedVideoId: String) {
+    override fun onListItemLongClick(id: String, type: ItemType) {
         activity!!.alert(getString(R.string.favourite_add_confirmation)) {
-            yesButton { mVideoDataViewModel.insert(VideoData(clickedVideoId)) }
+            yesButton { mVideoDataViewModel.insert(VideoData(id)) }
             noButton { }
         }.show()
     }

@@ -291,17 +291,20 @@ class ContentListAdapter(items: List<FeedItem>, listener: ListItemClickListener,
 
         // TODO: different onClick behaviour for different ItemTypes
         override fun onClick(v: View?) {
-            mOnClickListener.onListItemClick(mItems[adapterPosition].id, adapterPosition)
+            mOnClickListener.onListItemClick(mItems[adapterPosition].id, adapterPosition,
+                    mItems[adapterPosition].itemType)
         }
 
         override fun onLongClick(v: View?): Boolean {
-            mOnClickListener.onListItemLongClick(mItems[adapterPosition].id)
+            mOnClickListener.onListItemLongClick(mItems[adapterPosition].id,
+                    mItems[adapterPosition].itemType)
+
             return true
         }
     }
 
     interface ListItemClickListener {
-        fun onListItemClick(clickedVideoId: String, position: Int)
-        fun onListItemLongClick(clickedVideoId: String)
+        fun onListItemClick(id: String, position: Int, type: ItemType)
+        fun onListItemLongClick(id: String, type: ItemType)
     }
 }

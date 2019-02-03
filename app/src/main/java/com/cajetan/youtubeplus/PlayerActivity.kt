@@ -27,6 +27,7 @@ import com.cajetan.youtubeplus.data.VideoDataViewModel
 import com.cajetan.youtubeplus.fragments.SeekDialogFragment
 import com.cajetan.youtubeplus.utils.FeedItem
 import com.cajetan.youtubeplus.utils.FullScreenHelper
+import com.cajetan.youtubeplus.utils.ItemType
 import com.cajetan.youtubeplus.utils.YouTubeData
 import com.google.api.services.youtube.model.PlaylistItem
 import com.google.api.services.youtube.model.Video
@@ -373,22 +374,28 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         val videoUrl: String = extras.getString(Intent.EXTRA_TEXT) ?: ""
 
         return when {
-            videoUrl.isNotEmpty() -> videoUrl.substring(videoUrl.length - 11, videoUrl.length)
-
             extras.containsKey(getString(R.string.video_id_key)) ->
                 extras.getString(getString(R.string.video_id_key)) as String
+
+            videoUrl.isNotEmpty() -> videoUrl.substring(videoUrl.length - 11, videoUrl.length)
 
             else -> throw IllegalArgumentException("No video id available, cannot initialise the player")
         }
     }
 
     private fun getPlaylistId(intent: Intent?): String? {
-        val videoUrl = intent?.extras?.getString(Intent.EXTRA_TEXT) ?: return null
+        val extras: Bundle = intent?.extras ?: return null
+        val videoUrl: String = extras.getString(Intent.EXTRA_TEXT) ?: ""
 
-        if (!videoUrl.contains("playlist?list="))
-            return null
+        return when {
+            extras.containsKey("playlist_id") ->
+                extras.getString("playlist_id") as String
 
-        return videoUrl.substring(videoUrl.indexOf("playlist?list=", 0) + 14)
+            videoUrl.contains("playlist?list=") ->
+                videoUrl.substring(videoUrl.indexOf("playlist?list=", 0) + 14)
+
+            else -> null
+        }
     }
 
     private fun switchVideo(videoId: String) {
@@ -470,14 +477,14 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         progressBarBottom.visibility = View.GONE
     }
 
-    override fun onListItemClick(clickedVideoId: String, position: Int) {
-        switchVideo(clickedVideoId)
+    override fun onListItemClick(id: String, position: Int, type: ItemType) {
+        switchVideo(id)
         mAdapter.switchNowPlaying(position)
     }
 
-    override fun onListItemLongClick(clickedVideoId: String) {
+    override fun onListItemLongClick(id: String, type: ItemType) {
         this.alert(getString(R.string.favourite_add_confirmation)) {
-            yesButton { mVideoDataViewModel.insert(VideoData(clickedVideoId)) }
+            yesButton { mVideoDataViewModel.insert(VideoData(id)) }
             noButton { }
         }.show()
     }

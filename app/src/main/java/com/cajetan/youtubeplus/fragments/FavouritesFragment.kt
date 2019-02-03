@@ -19,6 +19,7 @@ import com.cajetan.youtubeplus.adapters.ContentListAdapter
 import com.cajetan.youtubeplus.data.VideoData
 import com.cajetan.youtubeplus.data.VideoDataViewModel
 import com.cajetan.youtubeplus.utils.FeedItem
+import com.cajetan.youtubeplus.utils.ItemType
 import com.cajetan.youtubeplus.utils.YouTubeData
 import com.google.api.services.youtube.model.Video
 import org.jetbrains.anko.alert
@@ -126,14 +127,14 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         videoList.visibility = View.VISIBLE
     }
 
-    override fun onListItemClick(clickedVideoId: String, position: Int) {
+    override fun onListItemClick(id: String, position: Int, type: ItemType) {
         findNavController().navigate(R.id.action_favourites_to_playerActivity,
-                bundleOf(getString(R.string.video_id_key) to clickedVideoId))
+                bundleOf(getString(R.string.video_id_key) to id))
     }
 
-    override fun onListItemLongClick(clickedVideoId: String) {
+    override fun onListItemLongClick(id: String, type: ItemType) {
         activity!!.alert(getString(R.string.favourite_remove_confirmation)) {
-            yesButton { mVideoDataViewModel.delete(VideoData(clickedVideoId)) }
+            yesButton { mVideoDataViewModel.delete(VideoData(id)) }
             noButton { }
         }.show()
     }

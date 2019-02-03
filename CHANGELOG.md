@@ -2,6 +2,10 @@
 
 ---
 
+#### 3.02.2019
+
+* [VideoListFragment] Opening a playlist on click in search results
+
 #### 2.02.2019
 
 * [VideoListFragment] Playlists and channels in search results 
