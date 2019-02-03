@@ -174,12 +174,14 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
 
         startService(Intent(this, PlayerLifecycleService::class.java))
 
+        val idAvailable = this::mVideoId.isInitialized
+
         mainPlayerView.enableBackgroundPlayback(true)
         mainPlayerView.initialize({ initialisedYouTubePlayer ->
             initialisedYouTubePlayer.addListener(mTracker)
             initialisedYouTubePlayer.addListener(object: AbstractYouTubePlayerListener() {
                 override fun onReady() {
-                    if (mVideoId.isNotEmpty())
+                    if (idAvailable && mVideoId.isNotEmpty())
                         initialisedYouTubePlayer.loadVideo(mVideoId, 0F)
                 }
 
@@ -480,6 +482,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
     override fun onListItemClick(id: String, position: Int, type: ItemType) {
         switchVideo(id)
         mAdapter.switchNowPlaying(position)
+        mCurrentVideoIndex = position
     }
 
     override fun onListItemLongClick(id: String, type: ItemType) {

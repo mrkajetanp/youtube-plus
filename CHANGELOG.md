@@ -4,6 +4,7 @@
 
 #### 3.02.2019
 
+* [PlayerActivity] Fixed playlist video index incorrectly updating
 * [VideoListFragment] Opening a playlist on click in search results
 
 #### 2.02.2019

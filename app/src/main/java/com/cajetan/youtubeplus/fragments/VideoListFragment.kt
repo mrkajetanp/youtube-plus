@@ -179,9 +179,12 @@ class VideoListFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     }
 
     override fun onListItemLongClick(id: String, type: ItemType) {
-        activity!!.alert(getString(R.string.favourite_add_confirmation)) {
-            yesButton { mVideoDataViewModel.insert(VideoData(id)) }
-            noButton { }
-        }.show()
+        when (type) {
+            ItemType.Video ->
+                activity!!.alert(getString(R.string.favourite_add_confirmation)) {
+                    yesButton { mVideoDataViewModel.insert(VideoData(id)) }
+                    noButton { }
+                }.show()
+        }
     }
 }
