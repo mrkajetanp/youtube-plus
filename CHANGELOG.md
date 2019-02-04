@@ -4,6 +4,7 @@
 
 #### 4.02.2019
 
+* [Favourites] Switched favourite videos with playlists 
 * [Database] Added database table for playlists
 
 #### 3.02.2019

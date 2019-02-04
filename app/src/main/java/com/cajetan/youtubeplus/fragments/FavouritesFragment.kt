@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cajetan.youtubeplus.R
 import com.cajetan.youtubeplus.adapters.ContentListAdapter
+import com.cajetan.youtubeplus.data.PlaylistData
 import com.cajetan.youtubeplus.data.VideoData
 import com.cajetan.youtubeplus.data.VideoDataViewModel
 import com.cajetan.youtubeplus.utils.FeedItem
@@ -27,7 +28,7 @@ import org.jetbrains.anko.noButton
 import org.jetbrains.anko.yesButton
 
 class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
-        YouTubeData.VideoListDataListener {
+        YouTubeData.VideoListDataListener, YouTubeData.PlaylistLibraryListener {
 
     private lateinit var mAdapter: ContentListAdapter
     private lateinit var mYouTubeData: YouTubeData
@@ -85,9 +86,15 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
 
     private fun setupDatabase() {
         mVideoDataViewModel = ViewModelProviders.of(this).get(VideoDataViewModel::class.java)
-        mVideoDataViewModel.getAllFavourites().observe(this, Observer {
+
+//        mVideoDataViewModel.getAllFavourites().observe(this, Observer {
+//            if (it != null)
+//                loadFavourites(it)
+//        })
+
+        mVideoDataViewModel.getAllPlaylists().observe(this, Observer {
             if (it != null)
-                loadFavourites(it)
+                loadPlaylists(it)
         })
     }
 
@@ -109,6 +116,13 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         mYouTubeData.receiveVideoListResults(videoData, block)
     }
 
+    private fun loadPlaylists(playlistData: List<PlaylistData>) {
+        videoList.visibility = View.INVISIBLE
+        progressBarCentre.visibility = View.VISIBLE
+
+        mYouTubeData.receivePlaylistsLibraryResults(playlistData)
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // Callbacks
     ////////////////////////////////////////////////////////////////////////////////
@@ -127,15 +141,38 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         videoList.visibility = View.VISIBLE
     }
 
+    override fun onPlaylistsReceived(results: List<FeedItem>) {
+        mAdapter.clearItems()
+        mAdapter.addItems(results)
+
+        noFavouritesView.visibility = if (mAdapter.itemCount == 0) View.VISIBLE else View.GONE
+        progressBarCentre.visibility = View.INVISIBLE
+        videoList.visibility = View.VISIBLE
+    }
+
     override fun onListItemClick(id: String, position: Int, type: ItemType) {
-        findNavController().navigate(R.id.action_favourites_to_playerActivity,
-                bundleOf(getString(R.string.video_id_key) to id))
+        when (type) {
+            ItemType.Video -> findNavController().navigate(R.id.action_favourites_to_playerActivity,
+                    bundleOf(getString(R.string.video_id_key) to id))
+
+            ItemType.Playlist -> findNavController().navigate(R.id.action_favourites_to_playerActivity,
+                    bundleOf("playlist_id" to id))
+        }
     }
 
     override fun onListItemLongClick(id: String, type: ItemType) {
-        activity!!.alert(getString(R.string.favourite_remove_confirmation)) {
-            yesButton { mVideoDataViewModel.deleteFavourite(VideoData(id)) }
-            noButton { }
-        }.show()
+        when (type) {
+            ItemType.Video ->
+                activity!!.alert(getString(R.string.favourite_remove_confirmation)) {
+                    yesButton { mVideoDataViewModel.deleteFavourite(VideoData(id)) }
+                    noButton { }
+                }.show()
+
+            ItemType.Playlist ->
+                activity!!.alert("Do you want to remove this playlist from the library?") {
+                    yesButton { mVideoDataViewModel.deletePlaylist(PlaylistData(id)) }
+                    noButton { }
+                }.show()
+        }
     }
 }

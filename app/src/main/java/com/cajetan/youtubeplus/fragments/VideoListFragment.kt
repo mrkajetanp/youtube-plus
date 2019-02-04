@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cajetan.youtubeplus.R
 import com.cajetan.youtubeplus.adapters.ContentListAdapter
+import com.cajetan.youtubeplus.data.PlaylistData
 import com.cajetan.youtubeplus.data.VideoData
 import com.cajetan.youtubeplus.data.VideoDataViewModel
 import com.cajetan.youtubeplus.utils.FeedItem
@@ -183,6 +184,12 @@ class VideoListFragment : Fragment(), ContentListAdapter.ListItemClickListener,
             ItemType.Video ->
                 activity!!.alert(getString(R.string.favourite_add_confirmation)) {
                     yesButton { mVideoDataViewModel.insertFavourite(VideoData(id)) }
+                    noButton { }
+                }.show()
+
+            ItemType.Playlist ->
+                activity!!.alert("Do you want to add this playlist to the library?") {
+                    yesButton { mVideoDataViewModel.insertPlaylist(PlaylistData(id)) }
                     noButton { }
                 }.show()
         }
