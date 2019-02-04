@@ -6,16 +6,17 @@ import androidx.room.*
 @Dao
 interface VideoDataDao {
     // TODO: implement some ordering
+    // TODO: sort out names
 
     @Query("SELECT * FROM video_data_table")
-    fun getAll(): LiveData<List<VideoData>>
+    fun getAllFavourites(): LiveData<List<VideoData>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertAll(vararg users: VideoData)
+    fun insertAllFavourites(vararg users: VideoData)
 
     @Query("SELECT * FROM video_data_table WHERE video_id = :id LIMIT 1")
-    fun getWithId(id: String): VideoData?
+    fun getFavouriteById(id: String): VideoData?
 
     @Delete
-    fun delete(data: VideoData)
+    fun deleteFavourite(data: VideoData)
 }

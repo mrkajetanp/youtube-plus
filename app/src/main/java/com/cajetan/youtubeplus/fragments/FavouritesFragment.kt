@@ -85,7 +85,7 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
 
     private fun setupDatabase() {
         mVideoDataViewModel = ViewModelProviders.of(this).get(VideoDataViewModel::class.java)
-        mVideoDataViewModel.getAllVideoData().observe(this, Observer {
+        mVideoDataViewModel.getAllFavourites().observe(this, Observer {
             if (it != null)
                 loadFavourites(it)
         })
@@ -96,7 +96,7 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     ////////////////////////////////////////////////////////////////////////////////
 
     fun filterVideos(query: String) {
-        loadFavourites(mVideoDataViewModel.getAllVideoData().value!!) {
+        loadFavourites(mVideoDataViewModel.getAllFavourites().value!!) {
             it.filter { t -> t.snippet.title.toLowerCase().contains(query.toLowerCase()) }
         }
     }
@@ -134,7 +134,7 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
 
     override fun onListItemLongClick(id: String, type: ItemType) {
         activity!!.alert(getString(R.string.favourite_remove_confirmation)) {
-            yesButton { mVideoDataViewModel.delete(VideoData(id)) }
+            yesButton { mVideoDataViewModel.deleteFavourite(VideoData(id)) }
             noButton { }
         }.show()
     }

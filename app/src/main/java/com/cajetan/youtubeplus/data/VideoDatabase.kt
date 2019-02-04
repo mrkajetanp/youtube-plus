@@ -5,9 +5,10 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import android.content.Context
 
-@Database(entities = [VideoData::class], version = 1, exportSchema = false)
+@Database(entities = [VideoData::class, PlaylistData::class], version = 1, exportSchema = false)
 abstract class VideoDatabase : RoomDatabase() {
     abstract fun videoDataDao(): VideoDataDao
+    abstract fun playlistDataDao(): PlaylistDataDao
 
     companion object {
         private var INSTANCE: VideoDatabase? = null
@@ -23,10 +24,6 @@ abstract class VideoDatabase : RoomDatabase() {
             }
 
             return INSTANCE
-        }
-
-        fun destroyDataBase() {
-            INSTANCE = null
         }
     }
 }

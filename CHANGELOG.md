@@ -2,6 +2,10 @@
 
 ---
 
+#### 4.02.2019
+
+* [Database] Added database table for playlists
+
 #### 3.02.2019
 
 * [PlayerActivity] Fixed playlist video index incorrectly updating

@@ -6,25 +6,48 @@ import androidx.lifecycle.LiveData
 
 class VideoDataViewModel(val context: Application) : AndroidViewModel(context) {
     private var mRepository: VideoDataRepository = VideoDataRepository(context)
-    private var mAllVideoData: LiveData<List<VideoData>>
+
+    private var mFavourites: LiveData<List<VideoData>>
+    private var mPlaylists: LiveData<List<PlaylistData>>
 
     init {
-        mAllVideoData = mRepository.getAllVideoData()
+        mFavourites = mRepository.getAllFavourites()
+        mPlaylists = mRepository.getAllPlaylists()
     }
 
-    fun getAllVideoData(): LiveData<List<VideoData>> {
-        return mAllVideoData
+    // Favourites
+
+    fun getAllFavourites(): LiveData<List<VideoData>> {
+        return mFavourites
     }
 
-    fun contains(id: String): Boolean {
-        return mRepository.contains(id)
+    fun containsFavourite(id: String): Boolean {
+        return mRepository.containsFavourite(id)
     }
 
-    fun insert(videoData: VideoData) {
-        mRepository.insert(videoData)
+    fun insertFavourite(videoData: VideoData) {
+        mRepository.insertFavourite(videoData)
     }
 
-    fun delete(videoData: VideoData) {
-        mRepository.delete(videoData)
+    fun deleteFavourite(videoData: VideoData) {
+        mRepository.deleteFavourite(videoData)
+    }
+
+    // Playlists
+
+    fun getAllPlaylists(): LiveData<List<PlaylistData>> {
+        return mPlaylists
+    }
+
+    fun containsPlaylist(id: String): Boolean {
+        return mRepository.containsPlaylist(id)
+    }
+
+    fun insertPlaylist(playlistData: PlaylistData) {
+        mRepository.insertPlaylist(playlistData)
+    }
+
+    fun deletePlaylist(playlistData: PlaylistData) {
+        mRepository.deletePlaylist(playlistData)
     }
 }

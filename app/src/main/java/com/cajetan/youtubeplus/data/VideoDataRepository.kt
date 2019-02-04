@@ -7,30 +7,54 @@ import org.jetbrains.anko.doAsync
 
 class VideoDataRepository(application: Application) {
     private var mVideoDataDao: VideoDataDao = VideoDatabase.getDatabase(application)!!.videoDataDao()
-    private var mAllVideoData: LiveData<List<VideoData>>
+    private var mAllFavourites: LiveData<List<VideoData>>
+
+    private var mPlaylistDataDao: PlaylistDataDao = VideoDatabase.getDatabase(application)!!.playlistDataDao()
+    private var mAllPlaylists: LiveData<List<PlaylistData>>
 
     init {
-        mAllVideoData = mVideoDataDao.getAll()
+        mAllFavourites = mVideoDataDao.getAllFavourites()
+        mAllPlaylists = mPlaylistDataDao.getAllPlaylists()
     }
 
-    fun getAllVideoData(): LiveData<List<VideoData>> {
-        return mAllVideoData
+    fun getAllFavourites(): LiveData<List<VideoData>> {
+        return mAllFavourites
     }
 
-    fun contains(videoId: String): Boolean {
-        Log.d("Repository", "Size with $videoId is ${mVideoDataDao.getWithId(videoId)}")
-        return mVideoDataDao.getWithId(videoId) != null
+    fun containsFavourite(videoId: String): Boolean {
+        Log.d("Repository", "Size with $videoId is ${mVideoDataDao.getFavouriteById(videoId)}")
+        return mVideoDataDao.getFavouriteById(videoId) != null
     }
 
-    fun insert(videoData: VideoData) {
+    fun insertFavourite(videoData: VideoData) {
         doAsync {
-            mVideoDataDao.insertAll(videoData)
+            mVideoDataDao.insertAllFavourites(videoData)
         }
     }
 
-    fun delete(videoData: VideoData) {
+    fun deleteFavourite(videoData: VideoData) {
         doAsync {
-            mVideoDataDao.delete(videoData)
+            mVideoDataDao.deleteFavourite(videoData)
+        }
+    }
+
+    fun getAllPlaylists(): LiveData<List<PlaylistData>> {
+        return mAllPlaylists
+    }
+
+    fun containsPlaylist(id: String): Boolean {
+        return mPlaylistDataDao.getPlaylistById(id) != null
+    }
+
+    fun insertPlaylist(playlistData: PlaylistData) {
+        doAsync {
+            mPlaylistDataDao.insertAllPlaylists(playlistData)
+        }
+    }
+
+    fun deletePlaylist(playlistData: PlaylistData) {
+        doAsync {
+            mPlaylistDataDao.deletePlaylist(playlistData)
         }
     }
 }

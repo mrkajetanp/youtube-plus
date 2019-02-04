@@ -182,7 +182,7 @@ class VideoListFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         when (type) {
             ItemType.Video ->
                 activity!!.alert(getString(R.string.favourite_add_confirmation)) {
-                    yesButton { mVideoDataViewModel.insert(VideoData(id)) }
+                    yesButton { mVideoDataViewModel.insertFavourite(VideoData(id)) }
                     noButton { }
                 }.show()
         }

@@ -267,7 +267,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         })
 
         doAsync {
-            val contains = mVideoDataViewModel.contains(mVideoId)
+            val contains = mVideoDataViewModel.containsFavourite(mVideoId)
 
             val text = when (contains) {
                 true -> getString(R.string.favourites_remove)
@@ -287,8 +287,8 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
             uiThread {
                 menu.addItem(MenuItem(text, icon) {
                     when (contains) {
-                        true -> mVideoDataViewModel.delete(VideoData(mVideoId))
-                        false -> mVideoDataViewModel.insert(VideoData(mVideoId))
+                        true -> mVideoDataViewModel.deleteFavourite(VideoData(mVideoId))
+                        false -> mVideoDataViewModel.insertFavourite(VideoData(mVideoId))
                     }
 
                     Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show()
@@ -487,7 +487,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
 
     override fun onListItemLongClick(id: String, type: ItemType) {
         this.alert(getString(R.string.favourite_add_confirmation)) {
-            yesButton { mVideoDataViewModel.insert(VideoData(id)) }
+            yesButton { mVideoDataViewModel.insertFavourite(VideoData(id)) }
             noButton { }
         }.show()
     }
