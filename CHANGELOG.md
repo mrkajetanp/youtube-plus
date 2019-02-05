@@ -4,6 +4,7 @@
 
 #### 5.02.2019
 
+* [General] LibraryFragment with a bottom bar option
 * [General] Refactoring, improvements and string resources
 
 #### 4.02.2019

@@ -37,6 +37,7 @@
             android:id="@+id/action_others_to_settingsActivity"
             app:destination="@id/settingsActivity" />
     </fragment>
+
     <activity
         android:id="@+id/playerActivity"
         android:name="com.cajetan.youtubeplus.PlayerActivity"
@@ -51,4 +52,14 @@
         android:name="com.cajetan.youtubeplus.SettingsActivity"
         android:label="activity_settings"
         tools:layout="@layout/activity_settings" />
+    <fragment
+        android:id="@+id/library"
+        android:name="com.cajetan.youtubeplus.fragments.LibraryFragment"
+        android:label="LibraryFragment"
+        tools:layout="@layout/fragment_favourites" >
+        <action
+            android:id="@+id/action_library_to_playerActivity"
+            app:destination="@id/playerActivity"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

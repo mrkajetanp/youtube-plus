@@ -27,8 +27,8 @@ import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
 import org.jetbrains.anko.yesButton
 
-class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
-        YouTubeData.VideoListDataListener {
+class LibraryFragment : Fragment(), ContentListAdapter.ListItemClickListener,
+        YouTubeData.PlaylistLibraryListener {
 
     private lateinit var mAdapter: ContentListAdapter
     private lateinit var mYouTubeData: YouTubeData
@@ -87,9 +87,9 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     private fun setupDatabase() {
         mMainDataViewModel = ViewModelProviders.of(this).get(MainDataViewModel::class.java)
 
-        mMainDataViewModel.getAllFavourites().observe(this, Observer {
+        mMainDataViewModel.getAllPlaylists().observe(this, Observer {
             if (it != null)
-                loadFavourites(it)
+                loadPlaylists(it)
         })
     }
 
@@ -97,32 +97,20 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     // Utils
     ////////////////////////////////////////////////////////////////////////////////
 
-    fun filterVideos(query: String) {
-        loadFavourites(mMainDataViewModel.getAllFavourites().value!!) {
-            it.filter { t -> t.snippet.title.toLowerCase().contains(query.toLowerCase()) }
-        }
-    }
-
-    private fun loadFavourites(videoData: List<VideoData>,
-                               block: ((List<Video>) -> List<Video>)? = null) {
+    private fun loadPlaylists(playlistData: List<PlaylistData>) {
         videoList.visibility = View.INVISIBLE
         progressBarCentre.visibility = View.VISIBLE
 
-        mYouTubeData.receiveVideoListResults(videoData, block)
+        mYouTubeData.receivePlaylistsLibraryResults(playlistData)
     }
 
     ////////////////////////////////////////////////////////////////////////////////
     // Callbacks
     ////////////////////////////////////////////////////////////////////////////////
 
-    override fun onVideoListReceived(results: List<Video>,
-                                     block: ((List<Video>) -> List<Video>)?) {
+    override fun onPlaylistsReceived(results: List<FeedItem>) {
         mAdapter.clearItems()
-
-        // If an additional function was passed, apply it to the results
-        val result = block?.invoke(results)?.toList() ?: results.toList()
-
-        mAdapter.addItems(result.map { FeedItem(it.id, video = it) })
+        mAdapter.addItems(results)
 
         noFavouritesView.visibility = if (mAdapter.itemCount == 0) View.VISIBLE else View.GONE
         progressBarCentre.visibility = View.INVISIBLE
@@ -131,10 +119,10 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
 
     override fun onListItemClick(id: String, position: Int, type: ItemType) {
         when (type) {
-            ItemType.Video -> findNavController().navigate(R.id.action_favourites_to_playerActivity,
+            ItemType.Video -> findNavController().navigate(R.id.action_library_to_playerActivity,
                     bundleOf(getString(R.string.video_id_key) to id))
 
-            ItemType.Playlist -> findNavController().navigate(R.id.action_favourites_to_playerActivity,
+            ItemType.Playlist -> findNavController().navigate(R.id.action_library_to_playerActivity,
                     bundleOf(getString(R.string.playlist_id_key) to id))
         }
     }
