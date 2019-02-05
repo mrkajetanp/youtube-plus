@@ -9,7 +9,7 @@ class SettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val darkMode = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean("dark_mode", false)
+                .getBoolean(getString(R.string.dark_mode_key), false)
         setTheme(if (darkMode) R.style.AppThemeDark else R.style.AppThemeLight)
 
         super.onCreate(savedInstanceState)

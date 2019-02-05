@@ -6,19 +6,19 @@ import androidx.room.RoomDatabase
 import android.content.Context
 
 @Database(entities = [VideoData::class, PlaylistData::class], version = 2, exportSchema = false)
-abstract class VideoDatabase : RoomDatabase() {
+abstract class MainDatabase : RoomDatabase() {
     abstract fun videoDataDao(): VideoDataDao
     abstract fun playlistDataDao(): PlaylistDataDao
 
     companion object {
-        private var INSTANCE: VideoDatabase? = null
+        private var INSTANCE: MainDatabase? = null
 
-        fun getDatabase(context: Context): VideoDatabase? {
+        fun getDatabase(context: Context): MainDatabase? {
             if (INSTANCE == null) {
-                synchronized(VideoDatabase::class) {
+                synchronized(MainDatabase::class) {
                     if (INSTANCE == null) {
                         INSTANCE = Room.databaseBuilder(context.applicationContext,
-                                VideoDatabase::class.java, "video_database")
+                                MainDatabase::class.java, "main_database")
                                 .fallbackToDestructiveMigration().build()
                     }
                 }

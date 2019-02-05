@@ -1,6 +1,8 @@
 <resources>
     <!--General-->
     <string name="app_name" translatable="false">YouTube Plus</string>
+    <string name="dark_mode_key" translatable="false">dark_mode</string>
+    <string name="playlist_id_key" translatable="false">playlist_id</string>
 
     <!--Main Activity-->
     <string name="no_fragment_found" translatable="false">No fragment found</string>
@@ -29,14 +31,18 @@
     <string name="play" translatable="true">Play</string>
     <string name="pause" translatable="true">Pause</string>
 
-    <!--Search-->
+    <!--Video List-->
     <string name="search_hint">Search in YouTube</string>
+    <string name="number_videos" translatable="true">%1$d Videos</string>
+    <string name="number_subscribers" translatable="true">%1$d Subscribers</string>
 
     <string name="live" translatable="true">LIVE</string>
     <string name="favourite_add_confirmation" translatable="true">Do you want to add this video to favourites?</string>
     <string name="favourite_remove_confirmation" translatable="true">Do you really want to remove this video from favourites?</string>
-    <string name="no_favourites_message" translatable="true">No favourites found!</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="playlist_add_confirmation" translatable="true">Do you want to add this playlist to the library?</string>
+    <string name="playlist_remove_confirmation" translatable="true">Do you really want to remove this playlist from the library?</string>
+
+    <string name="no_favourites_message" translatable="true">No favourites found!</string>
+    <string name="no_playlists_message" translatable="true">No playlists found!</string>
 </resources>

@@ -2,6 +2,10 @@
 
 ---
 
+#### 5.02.2019
+
+* [General] Refactoring, improvements and string resources
+
 #### 4.02.2019
 
 * [Favourites] Switched favourite videos with playlists 

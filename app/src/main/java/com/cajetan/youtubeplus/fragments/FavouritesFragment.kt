@@ -18,7 +18,7 @@ import com.cajetan.youtubeplus.R
 import com.cajetan.youtubeplus.adapters.ContentListAdapter
 import com.cajetan.youtubeplus.data.PlaylistData
 import com.cajetan.youtubeplus.data.VideoData
-import com.cajetan.youtubeplus.data.VideoDataViewModel
+import com.cajetan.youtubeplus.data.MainDataViewModel
 import com.cajetan.youtubeplus.utils.FeedItem
 import com.cajetan.youtubeplus.utils.ItemType
 import com.cajetan.youtubeplus.utils.YouTubeData
@@ -32,7 +32,7 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
 
     private lateinit var mAdapter: ContentListAdapter
     private lateinit var mYouTubeData: YouTubeData
-    private lateinit var mVideoDataViewModel: VideoDataViewModel
+    private lateinit var mMainDataViewModel: MainDataViewModel
 
     private lateinit var videoList: RecyclerView
     private lateinit var progressBarCentre: ProgressBar
@@ -85,14 +85,14 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     }
 
     private fun setupDatabase() {
-        mVideoDataViewModel = ViewModelProviders.of(this).get(VideoDataViewModel::class.java)
+        mMainDataViewModel = ViewModelProviders.of(this).get(MainDataViewModel::class.java)
 
-//        mVideoDataViewModel.getAllFavourites().observe(this, Observer {
+//        mMainDataViewModel.getAllFavourites().observe(this, Observer {
 //            if (it != null)
 //                loadFavourites(it)
 //        })
 
-        mVideoDataViewModel.getAllPlaylists().observe(this, Observer {
+        mMainDataViewModel.getAllPlaylists().observe(this, Observer {
             if (it != null)
                 loadPlaylists(it)
         })
@@ -103,7 +103,7 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     ////////////////////////////////////////////////////////////////////////////////
 
     fun filterVideos(query: String) {
-        loadFavourites(mVideoDataViewModel.getAllFavourites().value!!) {
+        loadFavourites(mMainDataViewModel.getAllFavourites().value!!) {
             it.filter { t -> t.snippet.title.toLowerCase().contains(query.toLowerCase()) }
         }
     }
@@ -156,7 +156,7 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
                     bundleOf(getString(R.string.video_id_key) to id))
 
             ItemType.Playlist -> findNavController().navigate(R.id.action_favourites_to_playerActivity,
-                    bundleOf("playlist_id" to id))
+                    bundleOf(getString(R.string.playlist_id_key) to id))
         }
     }
 
@@ -164,13 +164,13 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         when (type) {
             ItemType.Video ->
                 activity!!.alert(getString(R.string.favourite_remove_confirmation)) {
-                    yesButton { mVideoDataViewModel.deleteFavourite(VideoData(id)) }
+                    yesButton { mMainDataViewModel.deleteFavourite(VideoData(id)) }
                     noButton { }
                 }.show()
 
             ItemType.Playlist ->
-                activity!!.alert("Do you want to remove this playlist from the library?") {
-                    yesButton { mVideoDataViewModel.deletePlaylist(PlaylistData(id)) }
+                activity!!.alert(getString(R.string.playlist_remove_confirmation)) {
+                    yesButton { mMainDataViewModel.deletePlaylist(PlaylistData(id)) }
                     noButton { }
                 }.show()
         }

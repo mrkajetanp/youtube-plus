@@ -5,11 +5,11 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import org.jetbrains.anko.doAsync
 
-class VideoDataRepository(application: Application) {
-    private var mVideoDataDao: VideoDataDao = VideoDatabase.getDatabase(application)!!.videoDataDao()
+class MainRepository(application: Application) {
+    private var mVideoDataDao: VideoDataDao = MainDatabase.getDatabase(application)!!.videoDataDao()
     private var mAllFavourites: LiveData<List<VideoData>>
 
-    private var mPlaylistDataDao: PlaylistDataDao = VideoDatabase.getDatabase(application)!!.playlistDataDao()
+    private var mPlaylistDataDao: PlaylistDataDao = MainDatabase.getDatabase(application)!!.playlistDataDao()
     private var mAllPlaylists: LiveData<List<PlaylistData>>
 
     init {

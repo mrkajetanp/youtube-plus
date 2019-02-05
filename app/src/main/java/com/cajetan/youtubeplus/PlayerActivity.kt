@@ -23,7 +23,7 @@ import androidx.core.app.NotificationCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cajetan.youtubeplus.adapters.ContentListAdapter
 import com.cajetan.youtubeplus.data.VideoData
-import com.cajetan.youtubeplus.data.VideoDataViewModel
+import com.cajetan.youtubeplus.data.MainDataViewModel
 import com.cajetan.youtubeplus.fragments.SeekDialogFragment
 import com.cajetan.youtubeplus.utils.FeedItem
 import com.cajetan.youtubeplus.utils.FullScreenHelper
@@ -62,7 +62,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
     private lateinit var mVideoThumbnail: Bitmap
 
     private val mContext: Context = this
-    private lateinit var mVideoDataViewModel: VideoDataViewModel
+    private lateinit var mMainDataViewModel: MainDataViewModel
 
     private val mTracker: YouTubePlayerTracker = YouTubePlayerTracker()
 
@@ -89,14 +89,14 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val darkMode = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean("dark_mode", false)
+                .getBoolean(getString(R.string.dark_mode_key), false)
         setTheme(if (darkMode) R.style.PlayerActivityThemeDark else R.style.PlayerActivityThemeLight)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
 
         mYouTubeData = YouTubeData(this)
-        mVideoDataViewModel = ViewModelProviders.of(this).get(VideoDataViewModel::class.java)
+        mMainDataViewModel = ViewModelProviders.of(this).get(MainDataViewModel::class.java)
 
         val playlistId = getPlaylistId(intent)
         when (playlistId) {
@@ -267,7 +267,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         })
 
         doAsync {
-            val contains = mVideoDataViewModel.containsFavourite(mVideoId)
+            val contains = mMainDataViewModel.containsFavourite(mVideoId)
 
             val text = when (contains) {
                 true -> getString(R.string.favourites_remove)
@@ -287,8 +287,8 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
             uiThread {
                 menu.addItem(MenuItem(text, icon) {
                     when (contains) {
-                        true -> mVideoDataViewModel.deleteFavourite(VideoData(mVideoId))
-                        false -> mVideoDataViewModel.insertFavourite(VideoData(mVideoId))
+                        true -> mMainDataViewModel.deleteFavourite(VideoData(mVideoId))
+                        false -> mMainDataViewModel.insertFavourite(VideoData(mVideoId))
                     }
 
                     Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show()
@@ -390,8 +390,8 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         val videoUrl: String = extras.getString(Intent.EXTRA_TEXT) ?: ""
 
         return when {
-            extras.containsKey("playlist_id") ->
-                extras.getString("playlist_id") as String
+            extras.containsKey(getString(R.string.playlist_id_key)) ->
+                extras.getString(getString(R.string.playlist_id_key)) as String
 
             videoUrl.contains("playlist?list=") ->
                 videoUrl.substring(videoUrl.indexOf("playlist?list=", 0) + 14)
@@ -487,7 +487,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
 
     override fun onListItemLongClick(id: String, type: ItemType) {
         this.alert(getString(R.string.favourite_add_confirmation)) {
-            yesButton { mVideoDataViewModel.insertFavourite(VideoData(id)) }
+            yesButton { mMainDataViewModel.insertFavourite(VideoData(id)) }
             noButton { }
         }.show()
     }

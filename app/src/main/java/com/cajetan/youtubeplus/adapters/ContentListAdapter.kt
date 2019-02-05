@@ -237,7 +237,7 @@ class ContentListAdapter(items: List<FeedItem>, listener: ListItemClickListener,
 
             videoTitleView.text = playlist.snippet.title
             videoChannelView.text = playlist.snippet.channelTitle
-            playlistSizeView.text = "${playlist.contentDetails.itemCount} Videos"
+            playlistSizeView.text = mContext.getString(R.string.number_videos, playlist.contentDetails.itemCount)
 
             val thumbnailUrl: String = when {
                 playlist.snippet.thumbnails.maxres != null ->
@@ -265,8 +265,8 @@ class ContentListAdapter(items: List<FeedItem>, listener: ListItemClickListener,
             playlistSizeView.visibility = View.VISIBLE
 
             videoTitleView.text = channel.snippet.title
-            videoChannelView.text = "${channel.statistics.subscriberCount} Subscribers"
-            playlistSizeView.text = "${channel.statistics.videoCount} Videos"
+            videoChannelView.text = mContext.getString(R.string.number_subscribers, channel.statistics.subscriberCount)
+            playlistSizeView.text = mContext.getString(R.string.number_videos, channel.statistics.videoCount)
 
             val thumbnailUrl: String = when {
                 channel.snippet.thumbnails.maxres != null ->

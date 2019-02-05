@@ -16,7 +16,7 @@ import com.cajetan.youtubeplus.R
 import com.cajetan.youtubeplus.adapters.ContentListAdapter
 import com.cajetan.youtubeplus.data.PlaylistData
 import com.cajetan.youtubeplus.data.VideoData
-import com.cajetan.youtubeplus.data.VideoDataViewModel
+import com.cajetan.youtubeplus.data.MainDataViewModel
 import com.cajetan.youtubeplus.utils.FeedItem
 import com.cajetan.youtubeplus.utils.ItemType
 import com.cajetan.youtubeplus.utils.YouTubeData
@@ -32,7 +32,7 @@ class VideoListFragment : Fragment(), ContentListAdapter.ListItemClickListener,
 
     private lateinit var mAdapter: ContentListAdapter
     private lateinit var mYouTubeData: YouTubeData
-    private lateinit var mVideoDataViewModel: VideoDataViewModel
+    private lateinit var mMainDataViewModel: MainDataViewModel
 
     private lateinit var videoList: RecyclerView
     private lateinit var searchProgressBarCentre: ProgressBar
@@ -48,7 +48,7 @@ class VideoListFragment : Fragment(), ContentListAdapter.ListItemClickListener,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mVideoDataViewModel = ViewModelProviders.of(this).get(VideoDataViewModel::class.java)
+        mMainDataViewModel = ViewModelProviders.of(this).get(MainDataViewModel::class.java)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -183,13 +183,13 @@ class VideoListFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         when (type) {
             ItemType.Video ->
                 activity!!.alert(getString(R.string.favourite_add_confirmation)) {
-                    yesButton { mVideoDataViewModel.insertFavourite(VideoData(id)) }
+                    yesButton { mMainDataViewModel.insertFavourite(VideoData(id)) }
                     noButton { }
                 }.show()
 
             ItemType.Playlist ->
                 activity!!.alert("Do you want to add this playlist to the library?") {
-                    yesButton { mVideoDataViewModel.insertPlaylist(PlaylistData(id)) }
+                    yesButton { mMainDataViewModel.insertPlaylist(PlaylistData(id)) }
                     noButton { }
                 }.show()
         }

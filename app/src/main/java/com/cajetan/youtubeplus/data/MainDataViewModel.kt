@@ -4,8 +4,8 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 
-class VideoDataViewModel(val context: Application) : AndroidViewModel(context) {
-    private var mRepository: VideoDataRepository = VideoDataRepository(context)
+class MainDataViewModel(val context: Application) : AndroidViewModel(context) {
+    private var mRepository: MainRepository = MainRepository(context)
 
     private var mFavourites: LiveData<List<VideoData>>
     private var mPlaylists: LiveData<List<PlaylistData>>
