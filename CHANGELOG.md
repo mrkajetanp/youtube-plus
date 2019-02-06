@@ -2,6 +2,10 @@
 
 ---
 
+#### 6.02.2019
+
+* [MainActivity] Fixed dark mode bottom bar bug
+
 #### 5.02.2019
 
 * [General] LibraryFragment with a bottom bar option
