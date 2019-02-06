@@ -88,6 +88,18 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="playlistContentFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="46" />
+                            <option name="y" value="-474" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="settingsActivity">
                     <value>
                       <LayoutPositions>
@@ -112,6 +124,11 @@
                         <option name="myPositions">
                           <map>
                             <entry key="action_start_to_playerActivity">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_start_to_playlistContentFragment">
                               <value>
                                 <LayoutPositions />
                               </value>

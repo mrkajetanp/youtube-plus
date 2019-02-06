@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_start_to_playerActivity"
             app:destination="@id/playerActivity" />
+        <action
+            android:id="@+id/action_start_to_playlistContentFragment"
+            app:destination="@id/playlistContentFragment" />
     </fragment>
 
     <fragment
@@ -62,4 +65,8 @@
             app:destination="@id/playerActivity"
             app:popUpToInclusive="true" />
     </fragment>
+    <fragment
+        android:id="@+id/playlistContentFragment"
+        android:name="com.cajetan.youtubeplus.fragments.PlaylistContentFragment"
+        android:label="PlaylistContentFragment" />
 </navigation>

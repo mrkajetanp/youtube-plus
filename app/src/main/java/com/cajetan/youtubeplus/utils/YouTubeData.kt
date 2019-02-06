@@ -341,6 +341,8 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
         }
     }
 
+    // service.channels().list("").execute().items[0].contentDetails.relatedPlaylists.uploads
+
     private fun playlistDataTask(playlistId: String, pageToken: String) {
         doAsync {
             val result: List<PlaylistItem>
@@ -350,6 +352,7 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
             try {
                 val list = service.playlistItems().list("snippet,contentDetails")
                         .setMaxResults(20).setPlaylistId(playlistId)
+
 
                 if (pageToken.isNotEmpty())
                     list.pageToken = pageToken

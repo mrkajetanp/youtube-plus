@@ -4,6 +4,7 @@
 
 #### 6.02.2019
 
+* [General] PlaylistContentFragment on channel click
 * [MainActivity] Fixed dark mode bottom bar bug
 
 #### 5.02.2019

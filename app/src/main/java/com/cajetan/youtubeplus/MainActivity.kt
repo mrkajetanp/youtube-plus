@@ -111,6 +111,11 @@ class MainActivity : AppCompatActivity() {
                     searchView?.isIconified = true
                     searchView?.visibility = View.GONE
                 }
+                R.id.playlistContentFragment -> {
+                    searchView?.setQuery("", false)
+                    searchView?.isIconified = true
+                    searchView?.visibility = View.GONE
+                }
             }
         }
     }
