@@ -111,7 +111,7 @@ class MainActivity : AppCompatActivity() {
                     searchView?.isIconified = true
                     searchView?.visibility = View.GONE
                 }
-                R.id.playlistContentFragment -> {
+                R.id.playlistContent -> {
                     searchView?.setQuery("", false)
                     searchView?.isIconified = true
                     searchView?.visibility = View.GONE

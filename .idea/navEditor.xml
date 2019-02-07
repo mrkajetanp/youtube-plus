@@ -88,14 +88,23 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="playlistContentFragment">
+                  <entry key="playlistContent">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="46" />
-                            <option name="y" value="-474" />
+                            <option name="x" value="-62" />
+                            <option name="y" value="-536" />
                           </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_playlistContent_to_playerActivity">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
                         </option>
                       </LayoutPositions>
                     </value>
@@ -117,8 +126,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-338" />
-                            <option name="y" value="-459" />
+                            <option name="x" value="-364" />
+                            <option name="y" value="-510" />
                           </Point>
                         </option>
                         <option name="myPositions">

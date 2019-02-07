@@ -26,7 +26,8 @@ import org.jetbrains.anko.noButton
 import org.jetbrains.anko.yesButton
 
 class VideoListFragment : Fragment(), ContentListAdapter.ListItemClickListener,
-        YouTubeData.MostPopularListener, YouTubeData.VideoSearchListener {
+        YouTubeData.MostPopularListener, YouTubeData.VideoSearchListener,
+        YouTubeData.UploadPlaylistListener {
 
     private val TAG: String = this.javaClass.simpleName
 
@@ -169,16 +170,20 @@ class VideoListFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         mNextPageToken = nextPageToken
     }
 
+    override fun onUploadPlaylistIdReceived(id: String) {
+        findNavController().navigate(R.id.action_start_to_playlistContentFragment,
+                bundleOf(getString(R.string.playlist_id_key) to id))
+    }
+
     override fun onListItemClick(id: String, position: Int, type: ItemType) {
         when (type) {
             ItemType.Video -> findNavController().navigate(R.id.action_start_to_playerActivity,
                     bundleOf(getString(R.string.video_id_key) to id))
 
             ItemType.Playlist -> findNavController().navigate(R.id.action_start_to_playerActivity,
-                    bundleOf("playlist_id" to id))
+                    bundleOf(getString(R.string.playlist_id_key) to id))
 
-            ItemType.Channel -> findNavController().navigate(R.id.action_start_to_playlistContentFragment,
-                    bundleOf("playlist_id" to "UU_x5XG1OV2P6uZZ5FSM9Ttw"))
+            ItemType.Channel -> mYouTubeData.receiveUploadPlaylistId(id)
         }
     }
 

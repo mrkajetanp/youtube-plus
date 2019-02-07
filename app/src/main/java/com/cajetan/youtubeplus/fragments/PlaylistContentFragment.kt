@@ -133,7 +133,7 @@ class PlaylistContentFragment : Fragment(), ContentListAdapter.ListItemClickList
 
     override fun onListItemClick(id: String, position: Int, type: ItemType) {
         when (type) {
-            ItemType.Video -> findNavController().navigate(R.id.action_start_to_playerActivity,
+            ItemType.Video -> findNavController().navigate(R.id.action_playlistContent_to_playerActivity,
                     bundleOf(getString(R.string.video_id_key) to id))
         }
     }

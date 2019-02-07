@@ -2,6 +2,10 @@
 
 ---
 
+#### 7.02.2019
+
+* [VideoListFragment] Opening channel's videos onClick in search list
+
 #### 6.02.2019
 
 * [General] PlaylistContentFragment on channel click

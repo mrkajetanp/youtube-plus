@@ -66,6 +66,7 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
     private var mPlaylistId = ""
     private var searchQuery = ""
     private var pageToken = ""
+    private var mChannelId = ""
     private lateinit var mVideoData: List<VideoData>
     private lateinit var mPlaylistsData: List<PlaylistData>
     private lateinit var mRequestType: RequestType
@@ -118,6 +119,13 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
         getResultsFromApi()
     }
 
+    fun receiveUploadPlaylistId(channelId: String) {
+        mChannelId = channelId
+        mRequestType = RequestType.UPLOAD_PLAYLIST_ID_REQUEST
+
+        getResultsFromApi()
+    }
+
     private fun getResultsFromApi() {
         when {
             !isGooglePlayServicesAvailable() -> acquireGooglePlayServices()
@@ -131,6 +139,7 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
                 RequestType.MOST_POPULAR_REQUEST -> mostPopularTask(pageToken)
                 RequestType.PLAYLIST_DATA_REQUEST -> playlistDataTask(mPlaylistId, pageToken)
                 RequestType.PLAYLISTS_LIBRARY_REQUEST -> playlistLibraryTask(mPlaylistsData)
+                RequestType.UPLOAD_PLAYLIST_ID_REQUEST -> uploadPlaylistIdTask()
             }
         }
     }
@@ -341,8 +350,6 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
         }
     }
 
-    // service.channels().list("").execute().items[0].contentDetails.relatedPlaylists.uploads
-
     private fun playlistDataTask(playlistId: String, pageToken: String) {
         doAsync {
             val result: List<PlaylistItem>
@@ -377,6 +384,34 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
 
                 listener?.onPlaylistDataReceived(result.toList(), nextPageToken, prevPageToken)
                         ?: throw UnsupportedOperationException("Activity must implement PlaylistDataListener")
+            }
+        }
+    }
+
+    // service.channels().list("").execute().items[0].contentDetails.relatedPlaylists.uploads
+
+    private fun uploadPlaylistIdTask() {
+        doAsync {
+            val playlistId: String
+
+            try {
+                playlistId = service.channels().list("contentDetails")
+                        .setId(mChannelId).execute()
+                        .items[0].contentDetails.relatedPlaylists.uploads
+            } catch (e: java.lang.Exception) {
+                onTaskCancelled(e)
+                throw CancellationException()
+            }
+
+            uiThread {
+                val listener: UploadPlaylistListener? = when {
+                    mActivity is UploadPlaylistListener -> mActivity
+                    mFragment is UploadPlaylistListener -> mFragment
+                    else -> null
+                }
+
+                listener?.onUploadPlaylistIdReceived(playlistId)
+                        ?: throw UnsupportedOperationException("Activity must implement UploadPlaylistListener")
             }
         }
     }
@@ -494,7 +529,8 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
         VIDEO_LIST_REQUEST,
         MOST_POPULAR_REQUEST,
         PLAYLIST_DATA_REQUEST,
-        PLAYLISTS_LIBRARY_REQUEST
+        PLAYLISTS_LIBRARY_REQUEST,
+        UPLOAD_PLAYLIST_ID_REQUEST
     }
 
     interface VideoDataListener {
@@ -523,5 +559,9 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
     interface MostPopularListener {
         fun onMostPopularReceived(results: List<Video>,
                                   nextPageToken: String, previousPageToken: String)
+    }
+
+    interface UploadPlaylistListener {
+        fun onUploadPlaylistIdReceived(id: String)
     }
 }
