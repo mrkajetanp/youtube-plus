@@ -170,9 +170,10 @@ class VideoListFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         mNextPageToken = nextPageToken
     }
 
-    override fun onUploadPlaylistIdReceived(id: String) {
+    override fun onUploadPlaylistIdReceived(id: String, channelTitle: String) {
         findNavController().navigate(R.id.action_start_to_playlistContentFragment,
-                bundleOf(getString(R.string.playlist_id_key) to id))
+                bundleOf(getString(R.string.playlist_id_key) to id,
+                        "channel_title" to channelTitle))
     }
 
     override fun onListItemClick(id: String, position: Int, type: ItemType) {

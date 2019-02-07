@@ -22,7 +22,6 @@ import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.client.util.ExponentialBackOff
 import com.google.api.services.youtube.YouTube
 import com.google.api.services.youtube.YouTubeScopes
-import com.google.api.services.youtube.model.Playlist
 import com.google.api.services.youtube.model.PlaylistItem
 import com.google.api.services.youtube.model.Video
 import com.google.api.services.youtube.model.VideoListResponse
@@ -393,11 +392,15 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
     private fun uploadPlaylistIdTask() {
         doAsync {
             val playlistId: String
+            val channelTitle: String
 
             try {
-                playlistId = service.channels().list("contentDetails")
+                val responseItem = service.channels().list("snippet,contentDetails")
                         .setId(mChannelId).execute()
-                        .items[0].contentDetails.relatedPlaylists.uploads
+                        .items[0]
+
+                playlistId = responseItem.contentDetails.relatedPlaylists.uploads
+                channelTitle = responseItem.snippet.title
             } catch (e: java.lang.Exception) {
                 onTaskCancelled(e)
                 throw CancellationException()
@@ -410,7 +413,7 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
                     else -> null
                 }
 
-                listener?.onUploadPlaylistIdReceived(playlistId)
+                listener?.onUploadPlaylistIdReceived(playlistId, channelTitle)
                         ?: throw UnsupportedOperationException("Activity must implement UploadPlaylistListener")
             }
         }
@@ -562,6 +565,6 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
     }
 
     interface UploadPlaylistListener {
-        fun onUploadPlaylistIdReceived(id: String)
+        fun onUploadPlaylistIdReceived(id: String, channelTitle: String)
     }
 }

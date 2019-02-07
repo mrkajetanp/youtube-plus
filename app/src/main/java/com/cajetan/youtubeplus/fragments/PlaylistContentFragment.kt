@@ -1,5 +1,6 @@
 package com.cajetan.youtubeplus.fragments
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -24,11 +25,14 @@ import com.google.api.services.youtube.model.Video
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
 import org.jetbrains.anko.yesButton
+import java.lang.ClassCastException
 
 class PlaylistContentFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         YouTubeData.PlaylistDataListener, YouTubeData.VideoListDataListener {
 
     private val TAG: String = this.javaClass.simpleName
+
+    private lateinit var mListener: InteractionListener
 
     private lateinit var mAdapter: ContentListAdapter
     private lateinit var mYouTubeData: YouTubeData
@@ -60,6 +64,19 @@ class PlaylistContentFragment : Fragment(), ContentListAdapter.ListItemClickList
         setupSearchResultList()
         mPlaylistId = arguments?.getString("playlist_id")!!
         loadPlaylistVideos("")
+
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        if (activity is InteractionListener)
+            mListener = activity as InteractionListener
+        else
+            throw ClassCastException("Activity must implement InteractionListener")
+
+        if (this::mListener.isInitialized)
+            mListener.onChannelTitle(arguments?.getString("channel_title")!!)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -147,4 +164,10 @@ class PlaylistContentFragment : Fragment(), ContentListAdapter.ListItemClickList
                 }.show()
         }
     }
+
+    interface InteractionListener {
+        fun onChannelTitle(title: String)
+    }
 }
+
+

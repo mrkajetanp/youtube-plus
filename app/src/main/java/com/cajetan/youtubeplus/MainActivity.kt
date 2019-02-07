@@ -14,16 +14,22 @@ import android.view.View
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.cajetan.youtubeplus.fragments.FavouritesFragment
+import com.cajetan.youtubeplus.fragments.PlaylistContentFragment
 import com.cajetan.youtubeplus.fragments.VideoListFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), PlaylistContentFragment.InteractionListener {
     private val TAG = this.javaClass.simpleName
 
     private lateinit var mMenu: Menu
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     private var userIsInteracting = false
 
@@ -39,8 +45,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val navController: NavController = findNavController(R.id.mainContainer)
+        appBarConfiguration = AppBarConfiguration(navController.graph)
+
         findViewById<BottomNavigationView>(R.id.bottomBar)
-                .setupWithNavController(findNavController(R.id.mainContainer))
+                .setupWithNavController(navController)
+
+        setupActionBarWithNavController(navController, appBarConfiguration)
 
         createNotificationChannel()
         handleIntent(intent)
@@ -64,6 +75,11 @@ class MainActivity : AppCompatActivity() {
         setupNavigation()
 
         return true
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return findNavController(R.id.mainContainer).navigateUp(appBarConfiguration)
+                || super.onSupportNavigateUp()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -99,22 +115,37 @@ class MainActivity : AppCompatActivity() {
                     searchView?.setQuery("", false)
                     searchView?.isIconified = true
                     searchView?.visibility = View.VISIBLE
+                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
                 }
+
                 R.id.favourites -> {
                     searchView?.setQuery("", false)
                     searchView?.isIconified = true
                     searchView?.queryHint = getString(R.string.search_favourites)
                     searchView?.visibility = View.VISIBLE
+                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
                 }
+
                 R.id.others -> {
                     searchView?.setQuery("", false)
                     searchView?.isIconified = true
                     searchView?.visibility = View.GONE
+                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
                 }
+
+                R.id.library -> {
+                    searchView?.setQuery("", false)
+                    searchView?.isIconified = true
+                    searchView?.visibility = View.GONE
+                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                }
+
                 R.id.playlistContent -> {
                     searchView?.setQuery("", false)
                     searchView?.isIconified = true
                     searchView?.visibility = View.GONE
+                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                    supportActionBar?.title = "TESTT"
                 }
             }
         }
@@ -150,5 +181,13 @@ class MainActivity : AppCompatActivity() {
                         .show()
             }
         }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // Callbacks & others
+    ////////////////////////////////////////////////////////////////////////////////
+
+    override fun onChannelTitle(title: String) {
+        supportActionBar?.title = title
     }
 }
