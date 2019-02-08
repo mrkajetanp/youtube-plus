@@ -144,8 +144,7 @@ class MainActivity : AppCompatActivity(), PlaylistContentFragment.InteractionLis
                     searchView?.setQuery("", false)
                     searchView?.isIconified = true
                     searchView?.visibility = View.GONE
-                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
-                    supportActionBar?.title = "TESTT"
+                    supportActionBar?.setDisplayHomeAsUpEnabled(true)
                 }
             }
         }

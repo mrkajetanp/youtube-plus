@@ -2,6 +2,10 @@
 
 ---
 
+#### 8.02.2019
+
+* [General] Fixed clearing searchQuery after popping back the VideoListFragment
+
 #### 7.02.2019
 
 * [General] ActionBar navigation integration

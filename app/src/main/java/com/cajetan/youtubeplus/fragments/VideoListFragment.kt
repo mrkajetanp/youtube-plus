@@ -2,6 +2,7 @@ package com.cajetan.youtubeplus.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,16 +51,8 @@ class VideoListFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mMainDataViewModel = ViewModelProviders.of(this).get(MainDataViewModel::class.java)
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        mAdapter  = ContentListAdapter(emptyList(), this, activity!!)
-        mYouTubeData = YouTubeData(activity!!, this)
-
-        setupSearchResultList()
-        loadMostPopularVideos("")
+        Log.d("VideoListFragment", "onCreate")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -70,6 +63,19 @@ class VideoListFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         searchProgressBarBottom = view.findViewById(R.id.searchProgressBarBottom)
 
         return view
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        mAdapter = ContentListAdapter(emptyList(), this, activity!!)
+        mYouTubeData = YouTubeData(activity!!, this)
+
+        mSearchQuery = ""
+        mNextPageToken = ""
+
+        setupSearchResultList()
+        loadMostPopularVideos(mNextPageToken)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
