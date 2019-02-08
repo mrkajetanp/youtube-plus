@@ -8,8 +8,10 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.SearchView
 import android.widget.Toast
@@ -20,10 +22,9 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.cajetan.youtubeplus.fragments.FavouritesFragment
-import com.cajetan.youtubeplus.fragments.PlaylistContentFragment
-import com.cajetan.youtubeplus.fragments.VideoListFragment
+import com.cajetan.youtubeplus.fragments.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.api.services.youtube.model.Playlist
 
 class MainActivity : AppCompatActivity(), PlaylistContentFragment.InteractionListener {
     private val TAG = this.javaClass.simpleName
@@ -62,19 +63,25 @@ class MainActivity : AppCompatActivity(), PlaylistContentFragment.InteractionLis
         userIsInteracting = true
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main_options_menu, menu)
 
-        if (menu != null)
-            mMenu = menu
-
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        val searchView = menu?.findItem(R.id.search)?.actionView as SearchView
+        val searchView = menu.findItem(R.id.search)?.actionView as SearchView
         searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
 
-        setupNavigation()
+        setupNavigation(menu)
 
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.action_settings -> {
+            findNavController(R.id.mainContainer).navigate(R.id.action_global_settings)
+            true
+        }
+
+        else -> super.onOptionsItemSelected(item)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -106,9 +113,10 @@ class MainActivity : AppCompatActivity(), PlaylistContentFragment.InteractionLis
     // Init
     ////////////////////////////////////////////////////////////////////////////////
 
-    private fun setupNavigation() {
+    private fun setupNavigation(menu: Menu) {
         findNavController(R.id.mainContainer).addOnDestinationChangedListener { _, destination, _ ->
-            val searchView = mMenu.findItem(R.id.search)?.actionView as SearchView?
+            invalidateOptionsMenu()
+            val searchView = menu.findItem(R.id.search)?.actionView as SearchView?
 
             when (destination.id) {
                 R.id.start -> {

@@ -8,6 +8,11 @@
             <LayoutPositions>
               <option name="myPositions">
                 <map>
+                  <entry key="action_global_settings">
+                    <value>
+                      <LayoutPositions />
+                    </value>
+                  </entry>
                   <entry key="favourites">
                     <value>
                       <LayoutPositions>
@@ -66,11 +71,6 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
-                            <entry key="action_others_to_settingsActivity">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
                           </map>
                         </option>
                       </LayoutPositions>
@@ -81,7 +81,7 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="3" />
+                            <option name="x" value="153" />
                             <option name="y" value="13" />
                           </Point>
                         </option>
@@ -109,13 +109,13 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="settingsActivity">
+                  <entry key="settings">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-130" />
-                            <option name="y" value="355" />
+                            <option name="x" value="678" />
+                            <option name="y" value="-610" />
                           </Point>
                         </option>
                       </LayoutPositions>

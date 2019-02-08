@@ -4,6 +4,7 @@
 
 #### 8.02.2019
 
+* [General] Reduced SettingsActivity to a single Fragment
 * [General] Fixed clearing searchQuery after popping back the VideoListFragment
 
 #### 7.02.2019

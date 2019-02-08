@@ -51,8 +51,6 @@ class VideoListFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mMainDataViewModel = ViewModelProviders.of(this).get(MainDataViewModel::class.java)
-
-        Log.d("VideoListFragment", "onCreate")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

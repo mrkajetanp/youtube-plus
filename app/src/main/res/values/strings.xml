@@ -3,6 +3,7 @@
     <string name="app_name" translatable="false">YouTube Plus</string>
     <string name="dark_mode_key" translatable="false">dark_mode</string>
     <string name="playlist_id_key" translatable="false">playlist_id</string>
+    <string name="settings" translatable="true">Settings</string>
 
     <!--Main Activity-->
     <string name="no_fragment_found" translatable="false">No fragment found</string>

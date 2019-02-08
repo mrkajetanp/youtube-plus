@@ -23,7 +23,7 @@ class OthersFragment : Fragment() {
         }
 
         view.findViewById<Button>(R.id.settingsButton).setOnClickListener {
-            findNavController().navigate(R.id.action_others_to_settingsActivity)
+            findNavController().navigate(R.id.action_others_to_settingsFragment)
         }
 
         return view
