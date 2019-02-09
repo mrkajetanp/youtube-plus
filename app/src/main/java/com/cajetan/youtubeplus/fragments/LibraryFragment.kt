@@ -2,9 +2,7 @@ package com.cajetan.youtubeplus.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.os.bundleOf
@@ -22,7 +20,6 @@ import com.cajetan.youtubeplus.data.MainDataViewModel
 import com.cajetan.youtubeplus.utils.FeedItem
 import com.cajetan.youtubeplus.utils.ItemType
 import com.cajetan.youtubeplus.utils.YouTubeData
-import com.google.api.services.youtube.model.Video
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
 import org.jetbrains.anko.yesButton
@@ -46,6 +43,7 @@ class LibraryFragment : Fragment(), ContentListAdapter.ListItemClickListener,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
         setupDatabase()
     }
 
@@ -67,6 +65,20 @@ class LibraryFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         noFavouritesView = view.findViewById(R.id.noFavouritesView)
 
         return view
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.others_options_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.action_settings -> {
+            findNavController().navigate(R.id.action_global_settings)
+            true
+        }
+
+        else -> super.onOptionsItemSelected(item)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

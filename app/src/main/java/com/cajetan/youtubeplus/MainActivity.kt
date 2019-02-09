@@ -3,17 +3,12 @@ package com.cajetan.youtubeplus
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.SearchManager
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.widget.SearchView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
@@ -24,7 +19,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.cajetan.youtubeplus.fragments.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.api.services.youtube.model.Playlist
+import java.lang.IllegalStateException
 
 class MainActivity : AppCompatActivity(), PlaylistContentFragment.InteractionListener {
     private val TAG = this.javaClass.simpleName
@@ -64,24 +59,8 @@ class MainActivity : AppCompatActivity(), PlaylistContentFragment.InteractionLis
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main_options_menu, menu)
-
-        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        val searchView = menu.findItem(R.id.search)?.actionView as SearchView
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
-
-        setupNavigation(menu)
-
+        setupNavigation()
         return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.action_settings -> {
-            findNavController(R.id.mainContainer).navigate(R.id.action_global_settings)
-            true
-        }
-
-        else -> super.onOptionsItemSelected(item)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -103,9 +82,7 @@ class MainActivity : AppCompatActivity(), PlaylistContentFragment.InteractionLis
                 .childFragmentManager.fragments[0]
         when (fragment) {
             is Fragment -> fragment.onActivityResult(requestCode, resultCode, data)
-            else -> Toast.makeText(this,
-                    getString(R.string.no_fragment_found), Toast.LENGTH_SHORT)
-                    .show()
+            else -> throw IllegalStateException("No fragment to receive the result")
         }
     }
 
@@ -113,47 +90,13 @@ class MainActivity : AppCompatActivity(), PlaylistContentFragment.InteractionLis
     // Init
     ////////////////////////////////////////////////////////////////////////////////
 
-    private fun setupNavigation(menu: Menu) {
+    private fun setupNavigation() {
         findNavController(R.id.mainContainer).addOnDestinationChangedListener { _, destination, _ ->
-            invalidateOptionsMenu()
-            val searchView = menu.findItem(R.id.search)?.actionView as SearchView?
 
             when (destination.id) {
-                R.id.start -> {
-                    searchView?.setQuery("", false)
-                    searchView?.isIconified = true
-                    searchView?.visibility = View.VISIBLE
-                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
-                }
-
-                R.id.favourites -> {
-                    searchView?.setQuery("", false)
-                    searchView?.isIconified = true
-                    searchView?.queryHint = getString(R.string.search_favourites)
-                    searchView?.visibility = View.VISIBLE
-                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
-                }
-
-                R.id.others -> {
-                    searchView?.setQuery("", false)
-                    searchView?.isIconified = true
-                    searchView?.visibility = View.GONE
-                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
-                }
-
-                R.id.library -> {
-                    searchView?.setQuery("", false)
-                    searchView?.isIconified = true
-                    searchView?.visibility = View.GONE
-                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
-                }
-
-                R.id.playlistContent -> {
-                    searchView?.setQuery("", false)
-                    searchView?.isIconified = true
-                    searchView?.visibility = View.GONE
-                    supportActionBar?.setDisplayHomeAsUpEnabled(true)
-                }
+                R.id.playlistContent -> supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                R.id.settings -> supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                else -> supportActionBar?.setDisplayHomeAsUpEnabled(false)
             }
         }
     }
@@ -183,9 +126,7 @@ class MainActivity : AppCompatActivity(), PlaylistContentFragment.InteractionLis
             when (fragment) {
                 is VideoListFragment -> fragment.searchVideos(query)
                 is FavouritesFragment -> fragment.filterVideos(query)
-                else -> Toast.makeText(this,
-                        getString(R.string.no_fragment_found), Toast.LENGTH_SHORT)
-                        .show()
+                else -> throw IllegalStateException("No fragment to receive the result")
             }
         }
     }

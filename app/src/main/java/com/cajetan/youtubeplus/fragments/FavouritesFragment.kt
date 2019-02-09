@@ -1,11 +1,12 @@
 package com.cajetan.youtubeplus.fragments
 
+import android.app.SearchManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ProgressBar
+import android.widget.SearchView
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -46,6 +47,7 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
         setupDatabase()
     }
 
@@ -67,6 +69,26 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         noFavouritesView = view.findViewById(R.id.noFavouritesView)
 
         return view
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.start_options_menu, menu)
+
+        val searchManager = activity!!.getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        val searchView = menu.findItem(R.id.search)?.actionView as SearchView
+        searchView.queryHint = getString(R.string.search_favourites)
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
+
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.action_settings -> {
+            findNavController().navigate(R.id.action_global_settings)
+            true
+        }
+
+        else -> super.onOptionsItemSelected(item)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

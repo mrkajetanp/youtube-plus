@@ -2,6 +2,10 @@
 
 ---
 
+#### 9.02.2019
+
+* [General] Fragment-specific option menus
+
 #### 8.02.2019
 
 * [General] Reduced SettingsActivity to a single Fragment
