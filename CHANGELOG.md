@@ -4,6 +4,7 @@
 
 #### 9.02.2019
 
+* [General] Fixed content not refreshing after popping back Fragments
 * [General] Fragment-specific option menus
 
 #### 8.02.2019

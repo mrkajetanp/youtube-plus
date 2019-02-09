@@ -59,6 +59,9 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         mYouTubeData = YouTubeData(activity!!, this)
 
         setupFavouritesList()
+
+        if (mMainDataViewModel.getAllFavourites().value != null)
+            loadFavourites(mMainDataViewModel.getAllFavourites().value!!)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

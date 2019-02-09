@@ -2,4 +2,4 @@
 
 Custom Android app for playing YouTube videos
 
-Current version: 0.9.8-SNAPSHOT
+Current version: 0.9.9-SNAPSHOT

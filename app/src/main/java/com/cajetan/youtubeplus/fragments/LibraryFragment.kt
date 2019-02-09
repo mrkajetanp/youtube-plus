@@ -54,7 +54,10 @@ class LibraryFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         mAdapter.onBottomReached = { }
         mYouTubeData = YouTubeData(activity!!, this)
 
-        setupFavouritesList()
+        setupPlaylistsList()
+
+        if (mMainDataViewModel.getAllPlaylists().value != null)
+            loadPlaylists(mMainDataViewModel.getAllPlaylists().value!!)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -63,6 +66,7 @@ class LibraryFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         videoList = view.findViewById(R.id.videoList)
         progressBarCentre = view.findViewById(R.id.progressBarCentre)
         noFavouritesView = view.findViewById(R.id.noFavouritesView)
+        noFavouritesView.text = "No playlists added yet!"
 
         return view
     }
@@ -90,7 +94,7 @@ class LibraryFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     // Init
     ////////////////////////////////////////////////////////////////////////////////
 
-    private fun setupFavouritesList() {
+    private fun setupPlaylistsList() {
         videoList.layoutManager = LinearLayoutManager(activity!!)
         videoList.setHasFixedSize(false)
         videoList.adapter = mAdapter
