@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -24,7 +23,6 @@ import java.lang.IllegalStateException
 class MainActivity : AppCompatActivity(), PlaylistContentFragment.InteractionListener {
     private val TAG = this.javaClass.simpleName
 
-    private lateinit var mMenu: Menu
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     private var userIsInteracting = false

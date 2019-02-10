@@ -2,6 +2,10 @@
 
 ---
 
+#### 10.02.2019
+
+* [General] Restarting the app on changing the theme
+
 #### 9.02.2019
 
 * [General] Fixed content not refreshing after popping back Fragments
