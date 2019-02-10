@@ -7,6 +7,8 @@ import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
+import android.preference.Preference
+import android.preference.PreferenceManager
 import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -55,6 +57,8 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
     private val mCredential: GoogleAccountCredential = GoogleAccountCredential
             .usingOAuth2(parentActivity.applicationContext, SCOPES.toList())
             .setBackOff(ExponentialBackOff())
+
+    private var accountInitialised: Boolean = false
 
     private var service: YouTube = YouTube.Builder(AndroidHttp.newCompatibleTransport(),
                 JacksonFactory.getDefaultInstance(), mCredential)
@@ -128,7 +132,8 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
     private fun getResultsFromApi() {
         when {
             !isGooglePlayServicesAvailable() -> acquireGooglePlayServices()
-            mCredential.selectedAccountName == null -> chooseAccount()
+            mCredential.selectedAccountName == null && !accountInitialised -> chooseAccount()
+            mCredential.selectedAccountName == null && accountInitialised -> { }
             !isDeviceOnline() -> Toast.makeText(mActivity, "The device is not online",
                     Toast.LENGTH_SHORT).show()
             else -> when (mRequestType) {
@@ -445,7 +450,7 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
                 if (resultCode == RESULT_OK && data?.extras != null) {
                     val accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME)
                     if (accountName != null) {
-                        val settings = mActivity.getPreferences(Context.MODE_PRIVATE)
+                        val settings = PreferenceManager.getDefaultSharedPreferences(mActivity)
 
                         val editor = settings.edit()
                         editor.putString(PREF_ACCOUNT_NAME, accountName)
@@ -466,10 +471,12 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
     @AfterPermissionGranted(REQUEST_PERMISSION_GET_ACCOUNTS)
     private fun chooseAccount() {
         if (EasyPermissions.hasPermissions(mActivity, Manifest.permission.GET_ACCOUNTS)) {
-            val accountName = mActivity.getPreferences(Context.MODE_PRIVATE)
+            val accountName = PreferenceManager.getDefaultSharedPreferences(mActivity)
                     .getString(PREF_ACCOUNT_NAME, null)
+
             if (accountName != null) {
                 mCredential.selectedAccountName = accountName
+                accountInitialised = true
                 getResultsFromApi()
             } else {
                 mActivity.startActivityForResult(mCredential.newChooseAccountIntent(),
@@ -516,7 +523,9 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
             Toast.makeText(mActivity, "GooglePlayServices not available", Toast.LENGTH_LONG).show()
     }
 
-    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {}
+    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
+        getResultsFromApi()
+    }
 
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {}
 

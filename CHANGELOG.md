@@ -4,6 +4,7 @@
 
 #### 10.02.2019
 
+* [YouTubeData] Moved accountName to SharedPreferences
 * [PlayerActivity] Fixed the app crashing on notification click 
 * [General] Restarting the app on changing the theme
 
