@@ -118,6 +118,10 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+
+        if (intent.extras == null)
+            return
+
         mPrevPageToken = ""
         mNextPageToken = ""
         mCurrentVideoIndex = 0
