@@ -34,6 +34,7 @@ import com.google.api.services.youtube.model.Video
 import com.pierfrancescosoffritti.androidyoutubeplayer.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.player.listeners.YouTubePlayerFullScreenListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.player.listeners.YouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.ui.PlayerUIController
 import com.pierfrancescosoffritti.androidyoutubeplayer.ui.menu.MenuItem
 import com.pierfrancescosoffritti.androidyoutubeplayer.ui.menu.YouTubePlayerMenu
@@ -65,6 +66,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
     private lateinit var mMainDataViewModel: MainDataViewModel
 
     private val mTracker: YouTubePlayerTracker = YouTubePlayerTracker()
+    private var playerReady = false
 
     private val mBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -464,14 +466,21 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
 
     override fun onPlaylistDataReceived(results: List<PlaylistItem>,
                                         nextPageToken: String, previousPageToken: String) {
-        // First call
-        if (previousPageToken.isEmpty())
-            switchVideo(results[0].contentDetails.videoId)
 
         val playlistItems: List<VideoData> = results.map { VideoData(it.contentDetails.videoId) }
 
+        // First call, play the first video when the player is ready
+        if (mPrevPageToken.isEmpty()) {
+            mainPlayerView.player.addListener(object : AbstractYouTubePlayerListener() {
+                override fun onReady() {
+                    switchVideo(playlistItems[0].videoId)
+                }
+            })
+        }
+
         mPrevPageToken = previousPageToken
         mNextPageToken = nextPageToken
+
         mYouTubeData.receiveVideoListResults(playlistItems)
     }
 

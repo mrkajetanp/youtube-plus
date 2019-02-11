@@ -2,6 +2,10 @@
 
 ---
 
+#### 11.02.2019
+
+* [PlayerActivity] Fixed a bug with first playlist video not playing automatically
+
 #### 10.02.2019
 
 * [YouTubeData] Moved accountName to SharedPreferences
