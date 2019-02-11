@@ -31,5 +31,6 @@ dependencies {
     implementation "androidx.annotation:annotation:1.0.1"
     implementation "androidx.appcompat:appcompat:1.1.0-alpha01"
     implementation "androidx.recyclerview:recyclerview:1.1.0-alpha01"
+    implementation 'com.github.pedromassango:doubleClick:3.0'
 }
 

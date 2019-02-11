@@ -228,6 +228,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         })
 
         mUIController = mainPlayerView.playerUIController
+        mUIController.showVideoTitle(true)
 
         if (mUIController.menu == null)
             return

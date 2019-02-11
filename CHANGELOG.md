@@ -4,6 +4,7 @@
 
 #### 11.02.2019
 
+* [YouTubePlayer] Double click on right/left video seek by 10 seconds
 * [PlayerActivity] Fixed a bug with first playlist video not playing automatically
 
 #### 10.02.2019

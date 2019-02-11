@@ -16,6 +16,8 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.pedromassango.doubleclick.DoubleClick;
+import com.pedromassango.doubleclick.DoubleClickListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.R;
 import com.pierfrancescosoffritti.androidyoutubeplayer.player.PlayerConstants;
 import com.pierfrancescosoffritti.androidyoutubeplayer.player.YouTubePlayer;
@@ -41,6 +43,9 @@ public class DefaultPlayerUIController implements PlayerUIController, YouTubePla
     // view containing the controls
     private View controlsRoot;
 
+    private View dropShadowTop;
+    private View dropShadowBottom;
+
     private LinearLayout extraViewsContainer;
 
     private TextView videoTitle;
@@ -56,6 +61,9 @@ public class DefaultPlayerUIController implements PlayerUIController, YouTubePla
 
     private ImageView customActionLeft;
     private ImageView customActionRight;
+
+    private View doubleClickActionLeft;
+    private View doubleClickActionRight;
 
     private SeekBar seekBar;
 
@@ -87,7 +95,11 @@ public class DefaultPlayerUIController implements PlayerUIController, YouTubePla
         controlsRoot = controlsView.findViewById(R.id.controls_root);
         extraViewsContainer = controlsView.findViewById(R.id.extra_views_container);
 
+        dropShadowTop = controlsView.findViewById(R.id.drop_shadow_top);
+        dropShadowBottom = controlsView.findViewById(R.id.drop_shadow_bottom);
+
         videoTitle = controlsView.findViewById(R.id.video_title);
+
         videoCurrentTime = controlsView.findViewById(R.id.video_current_time);
         videoDuration = controlsView.findViewById(R.id.video_duration);
         liveVideoIndicator = controlsView.findViewById(R.id.live_video_indicator);
@@ -101,6 +113,9 @@ public class DefaultPlayerUIController implements PlayerUIController, YouTubePla
         customActionLeft = controlsView.findViewById(R.id.custom_action_left_button);
         customActionRight = controlsView.findViewById(R.id.custom_action_right_button);
 
+        doubleClickActionLeft = controlsView.findViewById(R.id.double_click_view_left);
+        doubleClickActionRight = controlsView.findViewById(R.id.double_click_view_right);
+
         seekBar = controlsView.findViewById(R.id.seek_bar);
 
         seekBar.setOnSeekBarChangeListener(this);
@@ -108,6 +123,38 @@ public class DefaultPlayerUIController implements PlayerUIController, YouTubePla
         playPauseButton.setOnClickListener(this);
         menuButton.setOnClickListener(this);
         fullScreenButton.setOnClickListener(this);
+
+        doubleClickActionLeft.setOnClickListener(new DoubleClick(new DoubleClickListener() {
+            @Override
+            public void onSingleClick(View view) {
+                toggleControlsVisibility();
+            }
+
+            @Override
+            public void onDoubleClick(View view) {
+                int time = (seekBar.getProgress() > 10) ?
+                        seekBar.getProgress() - 10 : 0;
+
+                youTubePlayer.seekTo(time);
+                fadeControls(1f);
+            }
+        }));
+
+        doubleClickActionRight.setOnClickListener(new DoubleClick(new DoubleClickListener() {
+            @Override
+            public void onSingleClick(View view) {
+                toggleControlsVisibility();
+            }
+
+            @Override
+            public void onDoubleClick(View view) {
+                int time = (seekBar.getProgress()+10 >= seekBar.getMax()) ?
+                        seekBar.getMax() : seekBar.getProgress() + 10;
+
+                youTubePlayer.seekTo(time);
+                fadeControls(1f);
+            }
+        }));
     }
 
     @Override
@@ -327,14 +374,24 @@ public class DefaultPlayerUIController implements PlayerUIController, YouTubePla
                 .setListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animator) {
-                        if (finalAlpha == 1f)
-                            controlsRoot.setVisibility(View.VISIBLE);
+                        if (finalAlpha == 1f) {
+                            dropShadowTop.setVisibility(View.VISIBLE);
+                            dropShadowBottom.setVisibility(View.VISIBLE);
+                            videoTitle.setVisibility(View.VISIBLE);
+                            extraViewsContainer.setVisibility(View.VISIBLE);
+                            playPauseButton.setVisibility(View.VISIBLE);
+                        }
                     }
 
                     @Override
                     public void onAnimationEnd(Animator animator) {
-                        if (finalAlpha == 0f)
-                            controlsRoot.setVisibility(View.GONE);
+                        if (finalAlpha == 0f) {
+                            dropShadowTop.setVisibility(View.GONE);
+                            dropShadowBottom.setVisibility(View.GONE);
+                            videoTitle.setVisibility(View.GONE);
+                            extraViewsContainer.setVisibility(View.GONE);
+                            playPauseButton.setVisibility(View.INVISIBLE);
+                        }
                     }
 
                     @Override public void onAnimationCancel(Animator animator) { }

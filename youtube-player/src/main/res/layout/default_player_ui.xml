@@ -77,17 +77,16 @@
             android:id="@+id/play_pause_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_play_36dp"
+            android:layout_centerInParent="true"
 
-            android:visibility="invisible"
-
-            android:padding="8dp"
-            android:clickable="true"
-            android:focusable="true"
             android:background="@drawable/background_item_selected"
 
-            android:layout_centerInParent="true"
-            android:contentDescription="@string/play_button" />
+            android:clickable="true"
+            android:contentDescription="@string/play_button"
+            android:focusable="true"
+            android:padding="8dp"
+
+            android:src="@drawable/ic_play_36dp" />
 
         <ProgressBar
             android:id="@+id/progress"
@@ -100,6 +99,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:id="@+id/bottom_bar"
 
             android:gravity="center_vertical"
 
@@ -189,37 +189,79 @@
             android:id="@+id/custom_action_left_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_play_36dp"
+            android:layout_centerVertical="true"
 
-            android:visibility="gone"
+            android:layout_marginStart="32dp"
 
-            android:padding="8dp"
-            android:layout_margin="32dp"
+            android:layout_marginTop="32dp"
 
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="32dp"
+            android:layout_toStartOf="@+id/play_pause_button"
+
+            android:background="@drawable/background_item_selected"
             android:clickable="true"
             android:focusable="true"
-            android:background="@drawable/background_item_selected"
-
-            android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/play_pause_button" />
+            android:padding="8dp"
+            android:src="@drawable/ic_play_36dp"
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/custom_action_right_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_play_36dp"
+            android:layout_centerVertical="true"
 
-            android:visibility="gone"
+            android:layout_marginStart="32dp"
 
+            android:layout_marginTop="32dp"
+
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="32dp"
+            android:layout_toEndOf="@+id/play_pause_button"
+
+            android:background="@drawable/background_item_selected"
+            android:clickable="true"
+            android:focusable="true"
             android:padding="8dp"
-            android:layout_margin="32dp"
+            android:src="@drawable/ic_play_36dp"
+            android:visibility="gone" />
+
+        <View
+            android:id="@+id/double_click_view_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="40dp"
+
+            android:layout_toStartOf="@+id/play_pause_button"
+            android:background="@android:color/transparent"
 
             android:clickable="true"
             android:focusable="true"
-            android:background="@drawable/background_item_selected"
+            android:padding="8dp"
 
+            android:visibility="visible" />
+
+        <View
+            android:id="@+id/double_click_view_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toEndOf="@+id/play_pause_button" />
+
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="40dp"
+
+            android:layout_toEndOf="@+id/play_pause_button"
+            android:background="@android:color/transparent"
+
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="8dp"
+
+            android:visibility="visible" />
 
     </RelativeLayout>
 
