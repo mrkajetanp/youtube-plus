@@ -28,16 +28,6 @@
             app:destination="@id/playerActivity" />
     </fragment>
 
-    <fragment
-        android:id="@+id/others"
-        android:name="com.cajetan.youtubeplus.fragments.OthersFragment"
-        android:label="Others"
-        tools:layout="@layout/fragment_others" >
-        <action
-            android:id="@+id/action_others_to_playerActivity"
-            app:destination="@id/playerActivity" />
-    </fragment>
-
     <activity
         android:id="@+id/playerActivity"
         android:name="com.cajetan.youtubeplus.PlayerActivity"

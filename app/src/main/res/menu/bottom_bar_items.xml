@@ -18,9 +18,4 @@
         android:checked="false"
         android:title="Library" />
 
-    <item
-        android:id="@+id/others"
-        android:icon="@drawable/ic_menu_24dp"
-        android:checked="false"
-        android:title="Others" />
 </menu>

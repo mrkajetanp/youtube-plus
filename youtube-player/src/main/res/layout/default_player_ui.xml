@@ -79,12 +79,14 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
 
+            android:visibility="invisible"
             android:background="@drawable/background_item_selected"
 
             android:clickable="true"
             android:contentDescription="@string/play_button"
             android:focusable="true"
             android:padding="8dp"
+
 
             android:src="@drawable/ic_play_36dp" />
 

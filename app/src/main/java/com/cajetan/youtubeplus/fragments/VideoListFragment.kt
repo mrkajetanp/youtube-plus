@@ -78,7 +78,7 @@ class VideoListFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.start_options_menu, menu)
+        inflater.inflate(R.menu.search_options_menu, menu)
 
         val searchManager = activity!!.getSystemService(Context.SEARCH_SERVICE) as SearchManager
         val searchView = menu.findItem(R.id.search)?.actionView as SearchView
@@ -90,6 +90,12 @@ class VideoListFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.action_settings -> {
             findNavController().navigate(R.id.action_global_settings)
+            true
+        }
+
+        R.id.action_where_do_we_go -> {
+            findNavController().navigate(R.id.action_start_to_playerActivity,
+                    bundleOf(getString(R.string.video_id_key) to getString(R.string.where_do_we_go_id)))
             true
         }
 

@@ -379,7 +379,7 @@ public class DefaultPlayerUIController implements PlayerUIController, YouTubePla
                             dropShadowBottom.setVisibility(View.VISIBLE);
                             videoTitle.setVisibility(View.VISIBLE);
                             extraViewsContainer.setVisibility(View.VISIBLE);
-                            playPauseButton.setVisibility(View.VISIBLE);
+//                            playPauseButton.setVisibility(View.VISIBLE);
                         }
                     }
 
@@ -390,7 +390,7 @@ public class DefaultPlayerUIController implements PlayerUIController, YouTubePla
                             dropShadowBottom.setVisibility(View.GONE);
                             videoTitle.setVisibility(View.GONE);
                             extraViewsContainer.setVisibility(View.GONE);
-                            playPauseButton.setVisibility(View.INVISIBLE);
+//                            playPauseButton.setVisibility(View.INVISIBLE);
                         }
                     }
 

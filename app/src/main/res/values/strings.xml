@@ -3,7 +3,14 @@
     <string name="app_name" translatable="false">YouTube Plus</string>
     <string name="dark_mode_key" translatable="false">dark_mode</string>
     <string name="playlist_id_key" translatable="false">playlist_id</string>
+    <string name="channel_title_key" translatable="false">channel_title</string>
+
+    <!--Options Menu-->
+    <string name="search" translatable="true">Search</string>
     <string name="settings" translatable="true">Settings</string>
+    <string name="where_do_we_go" translatable="false">Where Do We Go From Here</string>
+
+    <!--Bottom Bar-->
 
     <!--Main Activity-->
     <string name="no_fragment_found" translatable="false">No fragment found</string>
@@ -46,4 +53,7 @@
 
     <string name="no_favourites_message" translatable="true">No favourites found!</string>
     <string name="no_playlists_message" translatable="true">No playlists found!</string>
+
+    <!--Others-->
+    <string name="where_do_we_go_id" translatable="false">Bcqb7kzekoc</string>
 </resources>

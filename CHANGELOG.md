@@ -2,6 +2,10 @@
 
 ---
 
+#### 12.02.2019
+
+* [General] Removed OthersFragment, general improvements
+
 #### 11.02.2019
 
 * [YouTubePlayer] Double click on right/left video seek by 10 seconds

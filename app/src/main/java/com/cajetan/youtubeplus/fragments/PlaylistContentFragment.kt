@@ -62,7 +62,7 @@ class PlaylistContentFragment : Fragment(), ContentListAdapter.ListItemClickList
         mYouTubeData = YouTubeData(activity!!, this)
 
         setupSearchResultList()
-        mPlaylistId = arguments?.getString("playlist_id")!!
+        mPlaylistId = arguments?.getString(getString(R.string.playlist_id_key))!!
         loadPlaylistVideos("")
 
     }
@@ -76,7 +76,7 @@ class PlaylistContentFragment : Fragment(), ContentListAdapter.ListItemClickList
             throw ClassCastException("Activity must implement InteractionListener")
 
         if (this::mListener.isInitialized)
-            mListener.onChannelTitle(arguments?.getString("channel_title")!!)
+            mListener.onChannelTitle(arguments?.getString(getString(R.string.channel_title_key))!!)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

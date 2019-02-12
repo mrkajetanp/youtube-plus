@@ -31,7 +31,7 @@ class LibraryFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     private lateinit var mYouTubeData: YouTubeData
     private lateinit var mMainDataViewModel: MainDataViewModel
 
-    private lateinit var videoList: RecyclerView
+    private lateinit var contentList: RecyclerView
     private lateinit var progressBarCentre: ProgressBar
     private lateinit var noFavouritesView: TextView
 
@@ -61,24 +61,29 @@ class LibraryFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_favourites, container, false)
+        val view = inflater.inflate(R.layout.fragment_library, container, false)
 
-        videoList = view.findViewById(R.id.videoList)
+        contentList = view.findViewById(R.id.contentList)
         progressBarCentre = view.findViewById(R.id.progressBarCentre)
-        noFavouritesView = view.findViewById(R.id.noFavouritesView)
-        noFavouritesView.text = "No playlists added yet!"
+        noFavouritesView = view.findViewById(R.id.noPlaylistsView)
 
         return view
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.others_options_menu, menu)
+        inflater.inflate(R.menu.basic_options_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.action_settings -> {
             findNavController().navigate(R.id.action_global_settings)
+            true
+        }
+
+        R.id.action_where_do_we_go -> {
+            findNavController().navigate(R.id.action_library_to_playerActivity,
+                    bundleOf(getString(R.string.video_id_key) to getString(R.string.where_do_we_go_id)))
             true
         }
 
@@ -95,9 +100,9 @@ class LibraryFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     ////////////////////////////////////////////////////////////////////////////////
 
     private fun setupPlaylistsList() {
-        videoList.layoutManager = LinearLayoutManager(activity!!)
-        videoList.setHasFixedSize(false)
-        videoList.adapter = mAdapter
+        contentList.layoutManager = LinearLayoutManager(activity!!)
+        contentList.setHasFixedSize(false)
+        contentList.adapter = mAdapter
     }
 
     private fun setupDatabase() {
@@ -114,7 +119,7 @@ class LibraryFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     ////////////////////////////////////////////////////////////////////////////////
 
     private fun loadPlaylists(playlistData: List<PlaylistData>) {
-        videoList.visibility = View.INVISIBLE
+        contentList.visibility = View.INVISIBLE
         progressBarCentre.visibility = View.VISIBLE
 
         mYouTubeData.receivePlaylistsLibraryResults(playlistData)
@@ -130,7 +135,7 @@ class LibraryFragment : Fragment(), ContentListAdapter.ListItemClickListener,
 
         noFavouritesView.visibility = if (mAdapter.itemCount == 0) View.VISIBLE else View.GONE
         progressBarCentre.visibility = View.INVISIBLE
-        videoList.visibility = View.VISIBLE
+        contentList.visibility = View.VISIBLE
     }
 
     override fun onListItemClick(id: String, position: Int, type: ItemType) {
