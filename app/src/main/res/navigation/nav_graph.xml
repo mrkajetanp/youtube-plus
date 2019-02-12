@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/start"
-        android:name="com.cajetan.youtubeplus.fragments.VideoListFragment"
+        android:name="com.cajetan.youtubeplus.fragments.StartFragment"
         android:label="YouTube Plus"
-        tools:layout="@layout/fragment_video_list">
+        tools:layout="@layout/fragment_start">
         <action
             android:id="@+id/action_start_to_playerActivity"
             app:destination="@id/playerActivity" />

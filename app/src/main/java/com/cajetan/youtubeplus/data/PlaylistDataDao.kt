@@ -6,7 +6,6 @@ import androidx.room.*
 @Dao
 interface PlaylistDataDao {
     // TODO: implement some ordering
-    // TODO: sort out names
 
     @Query("SELECT * FROM playlist_data_table")
     fun getAllPlaylists(): LiveData<List<PlaylistData>>

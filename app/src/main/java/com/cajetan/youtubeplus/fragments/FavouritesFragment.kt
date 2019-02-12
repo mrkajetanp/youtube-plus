@@ -167,6 +167,8 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
 
             ItemType.Playlist -> findNavController().navigate(R.id.action_favourites_to_playerActivity,
                     bundleOf(getString(R.string.playlist_id_key) to id))
+
+            else -> {}
         }
     }
 
@@ -183,6 +185,8 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
                     yesButton { mMainDataViewModel.deletePlaylist(PlaylistData(id)) }
                     noButton { }
                 }.show()
+
+            else -> {}
         }
     }
 }

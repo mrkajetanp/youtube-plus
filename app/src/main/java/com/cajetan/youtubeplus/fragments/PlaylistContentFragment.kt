@@ -80,7 +80,7 @@ class PlaylistContentFragment : Fragment(), ContentListAdapter.ListItemClickList
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_video_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_start, container, false)
 
         videoList = view.findViewById(R.id.videoList)
         searchProgressBarCentre = view.findViewById(R.id.searchProgressBarCentre)
@@ -152,6 +152,7 @@ class PlaylistContentFragment : Fragment(), ContentListAdapter.ListItemClickList
         when (type) {
             ItemType.Video -> findNavController().navigate(R.id.action_playlistContent_to_playerActivity,
                     bundleOf(getString(R.string.video_id_key) to id))
+            else -> {}
         }
     }
 
@@ -162,6 +163,7 @@ class PlaylistContentFragment : Fragment(), ContentListAdapter.ListItemClickList
                     yesButton { mMainDataViewModel.insertFavourite(VideoData(id)) }
                     noButton { }
                 }.show()
+            else -> {}
         }
     }
 

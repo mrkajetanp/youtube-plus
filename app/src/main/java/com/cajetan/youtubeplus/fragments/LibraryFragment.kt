@@ -145,6 +145,8 @@ class LibraryFragment : Fragment(), ContentListAdapter.ListItemClickListener,
 
             ItemType.Playlist -> findNavController().navigate(R.id.action_library_to_playerActivity,
                     bundleOf(getString(R.string.playlist_id_key) to id))
+
+            else -> {}
         }
     }
 
@@ -161,6 +163,8 @@ class LibraryFragment : Fragment(), ContentListAdapter.ListItemClickListener,
                     yesButton { mMainDataViewModel.deletePlaylist(PlaylistData(id)) }
                     noButton { }
                 }.show()
+
+            else -> {}
         }
     }
 }

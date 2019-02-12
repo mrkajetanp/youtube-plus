@@ -4,6 +4,7 @@
 
 #### 12.02.2019
 
+* [PlayerActivity] Fixed playPause button visibility bug 
 * [General] Removed OthersFragment, general improvements
 
 #### 11.02.2019

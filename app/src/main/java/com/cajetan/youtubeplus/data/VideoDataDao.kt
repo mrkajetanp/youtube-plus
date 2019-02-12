@@ -6,7 +6,6 @@ import androidx.room.*
 @Dao
 interface VideoDataDao {
     // TODO: implement some ordering
-    // TODO: sort out names
 
     @Query("SELECT * FROM video_data_table")
     fun getAllFavourites(): LiveData<List<VideoData>>

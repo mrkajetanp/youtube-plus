@@ -122,7 +122,7 @@ class MainActivity : AppCompatActivity(), PlaylistContentFragment.InteractionLis
             val fragment = supportFragmentManager.findFragmentById(R.id.mainContainer)!!
                     .childFragmentManager.fragments[0]
             when (fragment) {
-                is VideoListFragment -> fragment.searchVideos(query)
+                is StartFragment -> fragment.searchVideos(query)
                 is FavouritesFragment -> fragment.filterVideos(query)
                 else -> throw IllegalStateException("No fragment to receive the result")
             }

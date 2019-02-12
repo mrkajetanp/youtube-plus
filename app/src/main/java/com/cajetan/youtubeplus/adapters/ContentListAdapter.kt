@@ -22,8 +22,6 @@ import com.squareup.picasso.Picasso
 class ContentListAdapter(items: List<FeedItem>, listener: ListItemClickListener, context: Context) :
         RecyclerView.Adapter<ContentListAdapter.VideoViewHolder>() {
 
-    // TODO: enum specifying the item type with Video, Channel, Playlist
-
     lateinit var onBottomReached: () -> Unit
 
     private val mItems: ArrayList<FeedItem> = ArrayList(items)
@@ -289,7 +287,6 @@ class ContentListAdapter(items: List<FeedItem>, listener: ListItemClickListener,
             }
         }
 
-        // TODO: different onClick behaviour for different ItemTypes
         override fun onClick(v: View?) {
             mOnClickListener.onListItemClick(mItems[adapterPosition].id, adapterPosition,
                     mItems[adapterPosition].itemType)

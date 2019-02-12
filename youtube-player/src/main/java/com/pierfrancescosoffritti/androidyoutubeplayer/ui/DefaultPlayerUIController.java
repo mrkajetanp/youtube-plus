@@ -330,6 +330,9 @@ public class DefaultPlayerUIController implements PlayerUIController, YouTubePla
     }
 
     private void onPlayButtonPressed() {
+        if (!isVisible)
+            toggleControlsVisibility();
+
         if(isPlaying)
             youTubePlayer.pause();
         else
@@ -522,7 +525,9 @@ public class DefaultPlayerUIController implements PlayerUIController, YouTubePla
         });
     }
 
-    @Override public void onReady() { }
+    @Override public void onReady() {
+        playPauseButton.setVisibility(View.VISIBLE);
+    }
     @Override public void onPlaybackQualityChange(@NonNull PlayerConstants.PlaybackQuality playbackQuality) { }
     @Override public void onPlaybackRateChange(@NonNull PlayerConstants.PlaybackRate rate) { }
     @Override public void onError(@NonNull PlayerConstants.PlayerError error) { }
