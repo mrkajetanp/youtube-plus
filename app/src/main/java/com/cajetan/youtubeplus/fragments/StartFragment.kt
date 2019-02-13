@@ -11,7 +11,6 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cajetan.youtubeplus.R
 import com.cajetan.youtubeplus.adapters.ContentListAdapter
@@ -21,6 +20,7 @@ import com.cajetan.youtubeplus.data.MainDataViewModel
 import com.cajetan.youtubeplus.utils.FeedItem
 import com.cajetan.youtubeplus.utils.ItemType
 import com.cajetan.youtubeplus.utils.YouTubeData
+import com.cajetan.youtubeplus.viewmodels.StartViewModel
 import com.google.api.services.youtube.model.Video
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
@@ -34,15 +34,13 @@ class StartFragment : Fragment(), ContentListAdapter.ListItemClickListener,
 
     private lateinit var mAdapter: ContentListAdapter
     private lateinit var mYouTubeData: YouTubeData
+
     private lateinit var mMainDataViewModel: MainDataViewModel
+    private lateinit var mStartViewModel: StartViewModel
 
     private lateinit var videoList: RecyclerView
     private lateinit var searchProgressBarCentre: ProgressBar
     private lateinit var searchProgressBarBottom: ProgressBar
-
-    private var mSearchQuery: String = ""
-    private var mNextPageToken: String = ""
-    private var searching = false
 
     ////////////////////////////////////////////////////////////////////////////////
     // Lifecycle
@@ -52,6 +50,9 @@ class StartFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         mMainDataViewModel = ViewModelProviders.of(this).get(MainDataViewModel::class.java)
+
+        // TODO: experiment with parent activity as a context
+        mStartViewModel = ViewModelProviders.of(this).get(StartViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -67,14 +68,12 @@ class StartFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        mAdapter = ContentListAdapter(emptyList(), this, activity!!)
+        mAdapter = ContentListAdapter(mStartViewModel.getAdapterItems(), this, activity!!)
         mYouTubeData = YouTubeData(activity!!, this)
 
-        mSearchQuery = ""
-        mNextPageToken = ""
-
         setupSearchResultList()
-        loadMostPopularVideos(mNextPageToken)
+        // TODO: default argument should be used here
+        loadMostPopularVideos(mStartViewModel.nextPageToken)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -85,6 +84,19 @@ class StartFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         searchView.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
 
         super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+
+        val searchView = menu.findItem(R.id.search)?.actionView as SearchView
+
+        if (mStartViewModel.searchQuery.isNotEmpty())
+            searchView.isIconified = false
+        else
+            return
+
+        searchView.setQuery(mStartViewModel.searchQuery, false)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
@@ -112,16 +124,14 @@ class StartFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     ////////////////////////////////////////////////////////////////////////////////
 
     private fun setupSearchResultList() {
-        videoList.layoutManager = LinearLayoutManager(activity!!)
-
         mAdapter.onBottomReached = {
-            if (mSearchQuery.isEmpty())
-                loadMostPopularVideos(mNextPageToken)
+            if (mStartViewModel.searchQuery.isEmpty())
+                loadMostPopularVideos(mStartViewModel.nextPageToken)
             else
-                loadSearchResults(mNextPageToken)
+                loadSearchResults(mStartViewModel.nextPageToken)
         }
 
-        videoList.setHasFixedSize(false)
+        videoList.setHasFixedSize(true)
         videoList.adapter = mAdapter
     }
 
@@ -130,17 +140,17 @@ class StartFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     ////////////////////////////////////////////////////////////////////////////////
 
     fun searchVideos(query: String) {
-        if (query.isEmpty() || query == mSearchQuery)
+        if (query.isEmpty() || query == mStartViewModel.searchQuery)
             return
 
-        mSearchQuery = query
+        mStartViewModel.searchQuery = query
         loadSearchResults("")
     }
 
     private fun loadSearchResults(nextPageToken: String) {
-        if (!searching) {
-            mNextPageToken = ""
-            searching = true
+        if (!mStartViewModel.searching) {
+            mStartViewModel.nextPageToken = ""
+            mStartViewModel.searching = true
         }
 
         if (nextPageToken.isEmpty()) {
@@ -150,7 +160,7 @@ class StartFragment : Fragment(), ContentListAdapter.ListItemClickListener,
             searchProgressBarBottom.visibility = View.VISIBLE
         }
 
-        mYouTubeData.receiveSearchResults(mSearchQuery, nextPageToken)
+        mYouTubeData.receiveSearchResults(mStartViewModel.searchQuery, nextPageToken)
     }
 
     private fun loadMostPopularVideos(nextPageToken: String) {
@@ -171,7 +181,7 @@ class StartFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     override fun onSearchResultsReceived(results: List<FeedItem>,
                                          nextPageToken: String, previousPageToken: String) {
         if (previousPageToken.isEmpty()) {
-            mAdapter.clearItems()
+            mStartViewModel.clearAdapterItems()
             videoList.scrollToPosition(0)
 
             searchProgressBarCentre.visibility = View.INVISIBLE
@@ -180,14 +190,17 @@ class StartFragment : Fragment(), ContentListAdapter.ListItemClickListener,
             searchProgressBarBottom.visibility = View.GONE
         }
 
-        mAdapter.addItems(results)
-        mNextPageToken = nextPageToken
+        mStartViewModel.addAdapterItems(results)
+        mStartViewModel.nextPageToken = nextPageToken
+
+        // TODO: observable LiveData
+        mAdapter.setItems(mStartViewModel.getAdapterItems())
     }
 
     override fun onMostPopularReceived(results: List<Video>,
                                        nextPageToken: String, previousPageToken: String) {
         if (previousPageToken.isEmpty()) {
-            mAdapter.clearItems()
+            mStartViewModel.clearAdapterItems()
             videoList.scrollToPosition(0)
 
             searchProgressBarCentre.visibility = View.INVISIBLE
@@ -196,14 +209,17 @@ class StartFragment : Fragment(), ContentListAdapter.ListItemClickListener,
             searchProgressBarBottom.visibility = View.GONE
         }
 
-        mAdapter.addItems(results.map { FeedItem(it.id, video = it) })
-        mNextPageToken = nextPageToken
+        mStartViewModel.addAdapterItems(results.map { FeedItem(it.id, video = it) })
+        mStartViewModel.nextPageToken = nextPageToken
+
+        // TODO: observable LiveData
+        mAdapter.setItems(mStartViewModel.getAdapterItems())
     }
 
     override fun onUploadPlaylistIdReceived(id: String, channelTitle: String) {
         findNavController().navigate(R.id.action_start_to_playlistContentFragment,
                 bundleOf(getString(R.string.playlist_id_key) to id,
-                        "channel_title" to channelTitle))
+                        getString(R.string.channel_title_key) to channelTitle))
     }
 
     override fun onListItemClick(id: String, position: Int, type: ItemType) {
@@ -227,7 +243,7 @@ class StartFragment : Fragment(), ContentListAdapter.ListItemClickListener,
                 }.show()
 
             ItemType.Playlist ->
-                activity!!.alert("Do you want to add this playlist to the library?") {
+                activity!!.alert(getString(R.string.playlist_add_confirmation)) {
                     yesButton { mMainDataViewModel.insertPlaylist(PlaylistData(id)) }
                     noButton { }
                 }.show()

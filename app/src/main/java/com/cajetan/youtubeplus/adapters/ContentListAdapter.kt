@@ -24,7 +24,7 @@ class ContentListAdapter(items: List<FeedItem>, listener: ListItemClickListener,
 
     lateinit var onBottomReached: () -> Unit
 
-    private val mItems: ArrayList<FeedItem> = ArrayList(items)
+    private var mItems: ArrayList<FeedItem> = ArrayList(items)
     private val mOnClickListener = listener
     private val mContext = context
     // Non-negative value means the adapter is showing a playlist
@@ -88,6 +88,11 @@ class ContentListAdapter(items: List<FeedItem>, listener: ListItemClickListener,
 
     fun clearItems() {
         mItems.clear()
+        notifyDataSetChanged()
+    }
+
+    fun setItems(items: ArrayList<FeedItem>) {
+        mItems = items
         notifyDataSetChanged()
     }
 

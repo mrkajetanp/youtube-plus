@@ -2,6 +2,10 @@
 
 ---
 
+#### 13.02.2019
+
+* [StartFragment] Extracted member variables to StartViewModel
+
 #### 12.02.2019
 
 * [PlayerActivity] Fixed playPause button visibility bug 
