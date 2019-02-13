@@ -83,8 +83,8 @@ class PlaylistContentFragment : Fragment(), ContentListAdapter.ListItemClickList
         val view = inflater.inflate(R.layout.fragment_start, container, false)
 
         videoList = view.findViewById(R.id.videoList)
-        searchProgressBarCentre = view.findViewById(R.id.searchProgressBarCentre)
-        searchProgressBarBottom = view.findViewById(R.id.searchProgressBarBottom)
+        searchProgressBarCentre = view.findViewById(R.id.progressBarCentre)
+        searchProgressBarBottom = view.findViewById(R.id.progressBarBottom)
 
         return view
     }

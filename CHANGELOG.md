@@ -4,6 +4,7 @@
 
 #### 13.02.2019
 
+* [General] Split StartFragment into StartFragment and SearchFragment 
 * [StartFragment] Extracted member variables to StartViewModel
 
 #### 12.02.2019

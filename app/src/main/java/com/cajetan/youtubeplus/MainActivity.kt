@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -92,9 +93,20 @@ class MainActivity : AppCompatActivity(), PlaylistContentFragment.InteractionLis
         findNavController(R.id.mainContainer).addOnDestinationChangedListener { _, destination, _ ->
 
             when (destination.id) {
-                R.id.playlistContent -> supportActionBar?.setDisplayHomeAsUpEnabled(true)
-                R.id.settings -> supportActionBar?.setDisplayHomeAsUpEnabled(true)
-                else -> supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                R.id.searchFragment -> {
+                    supportActionBar?.setDisplayShowTitleEnabled(false)
+                    supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                }
+
+                R.id.playlistContent, R.id.settings -> {
+                    supportActionBar?.setDisplayShowTitleEnabled(true)
+                    supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                }
+
+                else -> {
+                    supportActionBar?.setDisplayShowTitleEnabled(true)
+                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                }
             }
         }
     }
@@ -122,7 +134,10 @@ class MainActivity : AppCompatActivity(), PlaylistContentFragment.InteractionLis
             val fragment = supportFragmentManager.findFragmentById(R.id.mainContainer)!!
                     .childFragmentManager.fragments[0]
             when (fragment) {
-                is StartFragment -> fragment.searchVideos(query)
+                is StartFragment -> findNavController(R.id.mainContainer)
+                        .navigate(R.id.action_start_to_searchFragment,
+                        bundleOf("search_query" to query))
+                is SearchFragment -> fragment.searchVideos(query)
                 is FavouritesFragment -> fragment.filterVideos(query)
                 else -> throw IllegalStateException("No fragment to receive the result")
             }

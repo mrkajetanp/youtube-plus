@@ -4,9 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.cajetan.youtubeplus.utils.FeedItem
 
 class StartViewModel : ViewModel() {
-    var searchQuery: String = ""
     var nextPageToken: String = ""
-    var searching = false
 
     private var adapterItems: ArrayList<FeedItem> = ArrayList(emptyList())
 

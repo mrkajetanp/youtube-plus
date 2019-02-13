@@ -14,8 +14,8 @@
             android:id="@+id/action_start_to_playerActivity"
             app:destination="@id/playerActivity" />
         <action
-            android:id="@+id/action_start_to_playlistContentFragment"
-            app:destination="@id/playlistContent" />
+            android:id="@+id/action_start_to_searchFragment"
+            app:destination="@id/searchFragment" />
     </fragment>
 
     <fragment
@@ -55,6 +55,9 @@
             android:id="@+id/action_playlistContent_to_playerActivity"
             app:destination="@id/playerActivity"
             app:popUpTo="@+id/playlistContent" />
+        <argument
+            android:name="playlist_id"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/settings"
@@ -62,4 +65,18 @@
         tools:layout="@layout/fragment_settings"
         android:label="Settings" />
     <action android:id="@+id/action_global_settings" app:destination="@id/settings" />
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.cajetan.youtubeplus.fragments.SearchFragment"
+        android:label="Search" >
+        <action
+            android:id="@+id/action_searchFragment_to_playlistContent"
+            app:destination="@id/playlistContent" />
+        <action
+            android:id="@+id/action_searchFragment_to_playerActivity"
+            app:destination="@id/playerActivity" />
+        <argument
+            android:name="search_query"
+            app:argType="string" />
+    </fragment>
 </navigation>

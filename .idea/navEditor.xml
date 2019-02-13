@@ -60,8 +60,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="153" />
-                            <option name="y" value="13" />
+                            <option name="x" value="453" />
+                            <option name="y" value="45" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -72,8 +72,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-57" />
-                            <option name="y" value="-608" />
+                            <option name="x" value="303" />
+                            <option name="y" value="-667" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -88,12 +88,38 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="searchFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="-57" />
+                            <option name="y" value="-675" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_searchFragment_to_playerActivity">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_searchFragment_to_playlistContent">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="settings">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="553" />
+                            <option name="x" value="758" />
                             <option name="y" value="-625" />
                           </Point>
                         </option>
@@ -105,8 +131,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-397" />
-                            <option name="y" value="-470" />
+                            <option name="x" value="-458" />
+                            <option name="y" value="-469" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -116,7 +142,7 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
-                            <entry key="action_start_to_playlistContentFragment">
+                            <entry key="action_start_to_searchFragment">
                               <value>
                                 <LayoutPositions />
                               </value>
