@@ -1,12 +1,10 @@
 package com.cajetan.youtubeplus.fragments
 
-import android.app.Activity
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import android.view.inputmethod.InputMethodManager
 import android.widget.ProgressBar
 import android.widget.SearchView
 import androidx.core.os.bundleOf
@@ -54,8 +52,6 @@ class StartFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         mMainDataViewModel = ViewModelProviders.of(this).get(MainDataViewModel::class.java)
-
-        // TODO: experiment with parent activity as a context
         mStartViewModel = ViewModelProviders.of(this).get(StartViewModel::class.java)
     }
 

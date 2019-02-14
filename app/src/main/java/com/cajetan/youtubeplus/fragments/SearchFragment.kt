@@ -20,8 +20,8 @@ import com.cajetan.youtubeplus.data.VideoData
 import com.cajetan.youtubeplus.utils.FeedItem
 import com.cajetan.youtubeplus.utils.ItemType
 import com.cajetan.youtubeplus.utils.YouTubeData
+import com.cajetan.youtubeplus.viewmodels.SearchViewModel
 import org.jetbrains.anko.alert
-import org.jetbrains.anko.find
 import org.jetbrains.anko.noButton
 import org.jetbrains.anko.yesButton
 
@@ -32,14 +32,12 @@ class SearchFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     private lateinit var mYouTubeData: YouTubeData
 
     private lateinit var mMainDataViewModel: MainDataViewModel
+    private lateinit var mSearchViewModel: SearchViewModel
 
     private lateinit var rootView: View
     private lateinit var videoList: RecyclerView
-    private lateinit var searchProgressBarCentre: ProgressBar
-    private lateinit var searchProgressBarBottom: ProgressBar
-
-    private var searchQuery: String = ""
-    private var nextPageToken: String = ""
+    private lateinit var progressBarCentre: ProgressBar
+    private lateinit var progressBarBottom: ProgressBar
 
     ////////////////////////////////////////////////////////////////////////////////
     // Lifecycle
@@ -48,7 +46,9 @@ class SearchFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
         mMainDataViewModel = ViewModelProviders.of(this).get(MainDataViewModel::class.java)
+        mSearchViewModel = ViewModelProviders.of(this).get(SearchViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -56,8 +56,8 @@ class SearchFragment : Fragment(), ContentListAdapter.ListItemClickListener,
 
         rootView = view.findViewById(R.id.root_view)
         videoList = view.findViewById(R.id.videoList)
-        searchProgressBarCentre = view.findViewById(R.id.progressBarCentre)
-        searchProgressBarBottom = view.findViewById(R.id.progressBarBottom)
+        progressBarCentre = view.findViewById(R.id.progressBarCentre)
+        progressBarBottom = view.findViewById(R.id.progressBarBottom)
 
         return view
     }
@@ -65,14 +65,13 @@ class SearchFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        mAdapter = ContentListAdapter(emptyList(), this, activity!!)
+        mAdapter = ContentListAdapter(mSearchViewModel.getAdapterItems(), this, activity!!)
         mYouTubeData = YouTubeData(activity!!, this)
 
         setupSearchResultList()
-        searchVideos(arguments?.getString("search_query")!!)
+        searchVideos(arguments?.getString(getString(R.string.search_query_key))!!)
     }
 
-    // TODO: fix search view focus
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.search_options_menu, menu)
 
@@ -118,7 +117,7 @@ class SearchFragment : Fragment(), ContentListAdapter.ListItemClickListener,
 
     private fun setupSearchResultList() {
         mAdapter.onBottomReached = {
-            loadSearchResults(nextPageToken)
+            loadSearchResults(mSearchViewModel.nextPageToken)
         }
 
         videoList.setHasFixedSize(true)
@@ -130,22 +129,22 @@ class SearchFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     ////////////////////////////////////////////////////////////////////////////////
 
     fun searchVideos(query: String) {
-        if (query.isEmpty() || query == searchQuery)
+        if (query.isEmpty() || query == mSearchViewModel.searchQuery)
             return
 
-        searchQuery = query
+        mSearchViewModel.searchQuery = query
         loadSearchResults("")
     }
 
     private fun loadSearchResults(nextPageToken: String) {
         if (nextPageToken.isEmpty()) {
-            searchProgressBarCentre.visibility = View.VISIBLE
+            progressBarCentre.visibility = View.VISIBLE
             videoList.visibility = View.INVISIBLE
         } else {
-            searchProgressBarBottom.visibility = View.VISIBLE
+            progressBarBottom.visibility = View.VISIBLE
         }
 
-        mYouTubeData.receiveSearchResults(searchQuery, nextPageToken)
+        mYouTubeData.receiveSearchResults(mSearchViewModel.searchQuery, nextPageToken)
     }
 
 
@@ -163,17 +162,20 @@ class SearchFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     override fun onSearchResultsReceived(results: List<FeedItem>,
                                          nextPageToken: String, previousPageToken: String) {
         if (previousPageToken.isEmpty()) {
-            mAdapter.clearItems()
+            mSearchViewModel.clearAdapterItems()
             videoList.scrollToPosition(0)
 
-            searchProgressBarCentre.visibility = View.INVISIBLE
+            progressBarCentre.visibility = View.INVISIBLE
             videoList.visibility = View.VISIBLE
         } else {
-            searchProgressBarBottom.visibility = View.GONE
+            progressBarBottom.visibility = View.GONE
         }
 
-        mAdapter.addItems(results)
-        this.nextPageToken = nextPageToken
+        mSearchViewModel.addAdapterItems(results)
+        mSearchViewModel.nextPageToken = nextPageToken
+
+        // TODO: observable LiveData
+        mAdapter.setItems(mSearchViewModel.getAdapterItems())
     }
 
     override fun onListItemClick(id: String, position: Int, type: ItemType) {
@@ -201,6 +203,8 @@ class SearchFragment : Fragment(), ContentListAdapter.ListItemClickListener,
                     yesButton { mMainDataViewModel.insertPlaylist(PlaylistData(id)) }
                     noButton { }
                 }.show()
+
+            else -> {}
         }
     }
 }

@@ -4,6 +4,7 @@
     <string name="dark_mode_key" translatable="false">dark_mode</string>
     <string name="playlist_id_key" translatable="false">playlist_id</string>
     <string name="channel_title_key" translatable="false">channel_title</string>
+    <string name="search_query_key" translatable="false">search_query</string>
 
     <!--Options Menu-->
     <string name="search" translatable="true">Search</string>

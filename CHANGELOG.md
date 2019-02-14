@@ -4,6 +4,7 @@
 
 #### 14.02.2019
 
+* [SearchFragment] Extracted member variables to SearchViewModel 
 * [General] Fixed some bugs with SearchView focus
 
 #### 13.02.2019
