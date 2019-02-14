@@ -1,14 +1,18 @@
 package com.cajetan.youtubeplus
 
+import android.app.Activity
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.SearchManager
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
@@ -152,3 +156,4 @@ class MainActivity : AppCompatActivity(), PlaylistContentFragment.InteractionLis
         supportActionBar?.title = title
     }
 }
+

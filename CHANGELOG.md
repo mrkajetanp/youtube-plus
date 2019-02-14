@@ -2,6 +2,10 @@
 
 ---
 
+#### 14.02.2019
+
+* [General] Fixed some bugs with SearchView focus
+
 #### 13.02.2019
 
 * [General] Split StartFragment into StartFragment and SearchFragment 

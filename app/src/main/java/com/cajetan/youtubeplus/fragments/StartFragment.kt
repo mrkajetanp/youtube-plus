@@ -1,10 +1,12 @@
 package com.cajetan.youtubeplus.fragments
 
+import android.app.Activity
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.ProgressBar
 import android.widget.SearchView
 import androidx.core.os.bundleOf
@@ -20,6 +22,7 @@ import com.cajetan.youtubeplus.data.MainDataViewModel
 import com.cajetan.youtubeplus.utils.FeedItem
 import com.cajetan.youtubeplus.utils.ItemType
 import com.cajetan.youtubeplus.utils.YouTubeData
+import com.cajetan.youtubeplus.utils.hideKeyboard
 import com.cajetan.youtubeplus.viewmodels.StartViewModel
 import com.google.api.services.youtube.model.Video
 import org.jetbrains.anko.alert
@@ -38,6 +41,7 @@ class StartFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     private lateinit var mMainDataViewModel: MainDataViewModel
     private lateinit var mStartViewModel: StartViewModel
 
+    private lateinit var rootView: View
     private lateinit var videoList: RecyclerView
     private lateinit var progressBarCentre: ProgressBar
     private lateinit var progressBarBottom: ProgressBar
@@ -58,6 +62,7 @@ class StartFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_start, container, false)
 
+        rootView = view.findViewById(R.id.root_view)
         videoList = view.findViewById(R.id.videoList)
         progressBarCentre = view.findViewById(R.id.progressBarCentre)
         progressBarBottom = view.findViewById(R.id.progressBarBottom)
@@ -106,6 +111,11 @@ class StartFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         }
 
         else -> super.onOptionsItemSelected(item)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        activity?.hideKeyboard()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -190,6 +200,8 @@ class StartFragment : Fragment(), ContentListAdapter.ListItemClickListener,
                     yesButton { mMainDataViewModel.insertPlaylist(PlaylistData(id)) }
                     noButton { }
                 }.show()
+
+            else -> {}
         }
     }
 }

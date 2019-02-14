@@ -87,6 +87,9 @@ class SearchFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         super.onPrepareOptionsMenu(menu)
         val searchView = menu.findItem(R.id.search)?.actionView as SearchView
         searchView.isIconified = false
+
+        searchView.clearFocus()
+        rootView.requestFocus()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
