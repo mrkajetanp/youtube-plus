@@ -2,6 +2,10 @@
 
 ---
 
+#### 15.02.2019
+
+* [0.10.7] Improved SearchView behaviour between navigation states
+
 #### 14.02.2019
 
 * [SearchFragment] Extracted member variables to SearchViewModel 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.cajetan.youtubeplus">
+    package="com.cajetanp.youtubeplus">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -15,7 +15,7 @@
         android:theme="@style/AppThemeLight">
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.cajetanp.youtubeplus.MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/AppThemeLight">
             <intent-filter>
@@ -31,7 +31,7 @@
         </activity>
 
         <activity
-            android:name=".PlayerActivity"
+            android:name="com.cajetanp.youtubeplus.PlayerActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
             android:launchMode="singleTop"
             android:theme="@style/PlayerActivityThemeLight">
@@ -53,7 +53,7 @@
         </receiver>
 
         <service
-            android:name=".PlayerActivity$PlayerLifecycleService"
+            android:name="com.cajetanp.youtubeplus.PlayerActivity$PlayerLifecycleService"
             android:exported="false" />
     </application>
 

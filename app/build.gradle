@@ -5,7 +5,7 @@ apply plugin: 'kotlin-android-extensions'
 
 ext.versionMajor = 0
 ext.versionMinor = 10
-ext.versionPatch = 6
+ext.versionPatch = 7
 ext.versionClassifier = null
 ext.isSnapshot = true
 ext.minimumSdkVersion = 19
@@ -14,7 +14,7 @@ android {
     compileSdkVersion 28
 
     defaultConfig {
-        applicationId "com.cajetan.youtubeplus"
+        applicationId "com.cajetanp.youtubeplus"
         targetSdkVersion 28
         minSdkVersion 19
         versionCode generateVersionCode()
