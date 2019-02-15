@@ -5,7 +5,7 @@ apply plugin: 'kotlin-android-extensions'
 
 ext.versionMajor = 0
 ext.versionMinor = 10
-ext.versionPatch = 7
+ext.versionPatch = 8
 ext.versionClassifier = null
 ext.isSnapshot = true
 ext.minimumSdkVersion = 19

@@ -4,6 +4,7 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.ProgressBar
 import android.widget.SearchView
@@ -23,6 +24,8 @@ import com.cajetanp.youtubeplus.data.MainDataViewModel
 import com.cajetanp.youtubeplus.utils.FeedItem
 import com.cajetanp.youtubeplus.utils.ItemType
 import com.cajetanp.youtubeplus.utils.YouTubeData
+import com.cajetanp.youtubeplus.utils.hideKeyboard
+import com.cajetanp.youtubeplus.viewmodels.FavouritesViewModel
 import com.google.api.services.youtube.model.Video
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
@@ -33,6 +36,8 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
 
     private lateinit var mAdapter: ContentListAdapter
     private lateinit var mYouTubeData: YouTubeData
+
+    private lateinit var mFavouritesViewModel: FavouritesViewModel
     private lateinit var mMainDataViewModel: MainDataViewModel
 
     private lateinit var videoList: RecyclerView
@@ -48,20 +53,9 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
         setupDatabase()
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        mAdapter = ContentListAdapter(emptyList(), this, activity!!)
-        mAdapter.onBottomReached = { }
-        mYouTubeData = YouTubeData(activity!!, this)
-
-        setupFavouritesList()
-
-        if (mMainDataViewModel.getAllFavourites().value != null)
-            loadFavourites(mMainDataViewModel.getAllFavourites().value!!)
+        mFavouritesViewModel = ViewModelProviders.of(this).get(FavouritesViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -74,6 +68,18 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         return view
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        mAdapter = ContentListAdapter(mFavouritesViewModel.getAdapterItems(), this, activity!!)
+        mAdapter.onBottomReached = { }
+        mYouTubeData = YouTubeData(activity!!, this)
+
+        setupFavouritesList()
+//        Log.d("FavouritesFragment", "query: ${mFavouritesViewModel.filterQuery}")
+//        filterVideos(mFavouritesViewModel.filterQuery)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.search_options_menu, menu)
 
@@ -81,8 +87,19 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         val searchView = menu.findItem(R.id.search)?.actionView as SearchView
         searchView.queryHint = getString(R.string.search_favourites)
         searchView.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
+        searchView.maxWidth = Integer.MAX_VALUE
 
         super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        val searchView = menu.findItem(R.id.search)?.actionView as SearchView
+        if (mFavouritesViewModel.filterQuery.isNotEmpty()) {
+            searchView.setQuery(mFavouritesViewModel.filterQuery, false)
+            searchView.isIconified = false
+        }
+        searchView.clearFocus()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
@@ -100,6 +117,11 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         else -> super.onOptionsItemSelected(item)
     }
 
+    override fun onResume() {
+        super.onResume()
+        activity?.hideKeyboard()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         mYouTubeData.onParentActivityResult(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
@@ -110,8 +132,7 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     ////////////////////////////////////////////////////////////////////////////////
 
     private fun setupFavouritesList() {
-        videoList.layoutManager = LinearLayoutManager(activity!!)
-        videoList.setHasFixedSize(false)
+        videoList.setHasFixedSize(true)
         videoList.adapter = mAdapter
     }
 
@@ -119,8 +140,12 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         mMainDataViewModel = ViewModelProviders.of(this).get(MainDataViewModel::class.java)
 
         mMainDataViewModel.getAllFavourites().observe(this, Observer {
-            if (it != null)
-                loadFavourites(it)
+            if (it != null) {
+                if (mFavouritesViewModel.filterQuery.isEmpty())
+                    loadFavourites(it)
+                else
+                    filterVideos(mFavouritesViewModel.filterQuery)
+            }
         })
     }
 
@@ -129,6 +154,13 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     ////////////////////////////////////////////////////////////////////////////////
 
     fun filterVideos(query: String) {
+        if (query.isEmpty())
+            return
+
+        Log.d("FavouritesFragment", "filterVideos")
+
+        mFavouritesViewModel.filterQuery = query
+
         loadFavourites(mMainDataViewModel.getAllFavourites().value!!) {
             it.filter { t -> t.snippet.title.toLowerCase().contains(query.toLowerCase()) }
         }
@@ -136,6 +168,7 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
 
     private fun loadFavourites(videoData: List<VideoData>,
                                block: ((List<Video>) -> List<Video>)? = null) {
+        Log.d("FavouritesFragment", "loadFavourites")
         videoList.visibility = View.INVISIBLE
         progressBarCentre.visibility = View.VISIBLE
 
@@ -148,16 +181,18 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
 
     override fun onVideoListReceived(results: List<Video>,
                                      block: ((List<Video>) -> List<Video>)?) {
-        mAdapter.clearItems()
+        mFavouritesViewModel.clearAdapterItems()
 
         // If an additional function was passed, apply it to the results
         val result = block?.invoke(results)?.toList() ?: results.toList()
 
-        mAdapter.addItems(result.map { FeedItem(it.id, video = it) })
+        mFavouritesViewModel.addAdapterItems(result.map { FeedItem(it.id, video = it) })
 
-        noFavouritesView.visibility = if (mAdapter.itemCount == 0) View.VISIBLE else View.GONE
+        noFavouritesView.visibility = if (mFavouritesViewModel.getAdapterItems().size == 0) View.VISIBLE else View.GONE
         progressBarCentre.visibility = View.INVISIBLE
         videoList.visibility = View.VISIBLE
+
+        mAdapter.setItems(mFavouritesViewModel.getAdapterItems())
     }
 
     override fun onListItemClick(id: String, position: Int, type: ItemType) {
