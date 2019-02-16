@@ -2,6 +2,10 @@
 
 ---
 
+#### 16.02.2019
+
+* [0.10.9] Fixed SearchView behaviour in FavouritesFragment
+
 #### 15.02.2019
 
 * [0.10.8] FavouritesViewModel, FavoritesFragment behaviour improvements 

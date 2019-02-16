@@ -3,6 +3,8 @@ package com.cajetanp.youtubeplus.fragments
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
+import android.hardware.SensorManager
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -36,6 +38,7 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
 
     private lateinit var mAdapter: ContentListAdapter
     private lateinit var mYouTubeData: YouTubeData
+    private var mMenu: Menu? = null
 
     private lateinit var mFavouritesViewModel: FavouritesViewModel
     private lateinit var mMainDataViewModel: MainDataViewModel
@@ -76,17 +79,17 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         mYouTubeData = YouTubeData(activity!!, this)
 
         setupFavouritesList()
-//        Log.d("FavouritesFragment", "query: ${mFavouritesViewModel.filterQuery}")
-//        filterVideos(mFavouritesViewModel.filterQuery)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.search_options_menu, menu)
 
+        mMenu = menu
+
         val searchManager = activity!!.getSystemService(Context.SEARCH_SERVICE) as SearchManager
         val searchView = menu.findItem(R.id.search)?.actionView as SearchView
-        searchView.queryHint = getString(R.string.search_favourites)
         searchView.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
+        searchView.queryHint = getString(R.string.search_favourites)
         searchView.maxWidth = Integer.MAX_VALUE
 
         super.onCreateOptionsMenu(menu, inflater)
@@ -94,13 +97,9 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        val searchView = menu.findItem(R.id.search)?.actionView as SearchView
-        if (mFavouritesViewModel.filterQuery.isNotEmpty()) {
-            searchView.setQuery(mFavouritesViewModel.filterQuery, false)
-            searchView.isIconified = false
-        }
-        searchView.clearFocus()
+        menu.adjustSearchView(mFavouritesViewModel.filterQuery)
     }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.action_settings -> {
@@ -141,6 +140,8 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
 
         mMainDataViewModel.getAllFavourites().observe(this, Observer {
             if (it != null) {
+                mMenu?.adjustSearchView(mFavouritesViewModel.filterQuery)
+
                 if (mFavouritesViewModel.filterQuery.isEmpty())
                     loadFavourites(it)
                 else
@@ -157,8 +158,6 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         if (query.isEmpty())
             return
 
-        Log.d("FavouritesFragment", "filterVideos")
-
         mFavouritesViewModel.filterQuery = query
 
         loadFavourites(mMainDataViewModel.getAllFavourites().value!!) {
@@ -166,9 +165,29 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         }
     }
 
+    /**
+     * A helper method to iconify/expand SearchView and adjust its content based on the filterQuery
+     * If the query is empty, it'll clear the content and iconify the SearchView
+     * If the query is not empty, it'll make sure the SearchView is expanded and reflects it
+     * Must be called on a Menu object reflecting the current OptionsMenu
+     * Won't do anything if the current OptionsMenu doesn't contain a SearchView with id "search"
+     * */
+    private fun Menu.adjustSearchView(filterQuery: String) {
+        val searchView = this.findItem(R.id.search)?.actionView as SearchView?
+
+        if (filterQuery.isEmpty()) {
+            searchView?.setQuery("", false)
+            searchView?.isIconified = true
+        } else {
+            searchView?.setQuery(filterQuery, false)
+            searchView?.isIconified = false
+        }
+
+        searchView?.clearFocus()
+    }
+
     private fun loadFavourites(videoData: List<VideoData>,
                                block: ((List<Video>) -> List<Video>)? = null) {
-        Log.d("FavouritesFragment", "loadFavourites")
         videoList.visibility = View.INVISIBLE
         progressBarCentre.visibility = View.VISIBLE
 
