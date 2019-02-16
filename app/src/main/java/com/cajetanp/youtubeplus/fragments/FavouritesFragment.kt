@@ -23,10 +23,7 @@ import com.cajetanp.youtubeplus.adapters.ContentListAdapter
 import com.cajetanp.youtubeplus.data.PlaylistData
 import com.cajetanp.youtubeplus.data.VideoData
 import com.cajetanp.youtubeplus.data.MainDataViewModel
-import com.cajetanp.youtubeplus.utils.FeedItem
-import com.cajetanp.youtubeplus.utils.ItemType
-import com.cajetanp.youtubeplus.utils.YouTubeData
-import com.cajetanp.youtubeplus.utils.hideKeyboard
+import com.cajetanp.youtubeplus.utils.*
 import com.cajetanp.youtubeplus.viewmodels.FavouritesViewModel
 import com.google.api.services.youtube.model.Video
 import org.jetbrains.anko.alert
@@ -97,7 +94,7 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        menu.adjustSearchView(mFavouritesViewModel.filterQuery)
+        menu.adjustSearchView(R.id.search, mFavouritesViewModel.filterQuery)
     }
 
 
@@ -140,7 +137,7 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
 
         mMainDataViewModel.getAllFavourites().observe(this, Observer {
             if (it != null) {
-                mMenu?.adjustSearchView(mFavouritesViewModel.filterQuery)
+                mMenu?.adjustSearchView(R.id.search, mFavouritesViewModel.filterQuery)
 
                 if (mFavouritesViewModel.filterQuery.isEmpty())
                     loadFavourites(it)
@@ -163,27 +160,6 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         loadFavourites(mMainDataViewModel.getAllFavourites().value!!) {
             it.filter { t -> t.snippet.title.toLowerCase().contains(query.toLowerCase()) }
         }
-    }
-
-    /**
-     * A helper method to iconify/expand SearchView and adjust its content based on the filterQuery
-     * If the query is empty, it'll clear the content and iconify the SearchView
-     * If the query is not empty, it'll make sure the SearchView is expanded and reflects it
-     * Must be called on a Menu object reflecting the current OptionsMenu
-     * Won't do anything if the current OptionsMenu doesn't contain a SearchView with id "search"
-     * */
-    private fun Menu.adjustSearchView(filterQuery: String) {
-        val searchView = this.findItem(R.id.search)?.actionView as SearchView?
-
-        if (filterQuery.isEmpty()) {
-            searchView?.setQuery("", false)
-            searchView?.isIconified = true
-        } else {
-            searchView?.setQuery(filterQuery, false)
-            searchView?.isIconified = false
-        }
-
-        searchView?.clearFocus()
     }
 
     private fun loadFavourites(videoData: List<VideoData>,

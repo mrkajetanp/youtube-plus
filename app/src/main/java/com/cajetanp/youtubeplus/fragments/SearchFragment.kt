@@ -21,6 +21,7 @@ import com.cajetanp.youtubeplus.data.VideoData
 import com.cajetanp.youtubeplus.utils.FeedItem
 import com.cajetanp.youtubeplus.utils.ItemType
 import com.cajetanp.youtubeplus.utils.YouTubeData
+import com.cajetanp.youtubeplus.utils.adjustSearchView
 import com.cajetanp.youtubeplus.viewmodels.SearchViewModel
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
@@ -69,8 +70,6 @@ class SearchFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         mAdapter = ContentListAdapter(mSearchViewModel.getAdapterItems(), this, activity!!)
         mYouTubeData = YouTubeData(activity!!, this)
 
-        Log.d("SearchFragment", "onActivityCreated")
-
         setupSearchResultList()
 
         val query = if (mSearchViewModel.searchQuery.isEmpty()) {
@@ -94,11 +93,7 @@ class SearchFragment : Fragment(), ContentListAdapter.ListItemClickListener,
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        val searchView = menu.findItem(R.id.search)?.actionView as SearchView
-        searchView.isIconified = false
-        searchView.setQuery(mSearchViewModel.searchQuery, false)
-
-        searchView.clearFocus()
+        menu.adjustSearchView(R.id.search, mSearchViewModel.searchQuery)
         rootView.requestFocus()
     }
 

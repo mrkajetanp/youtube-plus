@@ -4,6 +4,7 @@
 
 #### 16.02.2019
 
+* [0.10.9] Made adjustSearchView more general and moved to Extensions
 * [0.10.9] Fixed SearchView behaviour in FavouritesFragment
 
 #### 15.02.2019
