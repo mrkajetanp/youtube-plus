@@ -139,10 +139,10 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
             if (it != null) {
                 mMenu?.adjustSearchView(R.id.search, mFavouritesViewModel.filterQuery)
 
-                if (mFavouritesViewModel.filterQuery.isEmpty())
-                    loadFavourites(it)
-                else
+                if (mFavouritesViewModel.getAdapterItems().size == it.size)
                     filterVideos(mFavouritesViewModel.filterQuery)
+                else
+                    loadFavourites(it)
             }
         })
     }
@@ -156,6 +156,15 @@ class FavouritesFragment : Fragment(), ContentListAdapter.ListItemClickListener,
             return
 
         mFavouritesViewModel.filterQuery = query
+
+        if (mFavouritesViewModel.getAdapterItems().isNotEmpty()) {
+            val items = mFavouritesViewModel.getAdapterItems().filter {
+                it.video!!.snippet.title.toLowerCase().contains(query.toLowerCase())
+            }
+
+            mAdapter.setItems(ArrayList(items))
+            return
+        }
 
         loadFavourites(mMainDataViewModel.getAllFavourites().value!!) {
             it.filter { t -> t.snippet.title.toLowerCase().contains(query.toLowerCase()) }
