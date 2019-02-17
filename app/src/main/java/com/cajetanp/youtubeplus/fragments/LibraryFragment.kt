@@ -20,6 +20,8 @@ import com.cajetanp.youtubeplus.data.MainDataViewModel
 import com.cajetanp.youtubeplus.utils.FeedItem
 import com.cajetanp.youtubeplus.utils.ItemType
 import com.cajetanp.youtubeplus.utils.YouTubeData
+import com.cajetanp.youtubeplus.viewmodels.FavouritesViewModel
+import com.cajetanp.youtubeplus.viewmodels.LibraryViewModel
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
 import org.jetbrains.anko.yesButton
@@ -29,7 +31,9 @@ class LibraryFragment : Fragment(), ContentListAdapter.ListItemClickListener,
 
     private lateinit var mAdapter: ContentListAdapter
     private lateinit var mYouTubeData: YouTubeData
+
     private lateinit var mMainDataViewModel: MainDataViewModel
+    private lateinit var mLibraryViewModel: LibraryViewModel
 
     private lateinit var contentList: RecyclerView
     private lateinit var progressBarCentre: ProgressBar
@@ -45,19 +49,18 @@ class LibraryFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         setupDatabase()
+
+        mLibraryViewModel = ViewModelProviders.of(this).get(LibraryViewModel::class.java)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        mAdapter = ContentListAdapter(emptyList(), this, activity!!)
+        mAdapter = ContentListAdapter(mLibraryViewModel.getAdapterItems(), this, activity!!)
         mAdapter.onBottomReached = { }
         mYouTubeData = YouTubeData(activity!!, this)
 
         setupPlaylistsList()
-
-        if (mMainDataViewModel.getAllPlaylists().value != null)
-            loadPlaylists(mMainDataViewModel.getAllPlaylists().value!!)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -100,8 +103,7 @@ class LibraryFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     ////////////////////////////////////////////////////////////////////////////////
 
     private fun setupPlaylistsList() {
-        contentList.layoutManager = LinearLayoutManager(activity!!)
-        contentList.setHasFixedSize(false)
+        contentList.setHasFixedSize(true)
         contentList.adapter = mAdapter
     }
 
@@ -109,8 +111,10 @@ class LibraryFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         mMainDataViewModel = ViewModelProviders.of(this).get(MainDataViewModel::class.java)
 
         mMainDataViewModel.getAllPlaylists().observe(this, Observer {
-            if (it != null)
-                loadPlaylists(it)
+            if (it != null) {
+                if (mLibraryViewModel.getAdapterItems().size != it.size)
+                    loadPlaylists(it)
+            }
         })
     }
 
@@ -130,8 +134,10 @@ class LibraryFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     ////////////////////////////////////////////////////////////////////////////////
 
     override fun onPlaylistsReceived(results: List<FeedItem>) {
-        mAdapter.clearItems()
-        mAdapter.addItems(results)
+        mLibraryViewModel.clearAdapterItems()
+        mLibraryViewModel.addAdapterItems(results)
+
+        mAdapter.setItems(mLibraryViewModel.getAdapterItems())
 
         noFavouritesView.visibility = if (mAdapter.itemCount == 0) View.VISIBLE else View.GONE
         progressBarCentre.visibility = View.INVISIBLE

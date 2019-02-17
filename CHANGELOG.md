@@ -4,6 +4,7 @@
 
 #### 17.02.2019
 
+* [0.10.11] LibraryViewModel to reduce API calls 
 * [0.10.10] Reduced FavouritesFragment API calls with the ViewModel
 
 #### 16.02.2019
