@@ -128,6 +128,13 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
         getResultsFromApi()
     }
 
+    fun receiveRelatedVideos(relatedToId: String) {
+        mVideoId = relatedToId
+        mRequestType = RequestType.RELATED_VIDEOS_REQUEST
+
+        getResultsFromApi()
+    }
+
     private fun getResultsFromApi() {
         when {
             !isGooglePlayServicesAvailable() -> acquireGooglePlayServices()
@@ -143,6 +150,7 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
                 RequestType.PLAYLIST_DATA_REQUEST -> playlistDataTask(mPlaylistId, pageToken)
                 RequestType.PLAYLISTS_LIBRARY_REQUEST -> playlistLibraryTask(mPlaylistsData)
                 RequestType.UPLOAD_PLAYLIST_ID_REQUEST -> uploadPlaylistIdTask()
+                RequestType.RELATED_VIDEOS_REQUEST -> relatedVideosTask(mVideoId, pageToken)
             }
         }
     }
@@ -391,8 +399,6 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
         }
     }
 
-    // service.channels().list("").execute().items[0].contentDetails.relatedPlaylists.uploads
-
     private fun uploadPlaylistIdTask() {
         doAsync {
             val playlistId: String
@@ -419,6 +425,58 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
 
                 listener?.onUploadPlaylistIdReceived(playlistId, channelTitle)
                         ?: throw UnsupportedOperationException("Activity must implement UploadPlaylistListener")
+            }
+        }
+    }
+
+    private fun relatedVideosTask(videoId: String, pageToken: String) {
+        doAsync {
+            val result: ArrayList<FeedItem> = ArrayList()
+            val nextPageToken: String
+            val prevPageToken: String
+
+            try {
+                val searchList: YouTube.Search.List = service.search()
+                        .list("id")
+                        .setMaxResults(SEARCH_PAGE_SIZE.toLong())
+                        .setRelatedToVideoId(videoId)
+
+                if (pageToken.isNotEmpty())
+                    searchList.pageToken = pageToken
+
+                val response = searchList.execute()
+
+                nextPageToken = response.nextPageToken ?: ""
+                prevPageToken = response.prevPageToken ?: ""
+
+                val finalVideoIds = StringBuilder()
+
+                for (r in response.items) {
+                    finalVideoIds.append(r.id.videoId)
+                    finalVideoIds.append(',')
+                }
+
+                if (finalVideoIds.isNotEmpty())
+                    finalVideoIds.setLength(finalVideoIds.length - 1)
+
+                result.addAll(service.videos().list("snippet,contentDetails")
+                        .setId(finalVideoIds.toString()).execute().items
+                        .map { FeedItem(it.id, video = it) })
+            } catch (e: java.lang.Exception) {
+                onTaskCancelled(e)
+                Log.d("YouTubeData", "Exception $e")
+                throw CancellationException()
+            }
+
+            uiThread {
+                val listener: RelatedVideosListener? = when {
+                    mActivity is RelatedVideosListener -> mActivity
+                    mFragment is RelatedVideosListener -> mFragment
+                    else -> null
+                }
+
+                listener?.onRelatedVideosReceived(result.toList(), nextPageToken, prevPageToken)
+                        ?: throw UnsupportedOperationException("Parent must implement VideoSearchListener")
             }
         }
     }
@@ -541,7 +599,8 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
         MOST_POPULAR_REQUEST,
         PLAYLIST_DATA_REQUEST,
         PLAYLISTS_LIBRARY_REQUEST,
-        UPLOAD_PLAYLIST_ID_REQUEST
+        UPLOAD_PLAYLIST_ID_REQUEST,
+        RELATED_VIDEOS_REQUEST
     }
 
     interface VideoDataListener {
@@ -574,5 +633,10 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
 
     interface UploadPlaylistListener {
         fun onUploadPlaylistIdReceived(id: String, channelTitle: String)
+    }
+
+    interface RelatedVideosListener {
+        fun onRelatedVideosReceived(results: List<FeedItem>,
+                                    nextPageToken: String, previousPageToken: String)
     }
 }

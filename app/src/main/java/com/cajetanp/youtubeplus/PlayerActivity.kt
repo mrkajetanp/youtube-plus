@@ -65,7 +65,6 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
     private lateinit var mMainDataViewModel: MainDataViewModel
 
     private val mTracker: YouTubePlayerTracker = YouTubePlayerTracker()
-    private var playerReady = false
 
     private val mBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -234,6 +233,10 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
 
         mUIController.showMenuButton(true)
         addMenuItems(mUIController.menu as YouTubePlayerMenu)
+    }
+
+    private fun setupRelatedVideos() {
+
     }
 
     private fun setupPlaylist(playlistId: String) {

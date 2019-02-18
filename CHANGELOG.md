@@ -2,6 +2,10 @@
 
 ---
 
+#### 18.02.2019
+
+* [0.10.12] Added RelatedVideosTask
+
 #### 17.02.2019
 
 * [0.10.11] LibraryViewModel to reduce API calls 
