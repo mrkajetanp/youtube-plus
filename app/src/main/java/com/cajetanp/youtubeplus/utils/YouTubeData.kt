@@ -128,8 +128,9 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
         getResultsFromApi()
     }
 
-    fun receiveRelatedVideos(relatedToId: String) {
+    fun receiveRelatedVideos(relatedToId: String, pageToken: String = "") {
         mVideoId = relatedToId
+        this.pageToken = pageToken
         mRequestType = RequestType.RELATED_VIDEOS_REQUEST
 
         getResultsFromApi()
@@ -433,11 +434,11 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
         doAsync {
             val result: ArrayList<FeedItem> = ArrayList()
             val nextPageToken: String
-            val prevPageToken: String
 
             try {
                 val searchList: YouTube.Search.List = service.search()
                         .list("id")
+                        .setType("video")
                         .setMaxResults(SEARCH_PAGE_SIZE.toLong())
                         .setRelatedToVideoId(videoId)
 
@@ -447,7 +448,6 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
                 val response = searchList.execute()
 
                 nextPageToken = response.nextPageToken ?: ""
-                prevPageToken = response.prevPageToken ?: ""
 
                 val finalVideoIds = StringBuilder()
 
@@ -475,7 +475,8 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
                     else -> null
                 }
 
-                listener?.onRelatedVideosReceived(result.toList(), nextPageToken, prevPageToken)
+                Log.d("PlayerActivity", "Returning")
+                listener?.onRelatedVideosReceived(result.toList(), nextPageToken)
                         ?: throw UnsupportedOperationException("Parent must implement VideoSearchListener")
             }
         }
@@ -636,7 +637,6 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
     }
 
     interface RelatedVideosListener {
-        fun onRelatedVideosReceived(results: List<FeedItem>,
-                                    nextPageToken: String, previousPageToken: String)
+        fun onRelatedVideosReceived(results: List<FeedItem>, nextPageToken: String)
     }
 }

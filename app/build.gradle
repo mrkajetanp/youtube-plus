@@ -4,8 +4,8 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
 ext.versionMajor = 0
-ext.versionMinor = 10
-ext.versionPatch = 12
+ext.versionMinor = 11
+ext.versionPatch = 0
 ext.versionClassifier = null
 ext.isSnapshot = true
 ext.minimumSdkVersion = 19

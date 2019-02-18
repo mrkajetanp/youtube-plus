@@ -4,6 +4,7 @@
 
 #### 18.02.2019
 
+* [0.11.0] Related videos in PlayerActivity 
 * [0.10.12] Added RelatedVideosTask
 
 #### 17.02.2019

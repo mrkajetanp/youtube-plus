@@ -16,6 +16,7 @@ import android.os.IBinder
 import android.preference.PreferenceManager
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
@@ -45,7 +46,8 @@ import java.net.URL
 
 class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         YouTubeData.VideoListDataListener, ContentListAdapter.ListItemClickListener,
-        SeekDialogFragment.SeekDialogListener, YouTubeData.PlaylistDataListener {
+        SeekDialogFragment.SeekDialogListener, YouTubeData.PlaylistDataListener,
+        YouTubeData.RelatedVideosListener {
 
     private val TAG: String = this.javaClass.simpleName
 
@@ -105,6 +107,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
                 mVideoId = getIntentVideoId(intent!!)
                 mYouTubeData.receiveVideoData(mVideoId)
                 setupPlayer()
+                setupRelatedVideos(mVideoId)
             }
             else -> {
                 // A playlist, setup player after receiving the data
@@ -135,7 +138,9 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
                     mAdapter.clearItems()
                     videoList.visibility = View.GONE
                 }
+
                 switchVideo(getIntentVideoId(intent))
+                setupRelatedVideos(mVideoId)
             }
             else -> {
                 playlistMode = true
@@ -235,8 +240,19 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         addMenuItems(mUIController.menu as YouTubePlayerMenu)
     }
 
-    private fun setupRelatedVideos() {
+    private fun setupRelatedVideos(relatedToId: String) {
+        playlistMode = false
+        mAdapter = ContentListAdapter(emptyList(), this, this)
+        mAdapter.onBottomReached = {
+            if (mNextPageToken.isNotEmpty()) {
+                progressBarBottom.visibility = View.VISIBLE
+                mYouTubeData.receiveRelatedVideos(relatedToId, mNextPageToken)
+            }
+        }
 
+        videoList.adapter = mAdapter
+        Log.d("PlayerActivity", "Receiving related videos")
+        mYouTubeData.receiveRelatedVideos(relatedToId, mNextPageToken)
     }
 
     private fun setupPlaylist(playlistId: String) {
@@ -250,10 +266,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
             }
         }
 
-        videoList.layoutManager = LinearLayoutManager(this)
-        videoList.setHasFixedSize(false)
         videoList.adapter = mAdapter
-
         mYouTubeData.receivePlaylistResults(playlistId)
     }
 
@@ -495,10 +508,26 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         progressBarBottom.visibility = View.GONE
     }
 
+    override fun onRelatedVideosReceived(results: List<FeedItem>, nextPageToken: String) {
+        mAdapter.addItems(results)
+        progressBarBottom.visibility = View.GONE
+
+        Log.d("PlayerActivity", "Related videos received")
+        videoList.visibility = View.VISIBLE
+        mNextPageToken = nextPageToken
+    }
+
     override fun onListItemClick(id: String, position: Int, type: ItemType) {
         switchVideo(id)
-        mAdapter.switchNowPlaying(position)
-        mCurrentVideoIndex = position
+
+        if (playlistMode) {
+            mAdapter.switchNowPlaying(position)
+            mCurrentVideoIndex = position
+        } else {
+            mAdapter.clearItems()
+            mNextPageToken = ""
+            mYouTubeData.receiveRelatedVideos(mVideoId)
+        }
     }
 
     override fun onListItemLongClick(id: String, type: ItemType) {
