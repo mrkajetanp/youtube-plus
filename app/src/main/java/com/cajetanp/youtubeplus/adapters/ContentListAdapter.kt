@@ -24,10 +24,11 @@ class ContentListAdapter(items: List<FeedItem>, listener: ListItemClickListener,
 
     lateinit var onBottomReached: () -> Unit
 
+    var playlistMode: Boolean = false
+
     private var mItems: ArrayList<FeedItem> = ArrayList(items)
     private val mOnClickListener = listener
     private val mContext = context
-    // Non-negative value means the adapter is showing a playlist
     private var mNowPlaying: Int = -1
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -46,8 +47,7 @@ class ContentListAdapter(items: List<FeedItem>, listener: ListItemClickListener,
                 holder.bindVideo(mItems[position].video!!)
 
                 // TODO: investigate if unnecessary calls occur
-                // Only switch those in "playlist mode
-                if (mNowPlaying != -1) {
+                if (playlistMode) {
                     if (mNowPlaying == position)
                         holder.enableNowPlaying()
                     else
@@ -198,12 +198,6 @@ class ContentListAdapter(items: List<FeedItem>, listener: ListItemClickListener,
         fun bindVideo(video: Video) {
             videoDurationView.visibility = View.VISIBLE
             playlistSizeView.visibility = View.GONE
-
-            if (mNowPlaying != -1) {
-                itemView.setBackgroundResource(R.color.darkGrey)
-                videoTitleView.setTextColor(Color.WHITE)
-                videoChannelView.setTextColor(Color.WHITE)
-            }
 
             videoTitleView.text = video.snippet.title
             videoChannelView.text = video.snippet.channelTitle

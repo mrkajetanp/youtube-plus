@@ -2,6 +2,10 @@
 
 ---
 
+#### 19.02.2019
+
+* [0.11.1] Fixed Recents RecyclerView in Light Mode
+
 #### 18.02.2019
 
 * [0.11.0] Related videos in PlayerActivity 

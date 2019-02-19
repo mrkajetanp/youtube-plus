@@ -137,6 +137,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
                 if (this::mAdapter.isInitialized) {
                     mAdapter.clearItems()
                     videoList.visibility = View.GONE
+                    mAdapter.playlistMode = false
                 }
 
                 switchVideo(getIntentVideoId(intent))
@@ -149,6 +150,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
                 } else {
                     mAdapter.switchNowPlaying(0)
                     mAdapter.clearItems()
+                    mAdapter.playlistMode = true
                     mYouTubeData.receivePlaylistResults(playlistId)
                 }
             }
@@ -249,6 +251,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
                 mYouTubeData.receiveRelatedVideos(relatedToId, mNextPageToken)
             }
         }
+        mAdapter.playlistMode = false
 
         videoList.adapter = mAdapter
         Log.d("PlayerActivity", "Receiving related videos")
@@ -265,6 +268,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
                 mYouTubeData.receivePlaylistResults(playlistId, mNextPageToken)
             }
         }
+        mAdapter.playlistMode = true
 
         videoList.adapter = mAdapter
         mYouTubeData.receivePlaylistResults(playlistId)
