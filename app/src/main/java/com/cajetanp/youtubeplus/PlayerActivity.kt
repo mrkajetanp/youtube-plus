@@ -197,10 +197,15 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
                 }
 
                 override fun onStateChange(state: PlayerConstants.PlayerState) {
-                    if (playlistMode && state == PlayerConstants.PlayerState.ENDED) {
-                        mCurrentVideoIndex++
-                        switchVideo(mAdapter.getItem(mCurrentVideoIndex).id)
-                        mAdapter.switchNowPlaying(mCurrentVideoIndex)
+                    if (state == PlayerConstants.PlayerState.ENDED) {
+                        if (playlistMode) {
+                            mCurrentVideoIndex++
+                            switchVideo(mAdapter.getItem(mCurrentVideoIndex).id)
+                            mAdapter.switchNowPlaying(mCurrentVideoIndex)
+                        } else {
+                            switchVideo(mAdapter.getItem(0).id)
+                            setupRelatedVideos(mAdapter.getItem(0).id)
+                        }
                     }
 
                     val playerState: Int? = when (state) {
@@ -431,6 +436,9 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         mVideoData = null
         mYouTubeData.receiveVideoData(videoId)
         mainPlayerView.player.loadVideo(videoId, 0f)
+
+        if (!playlistMode) {
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -518,6 +526,7 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
 
         Log.d("PlayerActivity", "Related videos received")
         videoList.visibility = View.VISIBLE
+        progressBarCentre.visibility = View.INVISIBLE
         mNextPageToken = nextPageToken
     }
 
@@ -530,6 +539,8 @@ class PlayerActivity : AppCompatActivity(), YouTubeData.VideoDataListener,
         } else {
             mAdapter.clearItems()
             mNextPageToken = ""
+            videoList.visibility = View.INVISIBLE
+            progressBarCentre.visibility = View.VISIBLE
             mYouTubeData.receiveRelatedVideos(mVideoId)
         }
     }

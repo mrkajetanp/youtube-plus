@@ -4,6 +4,7 @@
 
 #### 19.02.2019
 
+* [0.11.2] Progress bar in Recents when switching videos 
 * [0.11.1] Fixed Recents RecyclerView in Light Mode
 
 #### 18.02.2019
