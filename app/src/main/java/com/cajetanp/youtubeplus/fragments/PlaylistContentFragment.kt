@@ -63,7 +63,7 @@ class PlaylistContentFragment : Fragment(), ContentListAdapter.ListItemClickList
 
         setupSearchResultList()
         mPlaylistId = arguments?.getString(getString(R.string.playlist_id_key))!!
-        loadPlaylistVideos("")
+        loadPlaylistVideos()
 
     }
 
@@ -113,7 +113,7 @@ class PlaylistContentFragment : Fragment(), ContentListAdapter.ListItemClickList
     // Utils
     ////////////////////////////////////////////////////////////////////////////////
 
-    private fun loadPlaylistVideos(nextPageToken: String) {
+    private fun loadPlaylistVideos(nextPageToken: String = "") {
         if (nextPageToken.isEmpty()) {
             searchProgressBarCentre.visibility = View.VISIBLE
             videoList.visibility = View.INVISIBLE

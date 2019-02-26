@@ -2,6 +2,10 @@
 
 ---
 
+#### 26.02.2019
+
+* [0.11.2] Minor refactoring and improvements
+
 #### 19.02.2019
 
 * [0.11.2] Progress bar in Recents when switching videos 

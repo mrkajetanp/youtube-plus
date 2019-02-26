@@ -176,7 +176,6 @@ class YouTubeData(parentActivity: Activity, fragment: Fragment? = null) :
                 nextPageToken = response.nextPageToken ?: ""
                 prevPageToken = response.prevPageToken ?: ""
 
-                // TODO: include channels and playlist in search results
                 val finalVideoIds = StringBuilder()
                 val finalPlaylistIds = StringBuilder()
                 val finalChannelIds = StringBuilder()

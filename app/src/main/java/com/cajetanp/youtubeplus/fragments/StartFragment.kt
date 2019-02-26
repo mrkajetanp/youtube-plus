@@ -74,8 +74,7 @@ class StartFragment : Fragment(), ContentListAdapter.ListItemClickListener,
         mYouTubeData = YouTubeData(activity!!, this)
 
         setupVideoList()
-        // TODO: default argument should be used here
-        loadMostPopularVideos(mStartViewModel.nextPageToken)
+        loadMostPopularVideos()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -143,7 +142,7 @@ class StartFragment : Fragment(), ContentListAdapter.ListItemClickListener,
     // Utils
     ////////////////////////////////////////////////////////////////////////////////
 
-    private fun loadMostPopularVideos(nextPageToken: String) {
+    private fun loadMostPopularVideos(nextPageToken: String = "") {
         if (nextPageToken.isEmpty()) {
             progressBarCentre.visibility = View.VISIBLE
             videoList.visibility = View.INVISIBLE
@@ -160,7 +159,6 @@ class StartFragment : Fragment(), ContentListAdapter.ListItemClickListener,
 
     override fun onMostPopularReceived(results: List<Video>,
                                        nextPageToken: String, previousPageToken: String) {
-        // TODO: possible reductions in logic here
         if (previousPageToken.isEmpty()) {
             mStartViewModel.clearAdapterItems()
             videoList.scrollToPosition(0)
